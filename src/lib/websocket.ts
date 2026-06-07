@@ -2,9 +2,9 @@ import { writable } from "svelte/store";
 import type { Claim } from "./stores/claims";
 
 export type WSMessage =
-	| { type: "transcript"; text: string }
-	| { type: "claim"; claim: Claim }
-	| { type: "remove_claim"; id: string };
+  | { type: "transcript"; text: string }
+  | { type: "claim"; claim: Claim }
+  | { type: "remove_claim"; id: string };
 
 export type WSStatus = "disconnected" | "connecting" | "connected" | "error";
 

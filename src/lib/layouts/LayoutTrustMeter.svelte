@@ -11,38 +11,46 @@
   let finalized = $derived(
     $claimStats.verified + $claimStats.false + $claimStats.uncertain + $claimStats.unverifiable
   );
-  let trustPct = $derived(finalized === 0 ? 0 : Math.round(($claimStats.verified / finalized) * 100));
-
-  let gaugeColor = $derived(
-    trustPct >= 70 ? "#10b981" : trustPct >= 40 ? "#f59e0b" : "#ef4444"
+  let trustPct = $derived(
+    finalized === 0 ? 0 : Math.round(($claimStats.verified / finalized) * 100)
   );
 
+  let gaugeColor = $derived(trustPct >= 70 ? "#10b981" : trustPct >= 40 ? "#f59e0b" : "#ef4444");
+
   // Donut segments for all statuses (excluding pending)
-  type Segment = { key: string; count: number; color: string; dasharray: string; dashoffset: number };
+  type Segment = {
+    key: string;
+    count: number;
+    color: string;
+    dasharray: string;
+    dashoffset: number;
+  };
 
-  let segments = $derived<Segment[]>((() => {
-    const total = $claimStats.total;
-    if (total === 0) return [];
-    const items = [
-      { key: "verified", count: $claimStats.verified, color: STATUS_COLOR.verified },
-      { key: "false", count: $claimStats.false, color: STATUS_COLOR.false },
-      { key: "uncertain", count: $claimStats.uncertain, color: STATUS_COLOR.uncertain },
-      { key: "unverifiable", count: $claimStats.unverifiable, color: STATUS_COLOR.unverifiable },
-      { key: "pending", count: $claimStats.pending, color: STATUS_COLOR.pending },
-    ].filter((s) => s.count > 0);
+  let segments = $derived<Segment[]>(
+    (() => {
+      const total = $claimStats.total;
+      if (total === 0) return [];
+      const items = [
+        { key: "verified", count: $claimStats.verified, color: STATUS_COLOR.verified },
+        { key: "false", count: $claimStats.false, color: STATUS_COLOR.false },
+        { key: "uncertain", count: $claimStats.uncertain, color: STATUS_COLOR.uncertain },
+        { key: "unverifiable", count: $claimStats.unverifiable, color: STATUS_COLOR.unverifiable },
+        { key: "pending", count: $claimStats.pending, color: STATUS_COLOR.pending }
+      ].filter((s) => s.count > 0);
 
-    let offset = 0;
-    return items.map((s) => {
-      const dash = (s.count / total) * C;
-      const seg: Segment = {
-        ...s,
-        dasharray: `${dash} ${C - dash}`,
-        dashoffset: -offset,
-      };
-      offset += dash;
-      return seg;
-    });
-  })());
+      let offset = 0;
+      return items.map((s) => {
+        const dash = (s.count / total) * C;
+        const seg: Segment = {
+          ...s,
+          dasharray: `${dash} ${C - dash}`,
+          dashoffset: -offset
+        };
+        offset += dash;
+        return seg;
+      });
+    })()
+  );
 </script>
 
 <div class="trust-layout">
@@ -52,25 +60,21 @@
     <div class="gauge-wrapper">
       <svg viewBox="0 0 200 200" class="gauge-svg">
         <!-- Track -->
-        <circle
-          cx={CX} cy={CY} r={R}
-          fill="none"
-          stroke="#2e2e3e"
-          stroke-width="20"
-        />
+        <circle cx={CX} cy={CY} r={R} fill="none" stroke="#2e2e3e" stroke-width="20" />
 
         {#if segments.length > 0}
           <!-- Segments (rotate -90° so we start at 12 o'clock) -->
           <g transform="rotate(-90 100 100)">
             {#each segments as seg (seg.key)}
               <circle
-                cx={CX} cy={CY} r={R}
+                cx={CX}
+                cy={CY}
+                r={R}
                 fill="none"
                 stroke={seg.color}
                 stroke-width="20"
                 stroke-dasharray={seg.dasharray}
-                stroke-dashoffset={seg.dashoffset}
-              />
+                stroke-dashoffset={seg.dashoffset} />
             {/each}
           </g>
         {/if}
@@ -79,9 +83,7 @@
         <text x="100" y="92" text-anchor="middle" class="pct-text" fill={gaugeColor}>
           {trustPct}%
         </text>
-        <text x="100" y="112" text-anchor="middle" class="pct-label" fill="#888">
-          vérifié
-        </text>
+        <text x="100" y="112" text-anchor="middle" class="pct-label" fill="#888"> vérifié </text>
         <text x="100" y="130" text-anchor="middle" class="pct-sub" fill="#555">
           {finalized} claim{finalized !== 1 ? "s" : ""}
         </text>
@@ -120,7 +122,8 @@
         <div class="claim-row" style="--color: {STATUS_COLOR[c.status]}">
           <div class="cr-status">
             <span class="cr-dot" style="background: {STATUS_COLOR[c.status]}"></span>
-            <span class="cr-label" style="color: {STATUS_COLOR[c.status]}">{STATUS_LABEL[c.status]}</span>
+            <span class="cr-label" style="color: {STATUS_COLOR[c.status]}"
+              >{STATUS_LABEL[c.status]}</span>
           </div>
           <p class="cr-text">« {c.text} »</p>
           {#if c.explanation}

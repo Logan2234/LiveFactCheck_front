@@ -73,16 +73,19 @@
           {@const y = yForIndex(i)}
           <!-- Connector line from dot to axis -->
           <line
-            x1={x} y1={y}
-            x2={x} y2="50"
+            x1={x}
+            y1={y}
+            x2={x}
+            y2="50"
             stroke={STATUS_COLOR[c.status]}
             stroke-width="0.5"
             stroke-dasharray="1 1"
-            opacity="0.5"
-          />
+            opacity="0.5" />
           <!-- Dot -->
           <circle
-            cx={x} cy={y} r="4"
+            cx={x}
+            cy={y}
+            r="4"
             fill={STATUS_COLOR[c.status]}
             stroke={selectedClaim?.id === c.id ? "#fff" : "transparent"}
             stroke-width="1.5"
@@ -91,8 +94,7 @@
             tabindex="0"
             aria-label={c.text}
             onclick={() => selectClaim(c)}
-            onkeydown={(e) => e.key === "Enter" && selectClaim(c)}
-          />
+            onkeydown={(e) => e.key === "Enter" && selectClaim(c)} />
         {/each}
 
         <!-- Time labels -->
@@ -117,11 +119,15 @@
           class="claim-chip"
           style="--color: {STATUS_COLOR[c.status]}"
           class:active={selectedClaim?.id === c.id}
-          onclick={() => selectClaim(c)}
-        >
+          onclick={() => selectClaim(c)}>
           <span class="chip-icon">{STATUS_ICON[c.status]}</span>
           <span class="chip-text">{c.text}</span>
-          <span class="chip-time">{new Date(c.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" })}</span>
+          <span class="chip-time"
+            >{new Date(c.timestamp).toLocaleTimeString([], {
+              hour: "2-digit",
+              minute: "2-digit",
+              second: "2-digit"
+            })}</span>
         </button>
       {/each}
     </div>
@@ -178,7 +184,9 @@
     margin-bottom: 0.35rem;
   }
 
-  .d-icon { font-size: 1rem; }
+  .d-icon {
+    font-size: 1rem;
+  }
 
   .d-status {
     font-weight: 600;
@@ -204,7 +212,9 @@
     line-height: 1;
   }
 
-  .d-close:hover { color: #aaa; }
+  .d-close:hover {
+    color: #aaa;
+  }
 
   .d-text {
     color: #e0e0e0;
@@ -240,7 +250,9 @@
 
   .dot {
     cursor: pointer;
-    transition: r 0.15s, opacity 0.15s;
+    transition:
+      r 0.15s,
+      opacity 0.15s;
   }
 
   .dot:hover {

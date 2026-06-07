@@ -1,5 +1,11 @@
 <script lang="ts">
-  import { recordingState, startRecording, stopRecording, isMuted, toggleMute } from "$lib/stores/audio";
+  import {
+    recordingState,
+    startRecording,
+    stopRecording,
+    isMuted,
+    toggleMute
+  } from "$lib/stores/audio";
   import { wsStatus } from "$lib/websocket";
 
   let isRecording = $derived($recordingState === "recording");
@@ -26,8 +32,7 @@
     class:recording={isRecording}
     onclick={toggle}
     disabled={status !== "connected"}
-    title="Espace pour démarrer/arrêter"
-  >
+    title="Espace pour démarrer/arrêter">
     <span class="record-dot"></span>
     {isRecording ? "Arrêter" : "Enregistrer"}
   </button>
@@ -38,8 +43,7 @@
       class:muted={$isMuted}
       onclick={toggleMute}
       title={$isMuted ? "Réactiver le micro" : "Couper le micro"}
-      aria-label={$isMuted ? "Réactiver le micro" : "Couper le micro"}
-    >
+      aria-label={$isMuted ? "Réactiver le micro" : "Couper le micro"}>
       {$isMuted ? "🔇" : "🎙"}
     </button>
   {/if}
@@ -102,8 +106,13 @@
   }
 
   @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.3; }
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.3;
+    }
   }
 
   .mute-btn {

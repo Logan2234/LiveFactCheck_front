@@ -19,26 +19,28 @@
     dashoffset: number;
   };
 
-  let arcs = $derived<Arc[]>((() => {
-    const total = $claimStats.total;
-    if (total === 0) return [];
-    let offset = 0;
-    return STATUS_ORDER.map((key) => {
-      const count = ($claimStats as Record<string, number>)[key] ?? 0;
-      const pct = count / total;
-      const dash = pct * C;
-      const arc: Arc = {
-        key,
-        count,
-        pct,
-        color: STATUS_COLOR[key],
-        dasharray: `${dash} ${C - dash}`,
-        dashoffset: -offset,
-      };
-      offset += dash;
-      return arc;
-    }).filter((a) => a.count > 0);
-  })());
+  let arcs = $derived<Arc[]>(
+    (() => {
+      const total = $claimStats.total;
+      if (total === 0) return [];
+      let offset = 0;
+      return STATUS_ORDER.map((key) => {
+        const count = ($claimStats as Record<string, number>)[key] ?? 0;
+        const pct = count / total;
+        const dash = pct * C;
+        const arc: Arc = {
+          key,
+          count,
+          pct,
+          color: STATUS_COLOR[key],
+          dasharray: `${dash} ${C - dash}`,
+          dashoffset: -offset
+        };
+        offset += dash;
+        return arc;
+      }).filter((a) => a.count > 0);
+    })()
+  );
 
   // Dominant status (most claims, excluding pending)
   let dominant = $derived(
@@ -57,27 +59,25 @@
     <div class="donut-wrapper">
       <svg viewBox="0 0 200 200" class="donut-svg">
         <!-- Background track -->
-        <circle
-          cx={CX} cy={CY} r={R}
-          fill="none"
-          stroke="#1e1e2e"
-          stroke-width="28"
-        />
+        <circle cx={CX} cy={CY} r={R} fill="none" stroke="#1e1e2e" stroke-width="28" />
 
         {#if arcs.length === 0}
           <!-- Empty state: dashed ring -->
           <circle
-            cx={CX} cy={CY} r={R}
+            cx={CX}
+            cy={CY}
+            r={R}
             fill="none"
             stroke="#2e2e3e"
             stroke-width="28"
-            stroke-dasharray="4 4"
-          />
+            stroke-dasharray="4 4" />
         {:else}
           <g transform="rotate(-90 100 100)">
             {#each arcs as arc (arc.key)}
               <circle
-                cx={CX} cy={CY} r={R}
+                cx={CX}
+                cy={CY}
+                r={R}
                 fill="none"
                 stroke={arc.color}
                 stroke-width={hoveredArc === arc.key ? 32 : 28}
@@ -86,8 +86,7 @@
                 class="arc"
                 onmouseenter={() => (hoveredArc = arc.key)}
                 onmouseleave={() => (hoveredArc = null)}
-                style="transition: stroke-width 0.15s"
-              />
+                style="transition: stroke-width 0.15s" />
             {/each}
           </g>
         {/if}
@@ -100,8 +99,14 @@
           claim{$claimStats.total !== 1 ? "s" : ""}
         </text>
         {#if dominant && dominant.count > 0}
-          <text x="100" y="122" text-anchor="middle" class="center-dominant" fill={STATUS_COLOR[dominant.key]}>
-            {STATUS_ICON[dominant.key]} {Math.round((dominant.count / $claimStats.total) * 100)}%
+          <text
+            x="100"
+            y="122"
+            text-anchor="middle"
+            class="center-dominant"
+            fill={STATUS_COLOR[dominant.key]}>
+            {STATUS_ICON[dominant.key]}
+            {Math.round((dominant.count / $claimStats.total) * 100)}%
           </text>
         {/if}
       </svg>
@@ -117,15 +122,11 @@
           class:hovered={hoveredArc === key}
           onmouseenter={() => count > 0 && (hoveredArc = key)}
           onmouseleave={() => (hoveredArc = null)}
-          role="none"
-        >
+          role="none">
           <span class="l-dot" style="background: {STATUS_COLOR[key]}"></span>
           <span class="l-label">{STATUS_LABEL[key]}</span>
           <div class="l-bar-wrap">
-            <div
-              class="l-bar"
-              style="width: {pct}%; background: {STATUS_COLOR[key]}"
-            ></div>
+            <div class="l-bar" style="width: {pct}%; background: {STATUS_COLOR[key]}"></div>
           </div>
           <span class="l-count" style="color: {STATUS_COLOR[key]}">{count}</span>
           <span class="l-pct">{pct}%</span>
@@ -142,11 +143,11 @@
         <div
           class="claim-item"
           style="--color: {STATUS_COLOR[c.status]}"
-          class:highlighted={hoveredArc === c.status}
-        >
+          class:highlighted={hoveredArc === c.status}>
           <div class="ci-header">
             <span>{STATUS_ICON[c.status]}</span>
-            <span class="ci-status" style="color: {STATUS_COLOR[c.status]}">{STATUS_LABEL[c.status]}</span>
+            <span class="ci-status" style="color: {STATUS_COLOR[c.status]}"
+              >{STATUS_LABEL[c.status]}</span>
             <span class="ci-time">{new Date(c.timestamp).toLocaleTimeString()}</span>
           </div>
           <p class="ci-text">« {c.text} »</p>

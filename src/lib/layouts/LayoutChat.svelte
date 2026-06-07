@@ -6,12 +6,19 @@
   // Merge transcripts and claims into a unified chronological feed
   type ChatItem =
     | { kind: "transcript"; text: string; timestamp: number }
-    | { kind: "claim"; id: string; text: string; status: string; explanation: string; timestamp: number };
+    | {
+        kind: "claim";
+        id: string;
+        text: string;
+        status: string;
+        explanation: string;
+        timestamp: number;
+      };
 
   let feed = $derived<ChatItem[]>(
     [
       ...$transcriptEntries.map((e) => ({ kind: "transcript" as const, ...e })),
-      ...$claims.map((c) => ({ kind: "claim" as const, ...c })),
+      ...$claims.map((c) => ({ kind: "claim" as const, ...c }))
     ].sort((a, b) => a.timestamp - b.timestamp)
   );
 </script>
@@ -220,7 +227,9 @@
     margin-bottom: 0.3rem;
   }
 
-  .fc-icon { font-size: 0.85rem; }
+  .fc-icon {
+    font-size: 0.85rem;
+  }
 
   .fc-label {
     font-weight: 600;

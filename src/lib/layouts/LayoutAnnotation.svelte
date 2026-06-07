@@ -39,8 +39,7 @@
                       style="--color: {STATUS_COLOR[c.status]}"
                       class:active={selectedClaim?.id === c.id}
                       onclick={() => toggleClaim(c)}
-                      title={c.text}
-                    >
+                      title={c.text}>
                       {STATUS_ICON[c.status]}
                     </button>
                   {/each}
@@ -72,8 +71,7 @@
           class="side-item"
           style="--color: {STATUS_COLOR[c.status]}"
           class:active={selectedClaim?.id === c.id}
-          onclick={() => toggleClaim(c)}
-        >
+          onclick={() => toggleClaim(c)}>
           <span class="si-icon">{STATUS_ICON[c.status]}</span>
           <span class="si-text">{c.text}</span>
         </button>
@@ -149,7 +147,9 @@
     justify-content: center;
     font-size: 0.7rem;
     cursor: pointer;
-    transition: transform 0.15s, background 0.15s;
+    transition:
+      transform 0.15s,
+      background 0.15s;
     padding: 0;
   }
 

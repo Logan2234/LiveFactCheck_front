@@ -50,8 +50,12 @@
   }
 
   @keyframes flash-fade {
-    0% { opacity: 1; }
-    100% { opacity: 0; }
+    0% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
   }
 
   .shortcuts-hint {

@@ -4,14 +4,10 @@
   import { STATUS_COLOR, STATUS_ICON } from "$lib/constants/status";
 
   // Ticker items: only finalized claims, repeated so there's always enough to scroll
-  let tickerItems = $derived(
-    $claims.filter((c) => c.status !== "pending")
-  );
+  let tickerItems = $derived($claims.filter((c) => c.status !== "pending"));
 
   // Duplicate items so the ticker loops smoothly
-  let tickerContent = $derived(
-    tickerItems.length > 0 ? [...tickerItems, ...tickerItems] : []
-  );
+  let tickerContent = $derived(tickerItems.length > 0 ? [...tickerItems, ...tickerItems] : []);
 </script>
 
 <div class="ticker-layout">
@@ -37,9 +33,12 @@
 
     <!-- Stats bar -->
     <div class="stats-bar">
-      <span class="stat" style="color: #10b981">✅ {$claims.filter(c => c.status === 'verified').length} vérifiés</span>
-      <span class="stat" style="color: #ef4444">❌ {$claims.filter(c => c.status === 'false').length} faux</span>
-      <span class="stat" style="color: #f59e0b">❓ {$claims.filter(c => c.status === 'uncertain').length} incertains</span>
+      <span class="stat" style="color: #10b981"
+        >✅ {$claims.filter((c) => c.status === "verified").length} vérifiés</span>
+      <span class="stat" style="color: #ef4444"
+        >❌ {$claims.filter((c) => c.status === "false").length} faux</span>
+      <span class="stat" style="color: #f59e0b"
+        >❓ {$claims.filter((c) => c.status === "uncertain").length} incertains</span>
       <span class="stat" style="color: #888">Total: {$claims.length}</span>
     </div>
   </div>
@@ -53,8 +52,7 @@
       {:else}
         <div
           class="ticker-track"
-          style="animation-duration: {Math.max(tickerItems.length * 8, 20)}s"
-        >
+          style="animation-duration: {Math.max(tickerItems.length * 8, 20)}s">
           {#each tickerContent as c (c.id + Math.random())}
             <span class="ticker-item" style="--color: {STATUS_COLOR[c.status]}">
               <span class="t-icon">{STATUS_ICON[c.status]}</span>
@@ -113,8 +111,15 @@
   }
 
   @keyframes pulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.5; transform: scale(0.8); }
+    0%,
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.5;
+      transform: scale(0.8);
+    }
   }
 
   .transcript-content {
@@ -187,7 +192,7 @@
     display: flex;
     align-items: center;
     flex-shrink: 0;
-    text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
   }
 
   .ticker-scroll-wrapper {
@@ -214,8 +219,12 @@
   }
 
   @keyframes scroll-left {
-    0%   { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
   }
 
   .ticker-item {

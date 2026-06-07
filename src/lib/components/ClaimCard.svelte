@@ -4,23 +4,23 @@
   let { claim }: { claim: Claim } = $props();
 
   const statusConfig: Record<string, { label: string; color: string; icon: string }> = {
-    pending:      { label: "En cours...",      color: "#f59e0b", icon: "⏳" },
-    verified:     { label: "Vérifié",          color: "#10b981", icon: "✅" },
-    false:        { label: "Faux",             color: "#ef4444", icon: "❌" },
-    uncertain:    { label: "Incertain",        color: "#6b7280", icon: "❓" },
-    unverifiable: { label: "Non vérifiable",   color: "#8b5cf6", icon: "🔍" },
+    pending: { label: "En cours...", color: "#f59e0b", icon: "⏳" },
+    verified: { label: "Vérifié", color: "#10b981", icon: "✅" },
+    false: { label: "Faux", color: "#ef4444", icon: "❌" },
+    uncertain: { label: "Incertain", color: "#6b7280", icon: "❓" },
+    unverifiable: { label: "Non vérifiable", color: "#8b5cf6", icon: "🔍" }
   };
 
   const categoryColors: Record<string, string> = {
-    politique:    "#3b82f6",
-    économie:     "#f59e0b",
-    science:      "#06b6d4",
-    santé:        "#10b981",
-    histoire:     "#8b5cf6",
-    sport:        "#f97316",
-    société:      "#ec4899",
-    technologie:  "#6366f1",
-    autre:        "#6b7280",
+    politique: "#3b82f6",
+    économie: "#f59e0b",
+    science: "#06b6d4",
+    santé: "#10b981",
+    histoire: "#8b5cf6",
+    sport: "#f97316",
+    société: "#ec4899",
+    technologie: "#6366f1",
+    autre: "#6b7280"
   };
 
   let config = $derived(statusConfig[claim.status] || statusConfig.pending);
@@ -33,8 +33,10 @@
       `${config.icon} ${config.label} — ${claim.text}`,
       claim.explanation ? `→ ${claim.explanation}` : "",
       claim.counter_claim ? `✔ Réalité : ${claim.counter_claim}` : "",
-      claim.sources.length ? `Sources : ${claim.sources.join(", ")}` : "",
-    ].filter(Boolean).join("\n");
+      claim.sources.length ? `Sources : ${claim.sources.join(", ")}` : ""
+    ]
+      .filter(Boolean)
+      .join("\n");
 
     navigator.clipboard.writeText(lines).then(() => {
       copied = true;
@@ -56,8 +58,7 @@
       <span class="confidence" title="Score de confiance">
         <span
           class="confidence-bar"
-          style="width: {claim.confidence * 10}%; background: {config.color}"
-        ></span>
+          style="width: {claim.confidence * 10}%; background: {config.color}"></span>
         <span class="confidence-value">{claim.confidence}/10</span>
       </span>
     {/if}
@@ -224,7 +225,6 @@
     text-decoration: none;
     overflow: hidden;
     text-overflow: ellipsis;
-    white-space: nowrap;
   }
 
   .sources a:hover {

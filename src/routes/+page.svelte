@@ -1,6 +1,13 @@
 <script lang="ts">
   import { onMount, onDestroy } from "svelte";
-  import { connect, disconnect, sendAudioChunk, onClaim, onRemoveClaim, onTranscript } from "$lib/websocket";
+  import {
+    connect,
+    disconnect,
+    sendAudioChunk,
+    onClaim,
+    onRemoveClaim,
+    onTranscript
+  } from "$lib/websocket";
   import { addOrUpdateClaim, removeClaim } from "$lib/stores/claims";
   import { onAudioChunk, appendTranscript } from "$lib/stores/audio";
   import { activeLayout, type Layout } from "$lib/stores/layout";
@@ -43,7 +50,7 @@
     { key: "ticker", label: "Ticker", icon: "📺" },
     { key: "timeline", label: "Timeline", icon: "⏱" },
     { key: "chat", label: "Chat", icon: "💬" },
-    { key: "radial", label: "Radial", icon: "🍩" },
+    { key: "radial", label: "Radial", icon: "🍩" }
   ];
 </script>
 
@@ -65,9 +72,9 @@
           <button
             class:active={$activeLayout === l.key}
             onclick={() => activeLayout.set(l.key)}
-            title={l.label}
-          >
-            {l.icon} {l.label}
+            title={l.label}>
+            {l.icon}
+            {l.label}
           </button>
         {/each}
       </div>
@@ -170,5 +177,4 @@
     border-color: #5555aa;
     color: #fff;
   }
-
 </style>
