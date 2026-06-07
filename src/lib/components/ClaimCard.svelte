@@ -54,6 +54,17 @@
       <span class="category-badge" style="--cat: {catColor}">{claim.category}</span>
     {/if}
 
+    {#if claim.status !== "pending"}
+      <span
+        class="web-badge"
+        class:used={claim.web_search_used}
+        title={claim.web_search_used
+          ? "Vérifié avec une recherche web"
+          : "Vérifié sans recherche web (connaissances internes)"}>
+        {claim.web_search_used ? "🌐" : "🧠"}
+      </span>
+    {/if}
+
     {#if claim.confidence > 0 && claim.status !== "pending"}
       <span class="confidence" title="Score de confiance">
         <span
@@ -124,6 +135,13 @@
     font-size: 0.72rem;
     font-weight: 500;
     letter-spacing: 0.02em;
+  }
+
+  .web-badge {
+    font-size: 0.78rem;
+    line-height: 1;
+    opacity: 0.85;
+    cursor: help;
   }
 
   .confidence {

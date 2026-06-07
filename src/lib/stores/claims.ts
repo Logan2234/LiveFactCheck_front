@@ -13,6 +13,7 @@ export interface Claim {
   category: string;
   confidence: number;
   counter_claim: string;
+  web_search_used: boolean;
 }
 
 export const claims = writable<Claim[]>([]);
