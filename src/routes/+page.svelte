@@ -14,18 +14,14 @@
   import AudioControls from "$lib/components/AudioControls.svelte";
   import KeyboardShortcuts from "$lib/components/KeyboardShortcuts.svelte";
   import LayoutClassic from "$lib/layouts/LayoutClassic.svelte";
-  import LayoutNewsroom from "$lib/layouts/LayoutNewsroom.svelte";
   import LayoutDashboard from "$lib/layouts/LayoutDashboard.svelte";
   import LayoutTerminal from "$lib/layouts/LayoutTerminal.svelte";
-  import LayoutKanban from "$lib/layouts/LayoutKanban.svelte";
   import LayoutSpotlight from "$lib/layouts/LayoutSpotlight.svelte";
   import LayoutTable from "$lib/layouts/LayoutTable.svelte";
-  import LayoutAnnotation from "$lib/layouts/LayoutAnnotation.svelte";
   import LayoutTrustMeter from "$lib/layouts/LayoutTrustMeter.svelte";
   import LayoutTicker from "$lib/layouts/LayoutTicker.svelte";
   import LayoutTimeline from "$lib/layouts/LayoutTimeline.svelte";
   import LayoutChat from "$lib/layouts/LayoutChat.svelte";
-  import LayoutRadial from "$lib/layouts/LayoutRadial.svelte";
 
   onMount(() => {
     connect();
@@ -39,18 +35,14 @@
 
   const layouts: { key: Layout; label: string; icon: string }[] = [
     { key: "classic", label: "Classic", icon: "⊞" },
-    { key: "newsroom", label: "Newsroom", icon: "📰" },
     { key: "dashboard", label: "Dashboard", icon: "📊" },
     { key: "terminal", label: "Terminal", icon: ">" },
-    { key: "kanban", label: "Kanban", icon: "▦" },
     { key: "spotlight", label: "Spotlight", icon: "◎" },
     { key: "table", label: "Table", icon: "≡" },
-    { key: "annotation", label: "Annotation", icon: "✍" },
     { key: "trustmeter", label: "Trust Meter", icon: "🎯" },
     { key: "ticker", label: "Ticker", icon: "📺" },
     { key: "timeline", label: "Timeline", icon: "⏱" },
     { key: "chat", label: "Chat", icon: "💬" },
-    { key: "radial", label: "Radial", icon: "🍩" }
   ];
 </script>
 
@@ -83,18 +75,12 @@
   </header>
   {#if $activeLayout === "classic"}
     <LayoutClassic />
-  {:else if $activeLayout === "newsroom"}
-    <LayoutNewsroom />
   {:else if $activeLayout === "dashboard"}
     <LayoutDashboard />
   {:else if $activeLayout === "terminal"}
     <LayoutTerminal />
-  {:else if $activeLayout === "kanban"}
-    <LayoutKanban />
   {:else if $activeLayout === "spotlight"}
     <LayoutSpotlight />
-  {:else if $activeLayout === "annotation"}
-    <LayoutAnnotation />
   {:else if $activeLayout === "trustmeter"}
     <LayoutTrustMeter />
   {:else if $activeLayout === "ticker"}
@@ -103,8 +89,6 @@
     <LayoutTimeline />
   {:else if $activeLayout === "chat"}
     <LayoutChat />
-  {:else if $activeLayout === "radial"}
-    <LayoutRadial />
   {:else}
     <LayoutTable />
   {/if}
