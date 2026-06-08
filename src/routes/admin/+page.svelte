@@ -3,6 +3,20 @@
   import type { Claim } from "$lib/stores/claims";
   import ClaimCard from "$lib/components/ClaimCard.svelte";
 
+  interface Usage {
+    input_tokens: number;
+    output_tokens: number;
+    cache_write: number;
+    cache_read: number;
+  }
+
+  interface DebugInfo {
+    turns: number;
+    usage: Usage;
+    model: string;
+    web_search_called: boolean;
+  }
+
   let text = $state("");
   let loading = $state(false);
   let error = $state("");
@@ -10,6 +24,7 @@
   let elapsed = $state(0);
   let menuOpen = $state(false);
   let webSearch = $state(true);
+  let debug = $state<DebugInfo | null>(null);
 
   // Jeux de tests pour couvrir chaque comportement de la pipeline.
   const examples: { label: string; hint: string; text: string }[] = [
@@ -70,10 +85,11 @@
     if (loading || text.trim().length === 0) return;
     error = "";
     claims = null;
+    debug = null;
     loading = true;
     const start = performance.now();
     try {
-      const res = await authFetch("/fact-check", {
+      const res = await authFetch("/admin/model-test", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ text, web_search: webSearch })
@@ -88,12 +104,24 @@
       }
       const data = await res.json();
       claims = (data.claims ?? []).map(toClaim);
+      debug = {
+        turns: data.turns,
+        usage: data.usage,
+        model: data.model,
+        web_search_called: (data.claims ?? []).some((c: any) => c.web_search_used),
+      };
     } catch (err) {
       error = err instanceof Error ? err.message : "Erreur inconnue";
     } finally {
       elapsed = Math.round(performance.now() - start);
       loading = false;
     }
+  }
+
+  function cacheRatio(u: Usage): string {
+    const total = u.input_tokens + u.cache_read;
+    if (!total) return "—";
+    return ((u.cache_read / total) * 100).toFixed(0) + " %";
   }
 </script>
 
@@ -162,6 +190,39 @@
     </h2>
     <span class="elapsed">{(elapsed / 1000).toFixed(1)} s</span>
   </div>
+
+  {#if debug}
+    <div class="debug-bar">
+      <span class="debug-item">
+        <span class="debug-label">Modèle</span>
+        <code>{debug.model}</code>
+      </span>
+      <span class="debug-sep">·</span>
+      <span class="debug-item">
+        <span class="debug-label">Tours</span>
+        <span class="chip {debug.turns === 2 ? 'chip-warn' : 'chip-ok'}">{debug.turns}</span>
+      </span>
+      <span class="debug-sep">·</span>
+      <span class="debug-item">
+        <span class="debug-label">Web search</span>
+        <span class="chip {debug.web_search_called ? 'chip-info' : 'chip-neutral'}">
+          {debug.web_search_called ? "déclenchée" : "non utilisée"}
+        </span>
+      </span>
+      <span class="debug-sep">·</span>
+      <span class="debug-item">
+        <span class="debug-label">Tokens</span>
+        <span>{(debug.usage.input_tokens + debug.usage.output_tokens).toLocaleString()}</span>
+      </span>
+      {#if debug.usage.cache_read > 0}
+        <span class="debug-sep">·</span>
+        <span class="debug-item">
+          <span class="debug-label">Cache hit</span>
+          <span class="cache-hit">{cacheRatio(debug.usage)}</span>
+        </span>
+      {/if}
+    </div>
+  {/if}
 
   {#if claims.length === 0}
     <p class="empty">Aucun fait vérifiable trouvé dans ce texte.</p>
@@ -439,4 +500,51 @@
     border-radius: 10px;
     text-align: center;
   }
+
+  .debug-bar {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.4rem 0.6rem;
+    background: #0e0e1c;
+    border: 1px solid #1e1e2e;
+    border-radius: 8px;
+    padding: 0.45rem 0.85rem;
+    margin-bottom: 0.9rem;
+    font-size: 0.78rem;
+    color: #7a7a98;
+  }
+
+  .debug-item {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+
+  .debug-label {
+    color: #4a4a68;
+  }
+
+  .debug-bar code {
+    font-family: "SF Mono", "Fira Code", monospace;
+    font-size: 0.74rem;
+    color: #8888b8;
+  }
+
+  .debug-sep { color: #2e2e4e; }
+
+  .chip {
+    border-radius: 999px;
+    padding: 0.1rem 0.45rem;
+    font-size: 0.72rem;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .chip-ok      { background: rgba(34,197,94,0.1);   color: #4ade80;  border: 1px solid rgba(34,197,94,0.2); }
+  .chip-warn    { background: rgba(245,158,11,0.1);  color: #fbbf24;  border: 1px solid rgba(245,158,11,0.2); }
+  .chip-info    { background: rgba(99,179,237,0.1);  color: #63b3ed;  border: 1px solid rgba(99,179,237,0.2); }
+  .chip-neutral { background: rgba(100,100,140,0.1); color: #7070a0;  border: 1px solid rgba(100,100,140,0.15); }
+
+  .cache-hit { color: #4ade80; font-weight: 500; }
 </style>

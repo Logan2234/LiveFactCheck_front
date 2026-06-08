@@ -25,7 +25,15 @@
     goto("/login");
   }
 
-  const nav = [{ href: "/admin", label: "Test pipeline", icon: "🧪" }];
+  const nav = [
+    { href: "/admin", label: "Test pipeline", icon: "🧪" },
+    { href: "/admin/benchmark", label: "Benchmark", icon: "⚡" },
+    { href: "/admin/prompt", label: "Prompt & Outil", icon: "📋" },
+    { href: "/admin/system", label: "Système", icon: "🖥️" },
+    { href: "/admin/logs", label: "Logs", icon: "📜" },
+    { href: "/admin/whisper", label: "Test Whisper", icon: "🎙️" },
+    { href: "/admin/ws", label: "WebSockets", icon: "🔌" },
+  ];
 </script>
 
 {#if ready}
