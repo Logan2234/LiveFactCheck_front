@@ -32,7 +32,7 @@
     { href: "/admin/system", label: "Système", icon: "🖥️" },
     { href: "/admin/logs", label: "Logs", icon: "📜" },
     { href: "/admin/whisper", label: "Test Whisper", icon: "🎙️" },
-    { href: "/admin/ws", label: "WebSockets", icon: "🔌" },
+    { href: "/admin/ws", label: "WebSockets", icon: "🔌" }
   ];
 </script>
 

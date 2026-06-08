@@ -42,7 +42,7 @@
     { key: "trustmeter", label: "Trust Meter", icon: "🎯" },
     { key: "ticker", label: "Ticker", icon: "📺" },
     { key: "timeline", label: "Timeline", icon: "⏱" },
-    { key: "chat", label: "Chat", icon: "💬" },
+    { key: "chat", label: "Chat", icon: "💬" }
   ];
 </script>
 

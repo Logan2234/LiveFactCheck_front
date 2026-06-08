@@ -71,8 +71,7 @@
     justify-content: center;
     padding: 1.5rem;
     background:
-      radial-gradient(1200px 600px at 50% -10%, rgba(85, 85, 170, 0.25), transparent 60%),
-      #121220;
+      radial-gradient(1200px 600px at 50% -10%, rgba(85, 85, 170, 0.25), transparent 60%), #121220;
   }
 
   .card {
@@ -140,7 +139,9 @@
     font-size: 0.95rem;
     font-weight: 600;
     cursor: pointer;
-    transition: opacity 0.15s, transform 0.05s;
+    transition:
+      opacity 0.15s,
+      transform 0.05s;
   }
 
   button:hover:not(:disabled) {

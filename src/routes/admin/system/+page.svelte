@@ -14,7 +14,12 @@
   interface ConfigData {
     editable: { anthropic_model: string; log_level: string };
     options: { models: string[]; log_levels: string[] };
-    readonly: { whisper_model: string; whisper_device: string; jwt_expire_hours: number; max_claims_per_chunk: number };
+    readonly: {
+      whisper_model: string;
+      whisper_device: string;
+      jwt_expire_hours: number;
+      max_claims_per_chunk: number;
+    };
     note: string;
   }
 
@@ -32,7 +37,7 @@
 
   let dirty = $derived(
     config !== null &&
-    (draftModel !== config.editable.anthropic_model || draftLevel !== config.editable.log_level)
+      (draftModel !== config.editable.anthropic_model || draftLevel !== config.editable.log_level)
   );
 
   let interval: ReturnType<typeof setInterval>;
@@ -54,7 +59,10 @@
     refreshing = true;
     try {
       const res = await authFetch("/admin/health");
-      if (res.status === 401) { clearToken(); return; }
+      if (res.status === 401) {
+        clearToken();
+        return;
+      }
       if (!res.ok) throw new Error(`Erreur HTTP ${res.status}`);
       health = await res.json();
       lastRefresh = new Date();
@@ -71,9 +79,12 @@
     try {
       const [hRes, cRes] = await Promise.all([
         authFetch("/admin/health"),
-        authFetch("/admin/config"),
+        authFetch("/admin/config")
       ]);
-      if (hRes.status === 401 || cRes.status === 401) { clearToken(); return; }
+      if (hRes.status === 401 || cRes.status === 401) {
+        clearToken();
+        return;
+      }
       if (!hRes.ok) throw new Error(`Health: erreur ${hRes.status}`);
       if (!cRes.ok) throw new Error(`Config: erreur ${cRes.status}`);
       [health, config] = await Promise.all([hRes.json(), cRes.json()]);
@@ -97,9 +108,12 @@
       const res = await authFetch("/admin/config", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(patch),
+        body: JSON.stringify(patch)
       });
-      if (res.status === 401) { clearToken(); return; }
+      if (res.status === 401) {
+        clearToken();
+        return;
+      }
       if (!res.ok) {
         const detail = await res.json().catch(() => null);
         throw new Error(detail?.detail ?? `Erreur ${res.status}`);
@@ -166,8 +180,14 @@
         <span class="dot dot-ok"></span>Serveur
       </div>
       <dl>
-        <div class="row"><dt>Uptime</dt><dd class="highlight">{formatUptime(health.uptime_seconds)}</dd></div>
-        <div class="row"><dt>Python</dt><dd>{health.python_version}</dd></div>
+        <div class="row">
+          <dt>Uptime</dt>
+          <dd class="highlight">{formatUptime(health.uptime_seconds)}</dd>
+        </div>
+        <div class="row">
+          <dt>Python</dt>
+          <dd>{health.python_version}</dd>
+        </div>
       </dl>
     </div>
 
@@ -177,8 +197,14 @@
         <span class="dot {health.whisper.loaded ? 'dot-ok' : 'dot-warn'}"></span>Whisper
       </div>
       <dl>
-        <div class="row"><dt>Modèle</dt><dd class="highlight">{health.whisper.model}</dd></div>
-        <div class="row"><dt>Device</dt><dd>{health.whisper.device}</dd></div>
+        <div class="row">
+          <dt>Modèle</dt>
+          <dd class="highlight">{health.whisper.model}</dd>
+        </div>
+        <div class="row">
+          <dt>Device</dt>
+          <dd>{health.whisper.device}</dd>
+        </div>
         <div class="row">
           <dt>Chargé</dt>
           <dd>
@@ -219,8 +245,14 @@
           <span class="dot dot-ok"></span>Mémoire (processus)
         </div>
         <dl>
-          <div class="row"><dt>RSS</dt><dd class="highlight">{health.memory.rss_mb} Mo</dd></div>
-          <div class="row"><dt>VMS</dt><dd>{health.memory.vms_mb} Mo</dd></div>
+          <div class="row">
+            <dt>RSS</dt>
+            <dd class="highlight">{health.memory.rss_mb} Mo</dd>
+          </div>
+          <div class="row">
+            <dt>VMS</dt>
+            <dd>{health.memory.vms_mb} Mo</dd>
+          </div>
         </dl>
       </div>
     {/if}
@@ -271,9 +303,18 @@
     <div class="card settings-card">
       <div class="card-title">Lecture seule</div>
       <dl>
-        <div class="row"><dt>Modèle Whisper</dt><dd>{config.readonly.whisper_model}</dd></div>
-        <div class="row"><dt>Device Whisper</dt><dd>{config.readonly.whisper_device}</dd></div>
-        <div class="row"><dt>JWT expire</dt><dd>{config.readonly.jwt_expire_hours} h</dd></div>
+        <div class="row">
+          <dt>Modèle Whisper</dt>
+          <dd>{config.readonly.whisper_model}</dd>
+        </div>
+        <div class="row">
+          <dt>Device Whisper</dt>
+          <dd>{config.readonly.whisper_device}</dd>
+        </div>
+        <div class="row">
+          <dt>JWT expire</dt>
+          <dd>{config.readonly.jwt_expire_hours} h</dd>
+        </div>
         <div class="row">
           <dt>Max claims / chunk</dt>
           <dd>
@@ -296,8 +337,15 @@
     flex-wrap: wrap;
   }
 
-  header h1 { font-size: 1.4rem; margin: 0 0 0.3rem; }
-  header p { color: #8888a0; font-size: 0.88rem; margin: 0; }
+  header h1 {
+    font-size: 1.4rem;
+    margin: 0 0 0.3rem;
+  }
+  header p {
+    color: #8888a0;
+    font-size: 0.88rem;
+    margin: 0;
+  }
 
   .header-right {
     display: flex;
@@ -324,8 +372,14 @@
     transition: all 0.15s;
   }
 
-  .refresh-btn:hover:not(:disabled) { background: #26263a; color: #e0e0f0; }
-  .refresh-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .refresh-btn:hover:not(:disabled) {
+    background: #26263a;
+    color: #e0e0f0;
+  }
+  .refresh-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 
   .loading {
     display: flex;
@@ -346,11 +400,15 @@
     flex-shrink: 0;
   }
 
-  @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
 
   .error {
-    background: rgba(239,68,68,0.1);
-    border: 1px solid rgba(239,68,68,0.35);
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.35);
     color: #fca5a5;
     border-radius: 8px;
     padding: 0.7rem 0.9rem;
@@ -358,7 +416,11 @@
     margin-bottom: 1rem;
   }
 
-  .error.small { padding: 0.45rem 0.7rem; font-size: 0.8rem; margin: 0.5rem 0 0; }
+  .error.small {
+    padding: 0.45rem 0.7rem;
+    font-size: 0.8rem;
+    margin: 0.5rem 0 0;
+  }
 
   .section-label {
     font-size: 0.72rem;
@@ -389,7 +451,9 @@
     padding: 1rem 1.1rem;
   }
 
-  .settings-card { padding: 1.1rem 1.2rem; }
+  .settings-card {
+    padding: 1.1rem 1.2rem;
+  }
 
   .card-title {
     display: flex;
@@ -410,11 +474,25 @@
     flex-shrink: 0;
   }
 
-  .dot-ok   { background: #22c55e; box-shadow: 0 0 6px rgba(34,197,94,0.5); }
-  .dot-warn { background: #f59e0b; box-shadow: 0 0 6px rgba(245,158,11,0.5); }
-  .dot-err  { background: #ef4444; box-shadow: 0 0 6px rgba(239,68,68,0.5); }
+  .dot-ok {
+    background: #22c55e;
+    box-shadow: 0 0 6px rgba(34, 197, 94, 0.5);
+  }
+  .dot-warn {
+    background: #f59e0b;
+    box-shadow: 0 0 6px rgba(245, 158, 11, 0.5);
+  }
+  .dot-err {
+    background: #ef4444;
+    box-shadow: 0 0 6px rgba(239, 68, 68, 0.5);
+  }
 
-  dl { margin: 0; display: flex; flex-direction: column; gap: 0.45rem; }
+  dl {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+  }
 
   .row {
     display: flex;
@@ -424,7 +502,11 @@
     min-width: 0;
   }
 
-  dt { font-size: 0.78rem; color: #7a7a98; flex-shrink: 0; }
+  dt {
+    font-size: 0.78rem;
+    color: #7a7a98;
+    flex-shrink: 0;
+  }
 
   dd {
     font-size: 0.8rem;
@@ -438,7 +520,10 @@
     justify-content: flex-end;
   }
 
-  .highlight { color: #e0e0f8; font-weight: 600; }
+  .highlight {
+    color: #e0e0f8;
+    font-weight: 600;
+  }
 
   .badge {
     border-radius: 999px;
@@ -448,9 +533,21 @@
     white-space: nowrap;
   }
 
-  .badge-ok   { background: rgba(34,197,94,0.12);  color: #4ade80; border: 1px solid rgba(34,197,94,0.25); }
-  .badge-warn { background: rgba(245,158,11,0.12); color: #fbbf24; border: 1px solid rgba(245,158,11,0.25); }
-  .badge-err  { background: rgba(239,68,68,0.12);  color: #f87171; border: 1px solid rgba(239,68,68,0.25); }
+  .badge-ok {
+    background: rgba(34, 197, 94, 0.12);
+    color: #4ade80;
+    border: 1px solid rgba(34, 197, 94, 0.25);
+  }
+  .badge-warn {
+    background: rgba(245, 158, 11, 0.12);
+    color: #fbbf24;
+    border: 1px solid rgba(245, 158, 11, 0.25);
+  }
+  .badge-err {
+    background: rgba(239, 68, 68, 0.12);
+    color: #f87171;
+    border: 1px solid rgba(239, 68, 68, 0.25);
+  }
 
   .key-hint {
     font-family: "SF Mono", "Fira Code", monospace;
@@ -461,8 +558,8 @@
   .badge-inactive {
     font-size: 0.68rem;
     color: #5a5a78;
-    background: rgba(100,100,140,0.12);
-    border: 1px solid rgba(100,100,140,0.2);
+    background: rgba(100, 100, 140, 0.12);
+    border: 1px solid rgba(100, 100, 140, 0.2);
     border-radius: 999px;
     padding: 0.08rem 0.4rem;
   }
@@ -475,7 +572,11 @@
     margin-bottom: 0.9rem;
   }
 
-  label { font-size: 0.78rem; color: #9a9ab8; font-weight: 500; }
+  label {
+    font-size: 0.78rem;
+    color: #9a9ab8;
+    font-weight: 500;
+  }
 
   select {
     background: #0e0e1c;
@@ -489,10 +590,19 @@
     appearance: auto;
   }
 
-  select:focus { outline: none; border-color: #6a6acc; }
+  select:focus {
+    outline: none;
+    border-color: #6a6acc;
+  }
 
-  .field-hint { font-size: 0.72rem; color: #5a5a78; }
-  .field-hint code { font-family: "SF Mono", "Fira Code", monospace; color: #7a7aaa; }
+  .field-hint {
+    font-size: 0.72rem;
+    color: #5a5a78;
+  }
+  .field-hint code {
+    font-family: "SF Mono", "Fira Code", monospace;
+    color: #7a7aaa;
+  }
 
   .actions {
     display: flex;
@@ -510,20 +620,35 @@
     transition: all 0.15s;
   }
 
-  button:disabled { opacity: 0.4; cursor: not-allowed; }
+  button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
 
-  .primary { background: linear-gradient(135deg, #5a5ad0, #7a4ad0); color: #fff; border: none; }
-  .primary:hover:not(:disabled) { opacity: 0.88; }
+  .primary {
+    background: linear-gradient(135deg, #5a5ad0, #7a4ad0);
+    color: #fff;
+    border: none;
+  }
+  .primary:hover:not(:disabled) {
+    opacity: 0.88;
+  }
 
-  .ghost { background: #1e1e30; color: #b0b0c8; border: 1px solid #2e2e3e; }
-  .ghost:hover:not(:disabled) { background: #26263a; }
+  .ghost {
+    background: #1e1e30;
+    color: #b0b0c8;
+    border: 1px solid #2e2e3e;
+  }
+  .ghost:hover:not(:disabled) {
+    background: #26263a;
+  }
 
   .note {
     margin: 0.85rem 0 0;
     font-size: 0.75rem;
     color: #7a6a3a;
-    background: rgba(245,158,11,0.07);
-    border: 1px solid rgba(245,158,11,0.18);
+    background: rgba(245, 158, 11, 0.07);
+    border: 1px solid rgba(245, 158, 11, 0.18);
     border-radius: 6px;
     padding: 0.45rem 0.7rem;
   }

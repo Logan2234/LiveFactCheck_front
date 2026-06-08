@@ -68,8 +68,14 @@
     withoutWeb = { claims: null, elapsed: 0, error: "" };
 
     const [r1, r2] = await Promise.allSettled([fetchSide(true), fetchSide(false)]);
-    withWeb = r1.status === "fulfilled" ? r1.value : { claims: null, elapsed: 0, error: "Erreur inattendue" };
-    withoutWeb = r2.status === "fulfilled" ? r2.value : { claims: null, elapsed: 0, error: "Erreur inattendue" };
+    withWeb =
+      r1.status === "fulfilled"
+        ? r1.value
+        : { claims: null, elapsed: 0, error: "Erreur inattendue" };
+    withoutWeb =
+      r2.status === "fulfilled"
+        ? r2.value
+        : { claims: null, elapsed: 0, error: "Erreur inattendue" };
     loading = false;
     ran = true;
   }
@@ -94,11 +100,7 @@
 </header>
 
 <form onsubmit={run}>
-  <textarea
-    bind:value={text}
-    rows="5"
-    placeholder="Colle un texte à analyser…"
-    disabled={loading}
+  <textarea bind:value={text} rows="5" placeholder="Colle un texte à analyser…" disabled={loading}
   ></textarea>
   <div class="form-actions">
     <button type="button" class="ghost" onclick={() => (text = "")} disabled={!text || loading}>
@@ -127,16 +129,14 @@
     <div class="delta-bar">{delta()}</div>
   {/if}
   <div class="columns">
-    {#each [
-      { label: "🌐 Avec web search", side: withWeb },
-      { label: "🧠 Sans web search", side: withoutWeb }
-    ] as { label, side }}
+    {#each [{ label: "🌐 Avec web search", side: withWeb }, { label: "🧠 Sans web search", side: withoutWeb }] as { label, side }}
       <div class="col">
         <div class="col-header">
           {label}
           <span class="chip">{(side.elapsed / 1000).toFixed(1)} s</span>
           {#if side.claims !== null}
-            <span class="chip">{side.claims.length} claim{side.claims.length !== 1 ? "s" : ""}</span>
+            <span class="chip"
+              >{side.claims.length} claim{side.claims.length !== 1 ? "s" : ""}</span>
           {/if}
         </div>
         {#if side.error}
@@ -213,7 +213,9 @@
     font-weight: 600;
     cursor: pointer;
     border: none;
-    transition: opacity 0.15s, background 0.15s;
+    transition:
+      opacity 0.15s,
+      background 0.15s;
   }
 
   button[type="submit"] {

@@ -34,15 +34,23 @@
 
   function formatTime(ts: number): string {
     return new Date(ts * 1000).toLocaleTimeString("fr-FR", {
-      hour: "2-digit", minute: "2-digit", second: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit"
     });
   }
 
   async function poll() {
     try {
       const res = await authFetch("/admin/ws/status");
-      if (res.status === 401) { clearToken(); return; }
-      if (!res.ok) { error = `Erreur ${res.status}`; return; }
+      if (res.status === 401) {
+        clearToken();
+        return;
+      }
+      if (!res.ok) {
+        error = `Erreur ${res.status}`;
+        return;
+      }
       data = await res.json();
       error = "";
       lastPoll = new Date();
@@ -118,7 +126,8 @@
               <span class="dot dot-live"></span>
               <code>{session.id.slice(0, 8)}</code>
             </div>
-            <span class="connected-since">connecté depuis {formatDuration(session.connected_at)}</span>
+            <span class="connected-since"
+              >connecté depuis {formatDuration(session.connected_at)}</span>
           </div>
 
           <dl>
@@ -154,7 +163,7 @@
             </div>
             <div class="row">
               <dt>Inactivité</dt>
-              <dd class="{session.idle_s > 30 ? 'idle-warn' : ''}">
+              <dd class={session.idle_s > 30 ? "idle-warn" : ""}>
                 {session.idle_s} s
               </dd>
             </div>
@@ -163,7 +172,8 @@
           {#if session.last_transcript}
             <div class="last-transcript">
               <span class="lt-label">Dernier transcript</span>
-              <span class="lt-text">{session.last_transcript}{session.last_transcript.length >= 120 ? "…" : ""}</span>
+              <span class="lt-text"
+                >{session.last_transcript}{session.last_transcript.length >= 120 ? "…" : ""}</span>
             </div>
           {/if}
         </div>
@@ -182,8 +192,15 @@
     flex-wrap: wrap;
   }
 
-  header h1 { font-size: 1.4rem; margin: 0 0 0.3rem; }
-  header p { color: #8888a0; font-size: 0.88rem; margin: 0; }
+  header h1 {
+    font-size: 1.4rem;
+    margin: 0 0 0.3rem;
+  }
+  header p {
+    color: #8888a0;
+    font-size: 0.88rem;
+    margin: 0;
+  }
 
   .last-poll {
     font-size: 0.75rem;
@@ -194,8 +211,8 @@
   }
 
   .error {
-    background: rgba(239,68,68,0.1);
-    border: 1px solid rgba(239,68,68,0.35);
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.35);
     color: #fca5a5;
     border-radius: 8px;
     padding: 0.7rem 0.9rem;
@@ -221,7 +238,10 @@
     min-width: 130px;
   }
 
-  .metric-label { font-size: 0.72rem; color: #7a7a98; }
+  .metric-label {
+    font-size: 0.72rem;
+    color: #7a7a98;
+  }
 
   .metric-val {
     font-size: 1rem;
@@ -232,22 +252,30 @@
     gap: 0.4rem;
   }
 
-  .metric-val.live { color: #4ade80; }
+  .metric-val.live {
+    color: #4ade80;
+  }
 
   .pulse {
     width: 8px;
     height: 8px;
     background: #22c55e;
     border-radius: 50%;
-    box-shadow: 0 0 0 0 rgba(34,197,94,0.6);
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.6);
     animation: pulse 1.4s ease-out infinite;
     flex-shrink: 0;
   }
 
   @keyframes pulse {
-    0%   { box-shadow: 0 0 0 0 rgba(34,197,94,0.6); }
-    70%  { box-shadow: 0 0 0 8px rgba(34,197,94,0); }
-    100% { box-shadow: 0 0 0 0 rgba(34,197,94,0); }
+    0% {
+      box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.6);
+    }
+    70% {
+      box-shadow: 0 0 0 8px rgba(34, 197, 94, 0);
+    }
+    100% {
+      box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
+    }
   }
 
   .empty {
@@ -264,7 +292,9 @@
     text-align: center;
   }
 
-  .empty-icon { font-size: 1.8rem; }
+  .empty-icon {
+    font-size: 1.8rem;
+  }
 
   .sessions {
     display: grid;
@@ -313,11 +343,16 @@
     height: 8px;
     border-radius: 50%;
     background: #22c55e;
-    box-shadow: 0 0 6px rgba(34,197,94,0.5);
+    box-shadow: 0 0 6px rgba(34, 197, 94, 0.5);
     flex-shrink: 0;
   }
 
-  dl { margin: 0; display: flex; flex-direction: column; gap: 0.4rem; }
+  dl {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
 
   .row {
     display: flex;
@@ -326,17 +361,29 @@
     gap: 0.5rem;
   }
 
-  dt { font-size: 0.78rem; color: #7a7a98; flex-shrink: 0; }
-  dd { font-size: 0.82rem; color: #b0b0c8; margin: 0; }
+  dt {
+    font-size: 0.78rem;
+    color: #7a7a98;
+    flex-shrink: 0;
+  }
+  dd {
+    font-size: 0.82rem;
+    color: #b0b0c8;
+    margin: 0;
+  }
 
   .mono {
     font-family: "SF Mono", "Fira Code", monospace;
     font-size: 0.76rem;
   }
 
-  .dim { color: #3a3a5a; }
+  .dim {
+    color: #3a3a5a;
+  }
 
-  .idle-warn { color: #f59e0b; }
+  .idle-warn {
+    color: #f59e0b;
+  }
 
   .badge {
     border-radius: 999px;
@@ -347,9 +394,9 @@
   }
 
   .badge-active {
-    background: rgba(99,179,237,0.12);
+    background: rgba(99, 179, 237, 0.12);
     color: #63b3ed;
-    border: 1px solid rgba(99,179,237,0.25);
+    border: 1px solid rgba(99, 179, 237, 0.25);
   }
 
   .last-transcript {

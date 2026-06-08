@@ -21,24 +21,35 @@
   let logBox: HTMLDivElement;
 
   const LEVELS = ["ALL", "DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"];
-  const LEVEL_ORDER: Record<string, number> = { DEBUG: 0, INFO: 1, WARNING: 2, ERROR: 3, CRITICAL: 4 };
+  const LEVEL_ORDER: Record<string, number> = {
+    DEBUG: 0,
+    INFO: 1,
+    WARNING: 2,
+    ERROR: 3,
+    CRITICAL: 4
+  };
 
   let visible = $derived(
     filterLevel === "ALL"
       ? entries
-      : entries.filter(e => (LEVEL_ORDER[e.level] ?? 0) >= (LEVEL_ORDER[filterLevel] ?? 0))
+      : entries.filter((e) => (LEVEL_ORDER[e.level] ?? 0) >= (LEVEL_ORDER[filterLevel] ?? 0))
   );
 
   function formatTime(ts: number): string {
     return new Date(ts * 1000).toLocaleTimeString("fr-FR", {
-      hour: "2-digit", minute: "2-digit", second: "2-digit"
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit"
     });
   }
 
   async function poll() {
     try {
       const res = await authFetch(`/admin/logs?after=${lastId}`);
-      if (res.status === 401) { clearToken(); return; }
+      if (res.status === 401) {
+        clearToken();
+        return;
+      }
       if (!res.ok) return;
       const data = await res.json();
       if (data.entries.length === 0) return;
@@ -105,7 +116,9 @@
 
 <div class="log-box" bind:this={logBox}>
   {#if visible.length === 0}
-    <div class="empty">Aucun log — les messages apparaîtront dès que le backend émet quelque chose.</div>
+    <div class="empty">
+      Aucun log — les messages apparaîtront dès que le backend émet quelque chose.
+    </div>
   {:else}
     {#each visible as entry (entry.id)}
       <div class="line level-{entry.level.toLowerCase()}">
@@ -260,17 +273,48 @@
     background: rgba(255, 255, 255, 0.03);
   }
 
-  .ts    { color: #3a3a5a; white-space: nowrap; }
-  .lvl   { font-weight: 700; white-space: nowrap; }
-  .logger { color: #5a5a88; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .msg   { color: #c0c0d8; word-break: break-all; white-space: pre-wrap; }
+  .ts {
+    color: #3a3a5a;
+    white-space: nowrap;
+  }
+  .lvl {
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .logger {
+    color: #5a5a88;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .msg {
+    color: #c0c0d8;
+    word-break: break-all;
+    white-space: pre-wrap;
+  }
 
-  .level-debug    .lvl { color: #5a5a88; }
-  .level-info     .lvl { color: #4a9eff; }
-  .level-warning  .lvl { color: #f59e0b; }
-  .level-warning  .msg { color: #d4a850; }
-  .level-error    .lvl { color: #ef4444; }
-  .level-error    .msg { color: #fca5a5; }
-  .level-critical .lvl { color: #ff2020; }
-  .level-critical .msg { color: #ff8080; }
+  .level-debug .lvl {
+    color: #5a5a88;
+  }
+  .level-info .lvl {
+    color: #4a9eff;
+  }
+  .level-warning .lvl {
+    color: #f59e0b;
+  }
+  .level-warning .msg {
+    color: #d4a850;
+  }
+  .level-error .lvl {
+    color: #ef4444;
+  }
+  .level-error .msg {
+    color: #fca5a5;
+  }
+  .level-critical .lvl {
+    color: #ff2020;
+  }
+  .level-critical .msg {
+    color: #ff8080;
+  }
 </style>

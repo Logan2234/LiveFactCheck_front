@@ -108,7 +108,7 @@
         turns: data.turns,
         usage: data.usage,
         model: data.model,
-        web_search_called: (data.claims ?? []).some((c: any) => c.web_search_used),
+        web_search_called: (data.claims ?? []).some((c: any) => c.web_search_used)
       };
     } catch (err) {
       error = err instanceof Error ? err.message : "Erreur inconnue";
@@ -135,10 +135,7 @@
 </header>
 
 <form onsubmit={run}>
-  <textarea
-    bind:value={text}
-    rows="6"
-    placeholder="Colle ou écris un texte à analyser…"></textarea>
+  <textarea bind:value={text} rows="6" placeholder="Colle ou écris un texte à analyser…"></textarea>
 
   <div class="actions">
     <div class="dropdown">
@@ -146,7 +143,11 @@
         Exemples ▾
       </button>
       {#if menuOpen}
-        <button type="button" class="menu-backdrop" aria-label="Fermer" onclick={() => (menuOpen = false)}></button>
+        <button
+          type="button"
+          class="menu-backdrop"
+          aria-label="Fermer"
+          onclick={() => (menuOpen = false)}></button>
         <ul class="menu">
           {#each examples as ex}
             <li>
@@ -304,7 +305,9 @@
     border-radius: 999px;
     background: #2e2e3e;
     border: 1px solid #3a3a4e;
-    transition: background 0.15s, border-color 0.15s;
+    transition:
+      background 0.15s,
+      border-color 0.15s;
     flex-shrink: 0;
   }
 
@@ -316,7 +319,9 @@
     height: 16px;
     border-radius: 50%;
     background: #b0b0c8;
-    transition: transform 0.15s, background 0.15s;
+    transition:
+      transform 0.15s,
+      background 0.15s;
   }
 
   .switch input:checked + .track {
@@ -408,7 +413,9 @@
     font-weight: 600;
     cursor: pointer;
     border: none;
-    transition: opacity 0.15s, background 0.15s;
+    transition:
+      opacity 0.15s,
+      background 0.15s;
   }
 
   button[type="submit"] {
@@ -531,7 +538,9 @@
     color: #8888b8;
   }
 
-  .debug-sep { color: #2e2e4e; }
+  .debug-sep {
+    color: #2e2e4e;
+  }
 
   .chip {
     border-radius: 999px;
@@ -541,10 +550,29 @@
     white-space: nowrap;
   }
 
-  .chip-ok      { background: rgba(34,197,94,0.1);   color: #4ade80;  border: 1px solid rgba(34,197,94,0.2); }
-  .chip-warn    { background: rgba(245,158,11,0.1);  color: #fbbf24;  border: 1px solid rgba(245,158,11,0.2); }
-  .chip-info    { background: rgba(99,179,237,0.1);  color: #63b3ed;  border: 1px solid rgba(99,179,237,0.2); }
-  .chip-neutral { background: rgba(100,100,140,0.1); color: #7070a0;  border: 1px solid rgba(100,100,140,0.15); }
+  .chip-ok {
+    background: rgba(34, 197, 94, 0.1);
+    color: #4ade80;
+    border: 1px solid rgba(34, 197, 94, 0.2);
+  }
+  .chip-warn {
+    background: rgba(245, 158, 11, 0.1);
+    color: #fbbf24;
+    border: 1px solid rgba(245, 158, 11, 0.2);
+  }
+  .chip-info {
+    background: rgba(99, 179, 237, 0.1);
+    color: #63b3ed;
+    border: 1px solid rgba(99, 179, 237, 0.2);
+  }
+  .chip-neutral {
+    background: rgba(100, 100, 140, 0.1);
+    color: #7070a0;
+    border: 1px solid rgba(100, 100, 140, 0.15);
+  }
 
-  .cache-hit { color: #4ade80; font-weight: 500; }
+  .cache-hit {
+    color: #4ade80;
+    font-weight: 500;
+  }
 </style>

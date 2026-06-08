@@ -37,10 +37,8 @@
 
 {#if open}
   <div class="overlay">
-    <button
-      class="backdrop"
-      aria-label="Fermer"
-      onclick={closeOnBackdrop ? close : undefined}></button>
+    <button class="backdrop" aria-label="Fermer" onclick={closeOnBackdrop ? close : undefined}
+    ></button>
     <div
       class="modal"
       role="dialog"

@@ -18,7 +18,10 @@
   async function load() {
     try {
       const res = await authFetch("/admin/prompt");
-      if (res.status === 401) { clearToken(); return; }
+      if (res.status === 401) {
+        clearToken();
+        return;
+      }
       if (!res.ok) throw new Error(`Erreur ${res.status}`);
       data = await res.json();
     } catch (e) {
@@ -60,10 +63,7 @@
   <section>
     <div class="section-header">
       <h2>Prompt système</h2>
-      <button
-        class="copy-btn"
-        onclick={() => copyToClipboard("prompt", data!.system_prompt)}
-      >
+      <button class="copy-btn" onclick={() => copyToClipboard("prompt", data!.system_prompt)}>
         {copied === "prompt" ? "✓ Copié" : "Copier"}
       </button>
     </div>
@@ -75,8 +75,7 @@
       <h2>Outil <code>submit_claims</code></h2>
       <button
         class="copy-btn"
-        onclick={() => copyToClipboard("claim", JSON.stringify(data!.claim_tool, null, 2))}
-      >
+        onclick={() => copyToClipboard("claim", JSON.stringify(data!.claim_tool, null, 2))}>
         {copied === "claim" ? "✓ Copié" : "Copier JSON"}
       </button>
     </div>
@@ -94,8 +93,7 @@
       <h2>Outil <code>web_search</code></h2>
       <button
         class="copy-btn"
-        onclick={() => copyToClipboard("ws", JSON.stringify(data!.web_search_tool, null, 2))}
-      >
+        onclick={() => copyToClipboard("ws", JSON.stringify(data!.web_search_tool, null, 2))}>
         {copied === "ws" ? "✓ Copié" : "Copier JSON"}
       </button>
     </div>
@@ -134,7 +132,9 @@
   }
 
   @keyframes spin {
-    to { transform: rotate(360deg); }
+    to {
+      transform: rotate(360deg);
+    }
   }
 
   .model-badge {
@@ -208,10 +208,26 @@
     border: 1px solid transparent;
   }
 
-  .status-chip.status-verified   { background: rgba(34,197,94,0.12);  color: #4ade80; border-color: rgba(34,197,94,0.3); }
-  .status-chip.status-false      { background: rgba(239,68,68,0.12);  color: #f87171; border-color: rgba(239,68,68,0.3); }
-  .status-chip.status-uncertain  { background: rgba(245,158,11,0.12); color: #fbbf24; border-color: rgba(245,158,11,0.3); }
-  .status-chip.status-unverifiable { background: rgba(107,114,128,0.15); color: #9ca3af; border-color: rgba(107,114,128,0.3); }
+  .status-chip.status-verified {
+    background: rgba(34, 197, 94, 0.12);
+    color: #4ade80;
+    border-color: rgba(34, 197, 94, 0.3);
+  }
+  .status-chip.status-false {
+    background: rgba(239, 68, 68, 0.12);
+    color: #f87171;
+    border-color: rgba(239, 68, 68, 0.3);
+  }
+  .status-chip.status-uncertain {
+    background: rgba(245, 158, 11, 0.12);
+    color: #fbbf24;
+    border-color: rgba(245, 158, 11, 0.3);
+  }
+  .status-chip.status-unverifiable {
+    background: rgba(107, 114, 128, 0.15);
+    color: #9ca3af;
+    border-color: rgba(107, 114, 128, 0.3);
+  }
 
   .code-block {
     background: #0e0e1c;
