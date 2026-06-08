@@ -52,17 +52,24 @@
 
 <KeyboardShortcuts />
 
-<main>
-  <header>
-    <div class="header-left">
-      <h1>🔍 LiveFactChecker</h1>
-      <p class="subtitle">Vérification de faits en temps réel</p>
+<main class="mx-auto max-w-300 p-8">
+  <header class="mb-6 flex flex-wrap items-center justify-between gap-4">
+    <div>
+      <h1 class="m-0 text-2xl">🔍 LiveFactChecker</h1>
+      <p class="mt-[0.1rem] mb-0 text-[0.85rem] text-ash-600">
+        Vérification de faits en temps réel
+      </p>
     </div>
-    <div class="header-right">
-      <div class="layout-switcher">
+    <div class="flex flex-col items-end gap-2">
+      <div class="flex gap-1">
         {#each layouts as l}
           <button
-            class:active={$activeLayout === l.key}
+            class={[
+              "cursor-pointer rounded-md border px-[0.65rem] py-[0.3rem] text-xs transition-all duration-150",
+              $activeLayout === l.key
+                ? "border-accent-700 bg-ink-700 text-white"
+                : "border-ink-720 bg-ink-820 text-ash-600 hover:border-ash-700 hover:text-ash-300"
+            ]}
             onclick={() => activeLayout.set(l.key)}
             title={l.label}>
             {l.icon}
@@ -100,65 +107,5 @@
     background: #121220;
     color: #e0e0e0;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  }
-
-  main {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 2rem;
-  }
-
-  header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 1.5rem;
-    gap: 1rem;
-    flex-wrap: wrap;
-  }
-
-  h1 {
-    font-size: 1.5rem;
-    margin: 0;
-  }
-
-  .subtitle {
-    color: #888;
-    margin: 0.1rem 0 0;
-    font-size: 0.85rem;
-  }
-
-  .header-right {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 0.5rem;
-  }
-
-  .layout-switcher {
-    display: flex;
-    gap: 0.25rem;
-  }
-
-  .layout-switcher button {
-    background: #1e1e2e;
-    border: 1px solid #2e2e3e;
-    color: #888;
-    border-radius: 6px;
-    padding: 0.3rem 0.65rem;
-    font-size: 0.75rem;
-    cursor: pointer;
-    transition: all 0.15s;
-  }
-
-  .layout-switcher button:hover {
-    border-color: #555;
-    color: #ddd;
-  }
-
-  .layout-switcher button.active {
-    background: #2e2e4e;
-    border-color: #5555aa;
-    color: #fff;
   }
 </style>

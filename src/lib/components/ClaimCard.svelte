@@ -45,19 +45,23 @@
   }
 </script>
 
-<div class="claim-card" style="--status-color: {config.color}">
-  <div class="claim-header">
-    <span class="status-icon">{config.icon}</span>
-    <span class="status-label" style="color: {config.color}">{config.label}</span>
+<div
+  class="mb-3 rounded-lg border-l-4 bg-ink-820 px-4 py-[0.85rem]"
+  style="border-left-color: {config.color}">
+  <div class="mb-2 flex flex-wrap items-center gap-[0.4rem]">
+    <span>{config.icon}</span>
+    <span class="text-[0.85rem] font-semibold" style="color: {config.color}">{config.label}</span>
 
     {#if claim.category && claim.status !== "pending"}
-      <span class="category-badge" style="--cat: {catColor}">{claim.category}</span>
+      <span
+        class="rounded-full px-[0.55rem] py-[0.1rem] text-[0.72rem] font-medium tracking-[0.02em]"
+        style="background: color-mix(in srgb, {catColor} 20%, transparent); border: 1px solid color-mix(in srgb, {catColor} 50%, transparent); color: {catColor}"
+        >{claim.category}</span>
     {/if}
 
     {#if claim.status !== "pending"}
       <span
-        class="web-badge"
-        class:used={claim.web_search_used}
+        class="cursor-help text-[0.78rem] leading-none opacity-[0.85]"
         title={claim.web_search_used
           ? "Vérifié avec une recherche web"
           : "Vérifié sans recherche web (connaissances internes)"}>
@@ -66,186 +70,51 @@
     {/if}
 
     {#if claim.confidence > 0 && claim.status !== "pending"}
-      <span class="confidence" title="Score de confiance">
+      <span class="ml-[0.1rem] flex items-center gap-[0.3rem]" title="Score de confiance">
         <span
-          class="confidence-bar"
+          class="inline-block h-1 max-w-12 min-w-1 rounded-xs opacity-80"
           style="width: {claim.confidence * 10}%; background: {config.color}"></span>
-        <span class="confidence-value">{claim.confidence}/10</span>
+        <span class="text-[0.72rem] tabular-nums text-ash-650">{claim.confidence}/10</span>
       </span>
     {/if}
 
-    <span class="timestamp">{new Date(claim.timestamp).toLocaleTimeString()}</span>
+    <span class="ml-auto text-[0.78rem] whitespace-nowrap tabular-nums text-ash-600"
+      >{new Date(claim.timestamp).toLocaleTimeString()}</span>
 
-    <button class="copy-btn" onclick={copy} title="Copier ce claim" aria-label="Copier">
+    <button
+      class="shrink-0 rounded-sm border border-transparent bg-transparent px-[0.35rem] py-[0.1rem] text-[0.85rem] leading-none text-ash-700 transition-all duration-150 hover:border-ink-680 hover:text-ash-500"
+      onclick={copy}
+      title="Copier ce claim"
+      aria-label="Copier">
       {copied ? "✓" : "⎘"}
     </button>
   </div>
 
-  <p class="claim-text">« {claim.text} »</p>
+  <p class="my-[0.2rem] text-[0.92rem] leading-normal text-fog-250 italic">« {claim.text} »</p>
 
   {#if claim.explanation}
-    <p class="explanation">{claim.explanation}</p>
+    <p class="mt-[0.45rem] text-sm leading-normal text-ash-500">{claim.explanation}</p>
   {/if}
 
   {#if claim.counter_claim}
-    <div class="counter-claim">
-      <span class="counter-label">✔ Réalité :</span>
-      <span class="counter-text">{claim.counter_claim}</span>
+    <div
+      class="mt-2 rounded-r-md border-l-[3px] border-emerald-500 bg-emerald-500/12 px-[0.65rem] py-[0.4rem] text-sm">
+      <span class="mr-[0.35rem] font-semibold text-emerald-500">✔ Réalité :</span>
+      <span class="text-ash-400">{claim.counter_claim}</span>
     </div>
   {/if}
 
   {#if claim.sources.length > 0}
-    <div class="sources">
-      <span class="sources-label">Sources :</span>
+    <div class="mt-2 flex flex-col gap-[0.15rem] text-[0.8rem]">
+      <span class="text-ash-650">Sources :</span>
       {#each claim.sources as source}
-        <a href={source} target="_blank" rel="noopener noreferrer">{source}</a>
+        <a
+          href={source}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="overflow-hidden text-ellipsis text-blue-400 no-underline hover:underline"
+          >{source}</a>
       {/each}
     </div>
   {/if}
 </div>
-
-<style>
-  .claim-card {
-    border-left: 4px solid var(--status-color);
-    background: #1e1e2e;
-    border-radius: 8px;
-    padding: 0.85rem 1rem;
-    margin-bottom: 0.75rem;
-  }
-
-  .claim-header {
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-    margin-bottom: 0.5rem;
-    flex-wrap: wrap;
-  }
-
-  .status-label {
-    font-weight: 600;
-    font-size: 0.85rem;
-  }
-
-  .category-badge {
-    background: color-mix(in srgb, var(--cat) 20%, transparent);
-    border: 1px solid color-mix(in srgb, var(--cat) 50%, transparent);
-    color: var(--cat);
-    border-radius: 999px;
-    padding: 0.1rem 0.55rem;
-    font-size: 0.72rem;
-    font-weight: 500;
-    letter-spacing: 0.02em;
-  }
-
-  .web-badge {
-    font-size: 0.78rem;
-    line-height: 1;
-    opacity: 0.85;
-    cursor: help;
-  }
-
-  .confidence {
-    display: flex;
-    align-items: center;
-    gap: 0.3rem;
-    margin-left: 0.1rem;
-  }
-
-  .confidence-bar {
-    display: inline-block;
-    height: 4px;
-    border-radius: 2px;
-    min-width: 4px;
-    max-width: 48px;
-    opacity: 0.8;
-  }
-
-  .confidence-value {
-    color: #666;
-    font-size: 0.72rem;
-    font-variant-numeric: tabular-nums;
-  }
-
-  .timestamp {
-    margin-left: auto;
-    color: #888;
-    font-size: 0.78rem;
-    font-variant-numeric: tabular-nums;
-    white-space: nowrap;
-  }
-
-  .copy-btn {
-    background: none;
-    border: 1px solid transparent;
-    color: #555;
-    cursor: pointer;
-    font-size: 0.85rem;
-    padding: 0.1rem 0.35rem;
-    border-radius: 4px;
-    line-height: 1;
-    transition: all 0.15s;
-    flex-shrink: 0;
-  }
-
-  .copy-btn:hover {
-    border-color: #3e3e4e;
-    color: #aaa;
-  }
-
-  .claim-text {
-    font-style: italic;
-    color: #e0e0e0;
-    margin: 0.2rem 0;
-    font-size: 0.92rem;
-    line-height: 1.5;
-  }
-
-  .explanation {
-    color: #aaa;
-    font-size: 0.875rem;
-    margin: 0.45rem 0 0;
-    line-height: 1.5;
-  }
-
-  .counter-claim {
-    margin-top: 0.5rem;
-    background: color-mix(in srgb, #10b981 12%, transparent);
-    border-left: 3px solid #10b981;
-    border-radius: 0 6px 6px 0;
-    padding: 0.4rem 0.65rem;
-    font-size: 0.875rem;
-  }
-
-  .counter-label {
-    color: #10b981;
-    font-weight: 600;
-    margin-right: 0.35rem;
-  }
-
-  .counter-text {
-    color: #ccc;
-  }
-
-  .sources {
-    margin-top: 0.5rem;
-    font-size: 0.8rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.15rem;
-  }
-
-  .sources-label {
-    color: #666;
-  }
-
-  .sources a {
-    color: #60a5fa;
-    text-decoration: none;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .sources a:hover {
-    text-decoration: underline;
-  }
-</style>

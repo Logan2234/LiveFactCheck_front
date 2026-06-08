@@ -36,23 +36,29 @@
 <svelte:window onkeydowncapture={onKeydown} />
 
 {#if open}
-  <div class="overlay">
-    <button class="backdrop" aria-label="Fermer" onclick={closeOnBackdrop ? close : undefined}
-    ></button>
+  <div
+    class="anim-fade fixed inset-0 z-9500 flex items-center justify-center bg-[rgba(10,10,18,0.6)] backdrop-blur-[3px]">
+    <button
+      class="absolute inset-0 m-0 h-full w-full cursor-default border-none bg-transparent p-0"
+      aria-label="Fermer"
+      onclick={closeOnBackdrop ? close : undefined}></button>
     <div
-      class="modal"
+      class="anim-pop relative m-6 w-full rounded-[14px] border border-ink-720 bg-ink-850 p-[1.4rem] shadow-[0_24px_60px_rgba(0,0,0,0.55)]"
       role="dialog"
       aria-modal="true"
       aria-label={title || "Fenêtre modale"}
       tabindex="-1"
       style="max-width: {maxWidth}">
       {#if title}
-        <div class="modal-head">
-          <h2>{title}</h2>
-          <button class="close" onclick={close} aria-label="Fermer">×</button>
+        <div class="mb-4 flex items-center justify-between">
+          <h2 class="m-0 text-base">{title}</h2>
+          <button
+            class="cursor-pointer border-none bg-none px-[0.2rem] py-0 text-[1.4rem] leading-none text-[#777] transition-colors duration-150 hover:text-white"
+            onclick={close}
+            aria-label="Fermer">×</button>
         </div>
       {/if}
-      <div class="modal-body">
+      <div>
         {@render children?.()}
       </div>
     </div>
@@ -60,16 +66,13 @@
 {/if}
 
 <style>
-  .overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(10, 10, 18, 0.6);
-    backdrop-filter: blur(3px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 9500;
+  /* Modal enter animations — keyframes can't be expressed as utilities. */
+  .anim-fade {
     animation: fade-in 0.12s ease-out;
+  }
+
+  .anim-pop {
+    animation: pop-in 0.14s ease-out;
   }
 
   @keyframes fade-in {
@@ -81,30 +84,6 @@
     }
   }
 
-  .backdrop {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    background: transparent;
-    border: none;
-    padding: 0;
-    margin: 0;
-    cursor: default;
-  }
-
-  .modal {
-    position: relative;
-    width: 100%;
-    margin: 1.5rem;
-    background: #1a1a2a;
-    border: 1px solid #2e2e3e;
-    border-radius: 14px;
-    padding: 1.4rem;
-    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
-    animation: pop-in 0.14s ease-out;
-  }
-
   @keyframes pop-in {
     from {
       opacity: 0;
@@ -114,32 +93,5 @@
       opacity: 1;
       transform: scale(1) translateY(0);
     }
-  }
-
-  .modal-head {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 1rem;
-  }
-
-  .modal-head h2 {
-    font-size: 1rem;
-    margin: 0;
-  }
-
-  .close {
-    background: none;
-    border: none;
-    color: #777;
-    font-size: 1.4rem;
-    line-height: 1;
-    cursor: pointer;
-    padding: 0 0.2rem;
-    transition: color 0.15s;
-  }
-
-  .close:hover {
-    color: #fff;
   }
 </style>

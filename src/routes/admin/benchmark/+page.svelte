@@ -1,7 +1,7 @@
 <script lang="ts">
+  import ClaimCard from "$lib/components/ClaimCard.svelte";
   import { authFetch, clearToken } from "$lib/stores/auth";
   import type { Claim } from "$lib/stores/claims";
-  import ClaimCard from "$lib/components/ClaimCard.svelte";
 
   let text = $state("");
   let loading = $state(false);
@@ -95,56 +95,90 @@
 </svelte:head>
 
 <header>
-  <h1>⚡ Benchmark</h1>
-  <p>Compare le même texte avec et sans recherche web en parallèle.</p>
+  <h1 class="mt-0 mb-[0.3rem] text-[1.4rem]">⚡ Benchmark</h1>
+  <p class="mt-0 mb-6 text-[0.88rem] text-fog-500">
+    Compare le même texte avec et sans recherche web en parallèle.
+  </p>
 </header>
 
-<form onsubmit={run}>
-  <textarea bind:value={text} rows="5" placeholder="Colle un texte à analyser…" disabled={loading}
+<form onsubmit={run} class="mb-6">
+  <textarea
+    bind:value={text}
+    rows="5"
+    placeholder="Colle un texte à analyser…"
+    disabled={loading}
+    class="box-border w-full resize-y rounded-[10px] border border-ink-720 bg-ink-880 px-4 py-[0.9rem] font-[inherit] text-[0.95rem] leading-normal text-fog-100 transition-[border-color] duration-150 focus:border-accent-500 focus:outline-none disabled:opacity-50"
   ></textarea>
-  <div class="form-actions">
-    <button type="button" class="ghost" onclick={() => (text = "")} disabled={!text || loading}>
+  <div class="mt-3 flex items-center gap-2">
+    <button
+      type="button"
+      class="cursor-pointer rounded-lg border border-ink-720 bg-ink-810 px-[1.1rem] py-[0.6rem] text-[0.88rem] font-medium text-fog-400 transition-[opacity,background] duration-150 enabled:hover:bg-ink-780 disabled:cursor-not-allowed disabled:opacity-40"
+      onclick={() => (text = "")}
+      disabled={!text || loading}>
       Vider
     </button>
-    <span class="spacer"></span>
-    <button type="submit" disabled={loading || !text.trim()}>
+    <span class="flex-1"></span>
+    <button
+      type="submit"
+      disabled={loading || !text.trim()}
+      class="cursor-pointer rounded-lg border-none bg-[linear-gradient(135deg,#5a5ad0,#7a4ad0)] px-[1.1rem] py-[0.6rem] text-[0.88rem] font-semibold text-white transition-[opacity,background] duration-150 enabled:hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40">
       {loading ? "Analyse en cours…" : "Comparer"}
     </button>
   </div>
 </form>
 
 {#if loading}
-  <div class="columns">
+  <div class="grid grid-cols-2 gap-5">
     {#each ["🌐 Avec web search", "🧠 Sans web search"] as label}
-      <div class="col">
-        <div class="col-header">{label}</div>
-        <div class="placeholder">
-          <span class="spinner"></span> Analyse…
+      <div class="flex min-w-0 flex-col gap-3">
+        <div
+          class="flex flex-wrap items-center gap-2 border-b border-ink-720 pb-2 text-[0.9rem] font-semibold text-fog-300">
+          {label}
+        </div>
+        <div
+          class="flex items-center gap-[0.7rem] rounded-[10px] border border-dashed border-ink-720 bg-ink-880 p-6 text-[0.9rem] text-fog-500">
+          <span
+            class="spinner h-4 w-4 shrink-0 rounded-full border-2 border-ink-640 border-t-accent-400"
+          ></span> Analyse…
         </div>
       </div>
     {/each}
   </div>
 {:else if ran}
   {#if delta()}
-    <div class="delta-bar">{delta()}</div>
+    <div
+      class="mb-4 rounded-lg border border-ink-700 bg-[#1a1a30] px-4 py-[0.45rem] text-center text-[0.82rem] text-fog-450">
+      {delta()}
+    </div>
   {/if}
-  <div class="columns">
+  <div class="grid grid-cols-2 gap-5">
     {#each [{ label: "🌐 Avec web search", side: withWeb }, { label: "🧠 Sans web search", side: withoutWeb }] as { label, side }}
-      <div class="col">
-        <div class="col-header">
+      <div class="flex min-w-0 flex-col gap-3">
+        <div
+          class="flex flex-wrap items-center gap-2 border-b border-ink-720 pb-2 text-[0.9rem] font-semibold text-fog-300">
           {label}
-          <span class="chip">{(side.elapsed / 1000).toFixed(1)} s</span>
+          <span
+            class="rounded-full border border-ink-640 bg-ink-780 px-[0.55rem] py-[0.15rem] text-[0.75rem] font-normal tabular-nums text-[#8888b0]"
+            >{(side.elapsed / 1000).toFixed(1)} s</span>
           {#if side.claims !== null}
-            <span class="chip"
+            <span
+              class="rounded-full border border-ink-640 bg-ink-780 px-[0.55rem] py-[0.15rem] text-[0.75rem] font-normal tabular-nums text-[#8888b0]"
               >{side.claims.length} claim{side.claims.length !== 1 ? "s" : ""}</span>
           {/if}
         </div>
         {#if side.error}
-          <p class="error" role="alert">{side.error}</p>
+          <p
+            class="m-0 rounded-lg border border-red-500/35 bg-red-500/10 px-[0.9rem] py-[0.7rem] text-[0.85rem] text-red-300"
+            role="alert">
+            {side.error}
+          </p>
         {:else if side.claims !== null && side.claims.length === 0}
-          <p class="empty">Aucun fait vérifiable trouvé.</p>
+          <p
+            class="m-0 rounded-[10px] border border-dashed border-ink-720 bg-ink-880 p-[1.2rem] text-center text-[0.9rem] text-fog-500">
+            Aucun fait vérifiable trouvé.
+          </p>
         {:else if side.claims !== null}
-          <div class="claims-list">
+          <div class="flex flex-col gap-3">
             {#each side.claims as claim (claim.id)}
               <ClaimCard {claim} />
             {/each}
@@ -156,192 +190,14 @@
 {/if}
 
 <style>
-  header h1 {
-    font-size: 1.4rem;
-    margin: 0 0 0.3rem;
-  }
-
-  header p {
-    color: #8888a0;
-    font-size: 0.88rem;
-    margin: 0 0 1.5rem;
-  }
-
-  form {
-    margin-bottom: 1.5rem;
-  }
-
-  textarea {
-    width: 100%;
-    box-sizing: border-box;
-    background: #161624;
-    border: 1px solid #2e2e3e;
-    border-radius: 10px;
-    padding: 0.9rem 1rem;
-    color: #e8e8f0;
-    font-size: 0.95rem;
-    font-family: inherit;
-    line-height: 1.5;
-    resize: vertical;
-    transition: border-color 0.15s;
-  }
-
-  textarea:focus {
-    outline: none;
-    border-color: #6a6acc;
-  }
-
-  textarea:disabled {
-    opacity: 0.5;
-  }
-
-  .form-actions {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin-top: 0.75rem;
-  }
-
-  .spacer {
-    flex: 1;
-  }
-
-  button {
-    border-radius: 8px;
-    padding: 0.6rem 1.1rem;
-    font-size: 0.88rem;
-    font-weight: 600;
-    cursor: pointer;
-    border: none;
-    transition:
-      opacity 0.15s,
-      background 0.15s;
-  }
-
-  button[type="submit"] {
-    background: linear-gradient(135deg, #5a5ad0, #7a4ad0);
-    color: #fff;
-  }
-
-  button[type="submit"]:hover:not(:disabled) {
-    opacity: 0.9;
-  }
-
-  .ghost {
-    background: #1e1e30;
-    color: #b0b0c8;
-    border: 1px solid #2e2e3e;
-    font-weight: 500;
-  }
-
-  .ghost:hover:not(:disabled) {
-    background: #26263a;
-  }
-
-  button:disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
-  }
-
-  .delta-bar {
-    text-align: center;
-    font-size: 0.82rem;
-    color: #9a9ac0;
-    background: #1a1a30;
-    border: 1px solid #2e2e4e;
-    border-radius: 8px;
-    padding: 0.45rem 1rem;
-    margin-bottom: 1rem;
-  }
-
-  .columns {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1.25rem;
-  }
-
-  .col {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    min-width: 0;
-  }
-
-  .col-header {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: #c8c8e8;
-    padding-bottom: 0.5rem;
-    border-bottom: 1px solid #2e2e3e;
-    flex-wrap: wrap;
-  }
-
-  .chip {
-    background: #26263a;
-    border: 1px solid #3a3a5a;
-    border-radius: 999px;
-    padding: 0.15rem 0.55rem;
-    font-size: 0.75rem;
-    color: #8888b0;
-    font-weight: 400;
-    font-variant-numeric: tabular-nums;
-  }
-
-  .placeholder {
-    display: flex;
-    align-items: center;
-    gap: 0.7rem;
-    color: #8888a0;
-    font-size: 0.9rem;
-    padding: 1.5rem;
-    background: #161624;
-    border: 1px dashed #2e2e3e;
-    border-radius: 10px;
-  }
-
+  /* Loading spinner rotation — keyframes can't be expressed as utilities. */
   .spinner {
-    width: 16px;
-    height: 16px;
-    border: 2px solid #3a3a5a;
-    border-top-color: #7a7ad0;
-    border-radius: 50%;
     animation: spin 0.7s linear infinite;
-    flex-shrink: 0;
   }
 
   @keyframes spin {
     to {
       transform: rotate(360deg);
     }
-  }
-
-  .error {
-    background: rgba(239, 68, 68, 0.1);
-    border: 1px solid rgba(239, 68, 68, 0.35);
-    color: #fca5a5;
-    border-radius: 8px;
-    padding: 0.7rem 0.9rem;
-    font-size: 0.85rem;
-    margin: 0;
-  }
-
-  .empty {
-    color: #8888a0;
-    font-size: 0.9rem;
-    padding: 1.2rem;
-    background: #161624;
-    border: 1px dashed #2e2e3e;
-    border-radius: 10px;
-    text-align: center;
-    margin: 0;
-  }
-
-  .claims-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
   }
 </style>

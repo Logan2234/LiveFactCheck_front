@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { onMount, onDestroy } from "svelte";
   import { authFetch, clearToken } from "$lib/stores/auth";
+  import { onDestroy, onMount } from "svelte";
 
   interface HealthData {
     uptime_seconds: number;
@@ -147,71 +147,116 @@
   <title>Système — Admin</title>
 </svelte:head>
 
-<header>
+<header class="mb-6 flex flex-wrap items-start justify-between gap-4">
   <div>
-    <h1>🖥️ Système</h1>
-    <p>État du serveur et configuration — rafraîchissement automatique toutes les 30 s.</p>
+    <h1 class="mt-0 mb-[0.3rem] text-[1.4rem]">🖥️ Système</h1>
+    <p class="m-0 text-[0.88rem] text-fog-500">
+      État du serveur et configuration — rafraîchissement automatique toutes les 30 s.
+    </p>
   </div>
-  <div class="header-right">
+  <div class="flex shrink-0 items-center gap-3">
     {#if lastRefresh}
-      <span class="last-refresh">Mis à jour à {formatTime(lastRefresh)}</span>
+      <span class="text-[0.78rem] tabular-nums text-fog-700"
+        >Mis à jour à {formatTime(lastRefresh)}</span>
     {/if}
-    <button onclick={refreshHealth} disabled={refreshing} class="refresh-btn">
+    <button
+      onclick={refreshHealth}
+      disabled={refreshing}
+      class="cursor-pointer rounded-lg border border-ink-720 bg-ink-810 px-[0.9rem] py-2 text-[0.82rem] font-medium text-fog-400 transition-all duration-150 enabled:hover:bg-ink-780 enabled:hover:text-[#e0e0f0] disabled:cursor-not-allowed disabled:opacity-50">
       {refreshing ? "…" : "↺ Rafraîchir"}
     </button>
   </div>
 </header>
 
 {#if loadError}
-  <p class="error" role="alert">{loadError}</p>
+  <p
+    class="mb-4 rounded-lg border border-red-500/35 bg-red-500/10 px-[0.9rem] py-[0.7rem] text-[0.85rem] text-red-300"
+    role="alert">
+    {loadError}
+  </p>
 {/if}
 
 {#if !health && !loadError}
-  <div class="loading"><span class="spinner"></span> Chargement…</div>
+  <div class="flex items-center gap-[0.7rem] text-[0.9rem] text-fog-500">
+    <span
+      class="spinner inline-block h-4 w-4 shrink-0 rounded-full border-2 border-ink-640 border-t-accent-400"
+    ></span> Chargement…
+  </div>
 {/if}
 
 {#if health}
   <!-- ── État ── -->
-  <div class="section-label">État</div>
-  <div class="grid">
+  <div class="mb-[0.6rem] text-[0.72rem] font-semibold tracking-[0.07em] text-ink-600 uppercase">
+    État
+  </div>
+  <div class="grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-[0.85rem]">
     <!-- Serveur -->
-    <div class="card">
-      <div class="card-title">
-        <span class="dot dot-ok"></span>Serveur
+    <div class="rounded-xl border border-ink-720 bg-ink-880 px-[1.1rem] py-4">
+      <div
+        class="mb-[0.85rem] flex items-center gap-2 border-b border-ink-780 pb-[0.6rem] text-[0.85rem] font-semibold text-fog-300">
+        <span
+          class="h-2 w-2 shrink-0 rounded-full bg-green-500 shadow-[0_0_6px_rgba(34,197,94,0.5)]"
+        ></span
+        >Serveur
       </div>
-      <dl>
-        <div class="row">
-          <dt>Uptime</dt>
-          <dd class="highlight">{formatUptime(health.uptime_seconds)}</dd>
+      <dl class="m-0 flex flex-col gap-[0.45rem]">
+        <div class="flex min-w-0 items-center justify-between gap-2">
+          <dt class="shrink-0 text-[0.78rem] text-fog-600">Uptime</dt>
+          <dd
+            class="m-0 flex flex-wrap items-center justify-end gap-[0.35rem] text-right text-[0.8rem] font-semibold text-fog-200">
+            {formatUptime(health.uptime_seconds)}
+          </dd>
         </div>
-        <div class="row">
-          <dt>Python</dt>
-          <dd>{health.python_version}</dd>
+        <div class="flex min-w-0 items-center justify-between gap-2">
+          <dt class="shrink-0 text-[0.78rem] text-fog-600">Python</dt>
+          <dd
+            class="m-0 flex flex-wrap items-center justify-end gap-[0.35rem] text-right text-[0.8rem] text-fog-400">
+            {health.python_version}
+          </dd>
         </div>
       </dl>
     </div>
 
     <!-- Whisper -->
-    <div class="card">
-      <div class="card-title">
-        <span class="dot {health.whisper.loaded ? 'dot-ok' : 'dot-warn'}"></span>Whisper
+    <div class="rounded-xl border border-ink-720 bg-ink-880 px-[1.1rem] py-4">
+      <div
+        class="mb-[0.85rem] flex items-center gap-2 border-b border-ink-780 pb-[0.6rem] text-[0.85rem] font-semibold text-fog-300">
+        <span
+          class={[
+            "h-2 w-2 shrink-0 rounded-full",
+            health.whisper.loaded
+              ? "bg-green-500 shadow-[0_0_6px_rgba(34,197,94,0.5)]"
+              : "bg-amber-500 shadow-[0_0_6px_rgba(245,158,11,0.5)]"
+          ]}></span
+        >Whisper
       </div>
-      <dl>
-        <div class="row">
-          <dt>Modèle</dt>
-          <dd class="highlight">{health.whisper.model}</dd>
+      <dl class="m-0 flex flex-col gap-[0.45rem]">
+        <div class="flex min-w-0 items-center justify-between gap-2">
+          <dt class="shrink-0 text-[0.78rem] text-fog-600">Modèle</dt>
+          <dd
+            class="m-0 flex flex-wrap items-center justify-end gap-[0.35rem] text-right text-[0.8rem] font-semibold text-fog-200">
+            {health.whisper.model}
+          </dd>
         </div>
-        <div class="row">
-          <dt>Device</dt>
-          <dd>{health.whisper.device}</dd>
+        <div class="flex min-w-0 items-center justify-between gap-2">
+          <dt class="shrink-0 text-[0.78rem] text-fog-600">Device</dt>
+          <dd
+            class="m-0 flex flex-wrap items-center justify-end gap-[0.35rem] text-right text-[0.8rem] text-fog-400">
+            {health.whisper.device}
+          </dd>
         </div>
-        <div class="row">
-          <dt>Chargé</dt>
-          <dd>
+        <div class="flex min-w-0 items-center justify-between gap-2">
+          <dt class="shrink-0 text-[0.78rem] text-fog-600">Chargé</dt>
+          <dd
+            class="m-0 flex flex-wrap items-center justify-end gap-[0.35rem] text-right text-[0.8rem] text-fog-400">
             {#if health.whisper.loaded}
-              <span class="badge badge-ok">Oui</span>
+              <span
+                class="rounded-full border border-green-500/25 bg-green-500/12 px-2 py-[0.13rem] text-[0.72rem] font-medium whitespace-nowrap text-green-400"
+                >Oui</span>
             {:else}
-              <span class="badge badge-warn">Non</span>
+              <span
+                class="rounded-full border border-amber-500/25 bg-amber-500/12 px-2 py-[0.13rem] text-[0.72rem] font-medium whitespace-nowrap text-amber-400"
+                >Non</span>
             {/if}
           </dd>
         </div>
@@ -219,19 +264,33 @@
     </div>
 
     <!-- Anthropic -->
-    <div class="card">
-      <div class="card-title">
-        <span class="dot {health.anthropic.api_key_set ? 'dot-ok' : 'dot-err'}"></span>API Anthropic
+    <div class="rounded-xl border border-ink-720 bg-ink-880 px-[1.1rem] py-4">
+      <div
+        class="mb-[0.85rem] flex items-center gap-2 border-b border-ink-780 pb-[0.6rem] text-[0.85rem] font-semibold text-fog-300">
+        <span
+          class={[
+            "h-2 w-2 shrink-0 rounded-full",
+            health.anthropic.api_key_set
+              ? "bg-green-500 shadow-[0_0_6px_rgba(34,197,94,0.5)]"
+              : "bg-red-500 shadow-[0_0_6px_rgba(239,68,68,0.5)]"
+          ]}></span
+        >API Anthropic
       </div>
-      <dl>
-        <div class="row">
-          <dt>Clé API</dt>
-          <dd>
+      <dl class="m-0 flex flex-col gap-[0.45rem]">
+        <div class="flex min-w-0 items-center justify-between gap-2">
+          <dt class="shrink-0 text-[0.78rem] text-fog-600">Clé API</dt>
+          <dd
+            class="m-0 flex flex-wrap items-center justify-end gap-[0.35rem] text-right text-[0.8rem] text-fog-400">
             {#if health.anthropic.api_key_set}
-              <span class="badge badge-ok">Configurée</span>
-              <span class="key-hint">{health.anthropic.api_key_hint}</span>
+              <span
+                class="rounded-full border border-green-500/25 bg-green-500/12 px-2 py-[0.13rem] text-[0.72rem] font-medium whitespace-nowrap text-green-400"
+                >Configurée</span>
+              <span class="font-mono text-[0.73rem] text-fog-700"
+                >{health.anthropic.api_key_hint}</span>
             {:else}
-              <span class="badge badge-err">Manquante</span>
+              <span
+                class="rounded-full border border-red-500/25 bg-red-500/12 px-2 py-[0.13rem] text-[0.72rem] font-medium whitespace-nowrap text-red-400"
+                >Manquante</span>
             {/if}
           </dd>
         </div>
@@ -240,18 +299,28 @@
 
     <!-- Mémoire -->
     {#if health.memory}
-      <div class="card">
-        <div class="card-title">
-          <span class="dot dot-ok"></span>Mémoire (processus)
+      <div class="rounded-xl border border-ink-720 bg-ink-880 px-[1.1rem] py-4">
+        <div
+          class="mb-[0.85rem] flex items-center gap-2 border-b border-ink-780 pb-[0.6rem] text-[0.85rem] font-semibold text-fog-300">
+          <span
+            class="h-2 w-2 shrink-0 rounded-full bg-green-500 shadow-[0_0_6px_rgba(34,197,94,0.5)]"
+          ></span
+          >Mémoire (processus)
         </div>
-        <dl>
-          <div class="row">
-            <dt>RSS</dt>
-            <dd class="highlight">{health.memory.rss_mb} Mo</dd>
+        <dl class="m-0 flex flex-col gap-[0.45rem]">
+          <div class="flex min-w-0 items-center justify-between gap-2">
+            <dt class="shrink-0 text-[0.78rem] text-fog-600">RSS</dt>
+            <dd
+              class="m-0 flex flex-wrap items-center justify-end gap-[0.35rem] text-right text-[0.8rem] font-semibold text-fog-200">
+              {health.memory.rss_mb} Mo
+            </dd>
           </div>
-          <div class="row">
-            <dt>VMS</dt>
-            <dd>{health.memory.vms_mb} Mo</dd>
+          <div class="flex min-w-0 items-center justify-between gap-2">
+            <dt class="shrink-0 text-[0.78rem] text-fog-600">VMS</dt>
+            <dd
+              class="m-0 flex flex-wrap items-center justify-end gap-[0.35rem] text-right text-[0.8rem] text-fog-400">
+              {health.memory.vms_mb} Mo
+            </dd>
           </div>
         </dl>
       </div>
@@ -261,65 +330,109 @@
 
 {#if config}
   <!-- ── Paramètres éditables ── -->
-  <div class="section-label" style="margin-top:1.75rem">Paramètres</div>
-  <div class="settings-grid">
-    <div class="card settings-card">
-      <div class="card-title">Éditables</div>
+  <div
+    class="mt-7 mb-[0.6rem] text-[0.72rem] font-semibold tracking-[0.07em] text-ink-600 uppercase">
+    Paramètres
+  </div>
+  <div class="grid grid-cols-[repeat(auto-fit,minmax(260px,1fr))] items-start gap-[0.85rem]">
+    <div class="rounded-xl border border-ink-720 bg-ink-880 px-[1.2rem] py-[1.1rem]">
+      <div
+        class="mb-[0.85rem] flex items-center gap-2 border-b border-ink-780 pb-[0.6rem] text-[0.85rem] font-semibold text-fog-300">
+        Éditables
+      </div>
 
-      <div class="field">
-        <label for="model">Modèle Anthropic</label>
-        <select id="model" bind:value={draftModel}>
+      <div class="mb-[0.9rem] flex flex-col gap-[0.3rem]">
+        <label for="model" class="text-[0.78rem] font-medium text-[#9a9ab8]"
+          >Modèle Anthropic</label>
+        <select
+          id="model"
+          bind:value={draftModel}
+          class="cursor-pointer appearance-auto rounded-lg border border-ink-640 bg-ink-950 px-[0.7rem] py-[0.45rem] text-[0.86rem] text-[#e0e0f0] transition-[border-color] duration-150 focus:border-accent-500 focus:outline-none">
           {#each config.options.models as m}
             <option value={m}>{m}</option>
           {/each}
         </select>
-        <span class="field-hint">Appliqué immédiatement au prochain appel fact-check.</span>
+        <span class="text-[0.72rem] text-ink-560"
+          >Appliqué immédiatement au prochain appel fact-check.</span>
       </div>
 
-      <div class="field">
-        <label for="loglevel">Niveau de log</label>
-        <select id="loglevel" bind:value={draftLevel}>
+      <div class="mb-[0.9rem] flex flex-col gap-[0.3rem]">
+        <label for="loglevel" class="text-[0.78rem] font-medium text-[#9a9ab8]"
+          >Niveau de log</label>
+        <select
+          id="loglevel"
+          bind:value={draftLevel}
+          class="cursor-pointer appearance-auto rounded-lg border border-ink-640 bg-ink-950 px-[0.7rem] py-[0.45rem] text-[0.86rem] text-[#e0e0f0] transition-[border-color] duration-150 focus:border-accent-500 focus:outline-none">
           {#each config.options.log_levels as l}
             <option value={l}>{l}</option>
           {/each}
         </select>
-        <span class="field-hint">Modifie <code>logging.getLogger("app")</code> en temps réel.</span>
+        <span class="text-[0.72rem] text-ink-560"
+          >Modifie <code class="font-mono text-[#7a7aaa]">logging.getLogger("app")</code> en temps réel.</span>
       </div>
 
       {#if saveError}
-        <p class="error small" role="alert">{saveError}</p>
+        <p
+          class="mt-2 mb-0 rounded-lg border border-red-500/35 bg-red-500/10 px-[0.7rem] py-[0.45rem] text-[0.8rem] text-red-300"
+          role="alert">
+          {saveError}
+        </p>
       {/if}
 
-      <div class="actions">
-        <button class="ghost" onclick={reset} disabled={!dirty || saving}>Annuler</button>
-        <button class="primary" onclick={save} disabled={!dirty || saving}>
+      <div class="mt-4 flex justify-end gap-2">
+        <button
+          class="cursor-pointer rounded-lg border border-ink-720 bg-ink-810 px-[0.95rem] py-[0.48rem] text-[0.83rem] font-semibold text-fog-400 transition-all duration-150 enabled:hover:bg-ink-780 disabled:cursor-not-allowed disabled:opacity-40"
+          onclick={reset}
+          disabled={!dirty || saving}>Annuler</button>
+        <button
+          class="cursor-pointer rounded-lg border-none bg-[linear-gradient(135deg,#5a5ad0,#7a4ad0)] px-[0.95rem] py-[0.48rem] text-[0.83rem] font-semibold text-white transition-all duration-150 enabled:hover:opacity-88 disabled:cursor-not-allowed disabled:opacity-40"
+          onclick={save}
+          disabled={!dirty || saving}>
           {#if saving}Enregistrement…{:else if saved}✓ Enregistré{:else}Enregistrer{/if}
         </button>
       </div>
 
-      <p class="note">⚠ {config.note}</p>
+      <p
+        class="mt-[0.85rem] mb-0 rounded-md border border-[rgba(245,158,11,0.18)] bg-[rgba(245,158,11,0.07)] px-[0.7rem] py-[0.45rem] text-[0.75rem] text-[#7a6a3a]">
+        ⚠ {config.note}
+      </p>
     </div>
 
-    <div class="card settings-card">
-      <div class="card-title">Lecture seule</div>
-      <dl>
-        <div class="row">
-          <dt>Modèle Whisper</dt>
-          <dd>{config.readonly.whisper_model}</dd>
+    <div class="rounded-xl border border-ink-720 bg-ink-880 px-[1.2rem] py-[1.1rem]">
+      <div
+        class="mb-[0.85rem] flex items-center gap-2 border-b border-ink-780 pb-[0.6rem] text-[0.85rem] font-semibold text-fog-300">
+        Lecture seule
+      </div>
+      <dl class="m-0 flex flex-col gap-[0.45rem]">
+        <div class="flex min-w-0 items-center justify-between gap-2">
+          <dt class="shrink-0 text-[0.78rem] text-fog-600">Modèle Whisper</dt>
+          <dd
+            class="m-0 flex flex-wrap items-center justify-end gap-[0.35rem] text-right text-[0.8rem] text-fog-400">
+            {config.readonly.whisper_model}
+          </dd>
         </div>
-        <div class="row">
-          <dt>Device Whisper</dt>
-          <dd>{config.readonly.whisper_device}</dd>
+        <div class="flex min-w-0 items-center justify-between gap-2">
+          <dt class="shrink-0 text-[0.78rem] text-fog-600">Device Whisper</dt>
+          <dd
+            class="m-0 flex flex-wrap items-center justify-end gap-[0.35rem] text-right text-[0.8rem] text-fog-400">
+            {config.readonly.whisper_device}
+          </dd>
         </div>
-        <div class="row">
-          <dt>JWT expire</dt>
-          <dd>{config.readonly.jwt_expire_hours} h</dd>
+        <div class="flex min-w-0 items-center justify-between gap-2">
+          <dt class="shrink-0 text-[0.78rem] text-fog-600">JWT expire</dt>
+          <dd
+            class="m-0 flex flex-wrap items-center justify-end gap-[0.35rem] text-right text-[0.8rem] text-fog-400">
+            {config.readonly.jwt_expire_hours} h
+          </dd>
         </div>
-        <div class="row">
-          <dt>Max claims / chunk</dt>
-          <dd>
+        <div class="flex min-w-0 items-center justify-between gap-2">
+          <dt class="shrink-0 text-[0.78rem] text-fog-600">Max claims / chunk</dt>
+          <dd
+            class="m-0 flex flex-wrap items-center justify-end gap-[0.35rem] text-right text-[0.8rem] text-fog-400">
             {config.readonly.max_claims_per_chunk}
-            <span class="badge-inactive">non utilisé</span>
+            <span
+              class="rounded-full border border-[rgba(100,100,140,0.2)] bg-[rgba(100,100,140,0.12)] px-[0.4rem] py-[0.08rem] text-[0.68rem] text-ink-560"
+              >non utilisé</span>
           </dd>
         </div>
       </dl>
@@ -328,328 +441,14 @@
 {/if}
 
 <style>
-  header {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
-    flex-wrap: wrap;
-  }
-
-  header h1 {
-    font-size: 1.4rem;
-    margin: 0 0 0.3rem;
-  }
-  header p {
-    color: #8888a0;
-    font-size: 0.88rem;
-    margin: 0;
-  }
-
-  .header-right {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    flex-shrink: 0;
-  }
-
-  .last-refresh {
-    font-size: 0.78rem;
-    color: #6a6a88;
-    font-variant-numeric: tabular-nums;
-  }
-
-  .refresh-btn {
-    background: #1e1e30;
-    border: 1px solid #2e2e3e;
-    color: #b0b0c8;
-    border-radius: 8px;
-    padding: 0.5rem 0.9rem;
-    font-size: 0.82rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.15s;
-  }
-
-  .refresh-btn:hover:not(:disabled) {
-    background: #26263a;
-    color: #e0e0f0;
-  }
-  .refresh-btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-
-  .loading {
-    display: flex;
-    align-items: center;
-    gap: 0.7rem;
-    color: #8888a0;
-    font-size: 0.9rem;
-  }
-
+  /* Loading spinner rotation — keyframes can't be expressed as utilities. */
   .spinner {
-    display: inline-block;
-    width: 16px;
-    height: 16px;
-    border: 2px solid #3a3a5a;
-    border-top-color: #7a7ad0;
-    border-radius: 50%;
     animation: spin 0.7s linear infinite;
-    flex-shrink: 0;
   }
 
   @keyframes spin {
     to {
       transform: rotate(360deg);
     }
-  }
-
-  .error {
-    background: rgba(239, 68, 68, 0.1);
-    border: 1px solid rgba(239, 68, 68, 0.35);
-    color: #fca5a5;
-    border-radius: 8px;
-    padding: 0.7rem 0.9rem;
-    font-size: 0.85rem;
-    margin-bottom: 1rem;
-  }
-
-  .error.small {
-    padding: 0.45rem 0.7rem;
-    font-size: 0.8rem;
-    margin: 0.5rem 0 0;
-  }
-
-  .section-label {
-    font-size: 0.72rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.07em;
-    color: #4a4a68;
-    margin-bottom: 0.6rem;
-  }
-
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 0.85rem;
-  }
-
-  .settings-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 0.85rem;
-    align-items: start;
-  }
-
-  .card {
-    background: #161624;
-    border: 1px solid #2e2e3e;
-    border-radius: 12px;
-    padding: 1rem 1.1rem;
-  }
-
-  .settings-card {
-    padding: 1.1rem 1.2rem;
-  }
-
-  .card-title {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: #c8c8e8;
-    margin-bottom: 0.85rem;
-    padding-bottom: 0.6rem;
-    border-bottom: 1px solid #26263a;
-  }
-
-  .dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    flex-shrink: 0;
-  }
-
-  .dot-ok {
-    background: #22c55e;
-    box-shadow: 0 0 6px rgba(34, 197, 94, 0.5);
-  }
-  .dot-warn {
-    background: #f59e0b;
-    box-shadow: 0 0 6px rgba(245, 158, 11, 0.5);
-  }
-  .dot-err {
-    background: #ef4444;
-    box-shadow: 0 0 6px rgba(239, 68, 68, 0.5);
-  }
-
-  dl {
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 0.45rem;
-  }
-
-  .row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 0.5rem;
-    min-width: 0;
-  }
-
-  dt {
-    font-size: 0.78rem;
-    color: #7a7a98;
-    flex-shrink: 0;
-  }
-
-  dd {
-    font-size: 0.8rem;
-    color: #b0b0c8;
-    margin: 0;
-    text-align: right;
-    display: flex;
-    align-items: center;
-    gap: 0.35rem;
-    flex-wrap: wrap;
-    justify-content: flex-end;
-  }
-
-  .highlight {
-    color: #e0e0f8;
-    font-weight: 600;
-  }
-
-  .badge {
-    border-radius: 999px;
-    padding: 0.13rem 0.5rem;
-    font-size: 0.72rem;
-    font-weight: 500;
-    white-space: nowrap;
-  }
-
-  .badge-ok {
-    background: rgba(34, 197, 94, 0.12);
-    color: #4ade80;
-    border: 1px solid rgba(34, 197, 94, 0.25);
-  }
-  .badge-warn {
-    background: rgba(245, 158, 11, 0.12);
-    color: #fbbf24;
-    border: 1px solid rgba(245, 158, 11, 0.25);
-  }
-  .badge-err {
-    background: rgba(239, 68, 68, 0.12);
-    color: #f87171;
-    border: 1px solid rgba(239, 68, 68, 0.25);
-  }
-
-  .key-hint {
-    font-family: "SF Mono", "Fira Code", monospace;
-    font-size: 0.73rem;
-    color: #6a6a88;
-  }
-
-  .badge-inactive {
-    font-size: 0.68rem;
-    color: #5a5a78;
-    background: rgba(100, 100, 140, 0.12);
-    border: 1px solid rgba(100, 100, 140, 0.2);
-    border-radius: 999px;
-    padding: 0.08rem 0.4rem;
-  }
-
-  /* Settings */
-  .field {
-    display: flex;
-    flex-direction: column;
-    gap: 0.3rem;
-    margin-bottom: 0.9rem;
-  }
-
-  label {
-    font-size: 0.78rem;
-    color: #9a9ab8;
-    font-weight: 500;
-  }
-
-  select {
-    background: #0e0e1c;
-    border: 1px solid #3a3a5a;
-    border-radius: 8px;
-    color: #e0e0f0;
-    font-size: 0.86rem;
-    padding: 0.45rem 0.7rem;
-    cursor: pointer;
-    transition: border-color 0.15s;
-    appearance: auto;
-  }
-
-  select:focus {
-    outline: none;
-    border-color: #6a6acc;
-  }
-
-  .field-hint {
-    font-size: 0.72rem;
-    color: #5a5a78;
-  }
-  .field-hint code {
-    font-family: "SF Mono", "Fira Code", monospace;
-    color: #7a7aaa;
-  }
-
-  .actions {
-    display: flex;
-    gap: 0.5rem;
-    justify-content: flex-end;
-    margin-top: 1rem;
-  }
-
-  button {
-    border-radius: 8px;
-    padding: 0.48rem 0.95rem;
-    font-size: 0.83rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.15s;
-  }
-
-  button:disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
-  }
-
-  .primary {
-    background: linear-gradient(135deg, #5a5ad0, #7a4ad0);
-    color: #fff;
-    border: none;
-  }
-  .primary:hover:not(:disabled) {
-    opacity: 0.88;
-  }
-
-  .ghost {
-    background: #1e1e30;
-    color: #b0b0c8;
-    border: 1px solid #2e2e3e;
-  }
-  .ghost:hover:not(:disabled) {
-    background: #26263a;
-  }
-
-  .note {
-    margin: 0.85rem 0 0;
-    font-size: 0.75rem;
-    color: #7a6a3a;
-    background: rgba(245, 158, 11, 0.07);
-    border: 1px solid rgba(245, 158, 11, 0.18);
-    border-radius: 6px;
-    padding: 0.45rem 0.7rem;
   }
 </style>

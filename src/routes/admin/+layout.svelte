@@ -37,29 +37,44 @@
 </script>
 
 {#if ready}
-  <div class="shell">
-    <aside aria-label="Navigation principale" role="navigation" class="sidebar">
-      <div class="brand">
-        <span class="logo">🔍</span>
-        <div>
-          <strong>LiveFactChecker</strong>
-          <span class="tag">Admin</span>
+  <div class="flex min-h-screen">
+    <aside
+      aria-label="Navigation principale"
+      role="navigation"
+      class="flex w-60 shrink-0 flex-col gap-6 border-r border-ink-780 bg-ink-880 px-[0.9rem] py-5">
+      <div class="flex items-center gap-[0.6rem] px-[0.4rem]">
+        <span class="text-[1.4rem]">🔍</span>
+        <div class="flex flex-col leading-[1.2]">
+          <strong class="text-[0.92rem]">LiveFactChecker</strong>
+          <span class="text-[0.68rem] tracking-wider text-[#7a7ac0] uppercase">Admin</span>
         </div>
       </div>
-      <nav>
+      <nav class="flex flex-col gap-1">
         {#each nav as item}
-          <a href={item.href} class:active={page.url.pathname === item.href}>
+          <a
+            href={item.href}
+            class={[
+              "flex items-center gap-[0.6rem] rounded-lg px-[0.7rem] py-[0.6rem] text-[0.88rem] no-underline transition-[background,color] duration-150",
+              page.url.pathname === item.href
+                ? "bg-[#26264a] text-white"
+                : "text-[#9a9ab0] hover:bg-ink-810 hover:text-fog-250"
+            ]}>
             <span>{item.icon}</span>
             {item.label}
           </a>
         {/each}
       </nav>
-      <div class="bottom">
-        <a class="app-link" href="/">↩ Application live</a>
-        <button onclick={logout}>Déconnexion</button>
+      <div class="mt-auto flex flex-col gap-2">
+        <a
+          class="px-[0.7rem] py-[0.3rem] text-[0.8rem] text-fog-700 no-underline hover:text-fog-450"
+          href="/">↩ Application live</a>
+        <button
+          onclick={logout}
+          class="cursor-pointer rounded-lg border border-[#3a2a3a] bg-transparent p-2 text-[0.82rem] text-[#d08a8a] transition-all duration-150 hover:border-red-900 hover:bg-[rgba(220,80,80,0.12)]"
+          >Déconnexion</button>
       </div>
     </aside>
-    <main>
+    <main class="flex-1 overflow-y-auto p-8">
       {@render children()}
     </main>
   </div>
@@ -71,123 +86,5 @@
     background: #121220;
     color: #e0e0e0;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  }
-
-  .shell {
-    display: flex;
-    min-height: 100vh;
-  }
-
-  aside {
-    width: 230px;
-    flex-shrink: 0;
-    background: #161624;
-    border-right: 1px solid #26263a;
-    display: flex;
-    flex-direction: column;
-    padding: 1.25rem 0.9rem;
-    gap: 1.5rem;
-  }
-
-  .sidebar {
-    width: 15rem;
-  }
-
-  .brand {
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-    padding: 0 0.4rem;
-  }
-
-  .logo {
-    font-size: 1.4rem;
-  }
-
-  .brand div {
-    display: flex;
-    flex-direction: column;
-    line-height: 1.2;
-  }
-
-  .brand strong {
-    font-size: 0.92rem;
-  }
-
-  .tag {
-    font-size: 0.68rem;
-    color: #7a7ac0;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-
-  nav {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-  }
-
-  nav a {
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-    padding: 0.6rem 0.7rem;
-    border-radius: 8px;
-    color: #9a9ab0;
-    text-decoration: none;
-    font-size: 0.88rem;
-    transition:
-      background 0.15s,
-      color 0.15s;
-  }
-
-  nav a:hover {
-    background: #1e1e30;
-    color: #e0e0e0;
-  }
-
-  nav a.active {
-    background: #26264a;
-    color: #fff;
-  }
-
-  .bottom {
-    margin-top: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-
-  .app-link {
-    color: #6a6a88;
-    text-decoration: none;
-    font-size: 0.8rem;
-    padding: 0.3rem 0.7rem;
-  }
-
-  .app-link:hover {
-    color: #9a9ac0;
-  }
-
-  .bottom button {
-    background: transparent;
-    border: 1px solid #3a2a3a;
-    color: #d08a8a;
-    border-radius: 8px;
-    padding: 0.5rem;
-    font-size: 0.82rem;
-    cursor: pointer;
-    transition: all 0.15s;
-  }
-
-  .bottom button:hover {
-    background: rgba(220, 80, 80, 0.12);
-    border-color: #7f1d1d;
-  }
-
-  main {
-    flex: 1;
-    padding: 2rem;
-    overflow-y: auto;
   }
 </style>

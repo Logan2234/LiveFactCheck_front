@@ -10,55 +10,64 @@
   let tickerContent = $derived(tickerItems.length > 0 ? [...tickerItems, ...tickerItems] : []);
 </script>
 
-<div class="ticker-layout">
+<div class="flex h-[calc(100vh-160px)] min-h-125 flex-col gap-0">
   <!-- Main transcript area -->
-  <div class="transcript-area">
-    <div class="transcript-header">
-      <h2>📡 LiveFactChecker — En direct</h2>
-      <div class="live-dot"></div>
+  <div
+    class="flex flex-1 flex-col overflow-hidden rounded-t-[10px] border border-b-0 border-[#1e1e3e] bg-[#0d0d1a]">
+    <div class="flex items-center gap-3 border-b border-ink-700 bg-ink-840 px-5 py-3">
+      <h2 class="m-0 text-[1.2rem]">📡 LiveFactChecker — En direct</h2>
+      <div class="live-dot ml-auto h-2.5 w-2.5 rounded-full bg-red-500"></div>
     </div>
 
-    <div class="transcript-content">
+    <div class="flex flex-1 flex-col gap-3 overflow-y-auto px-6 py-4 text-[1.05rem] leading-[1.7]">
       {#if $transcriptEntries.length === 0}
-        <p class="waiting">En attente de la transcription...</p>
+        <p class="m-auto text-center text-ash-750">En attente de la transcription...</p>
       {:else}
         {#each [...$transcriptEntries].reverse() as entry (entry.timestamp)}
-          <div class="transcript-entry">
-            <span class="ts-time">{new Date(entry.timestamp).toLocaleTimeString()}</span>
-            <span class="ts-text">{entry.text}</span>
+          <div class="flex items-baseline gap-3">
+            <span class="mt-[0.2rem] shrink-0 text-xs tabular-nums text-ash-750"
+              >{new Date(entry.timestamp).toLocaleTimeString()}</span>
+            <span class="text-[#d0d0d0]">{entry.text}</span>
           </div>
         {/each}
       {/if}
     </div>
 
     <!-- Stats bar -->
-    <div class="stats-bar">
-      <span class="stat" style="color: #10b981"
+    <div class="flex gap-6 border-t border-[#1e1e3e] bg-[#0d0d1a] px-5 py-2 text-[0.8rem]">
+      <span class="tabular-nums text-emerald-500"
         >✅ {$claims.filter((c) => c.status === "verified").length} vérifiés</span>
-      <span class="stat" style="color: #ef4444"
+      <span class="tabular-nums text-red-500"
         >❌ {$claims.filter((c) => c.status === "false").length} faux</span>
-      <span class="stat" style="color: #f59e0b"
+      <span class="tabular-nums text-amber-500"
         >❓ {$claims.filter((c) => c.status === "uncertain").length} incertains</span>
-      <span class="stat" style="color: #888">Total: {$claims.length}</span>
+      <span class="tabular-nums text-ash-600">Total: {$claims.length}</span>
     </div>
   </div>
 
   <!-- Ticker band -->
-  <div class="ticker-band">
-    <div class="ticker-label">FACT CHECK</div>
-    <div class="ticker-scroll-wrapper">
+  <div
+    class="flex h-10.5 items-stretch overflow-hidden rounded-b-[10px] border border-t-0 border-[#ff0000] bg-[#cc0000]">
+    <div
+      class="flex shrink-0 items-center bg-[#ff0000] px-4 text-xs font-extrabold tracking-widest text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.5)]">
+      FACT CHECK
+    </div>
+    <div class="flex flex-1 items-center overflow-hidden bg-[#1a0000]">
       {#if tickerContent.length === 0}
-        <div class="ticker-empty">En attente des claims...</div>
+        <div class="px-4 text-[0.85rem] text-ash-650">En attente des claims...</div>
       {:else}
         <div
-          class="ticker-track"
+          class="ticker-track flex items-center gap-0 whitespace-nowrap will-change-transform"
           style="animation-duration: {Math.max(tickerItems.length * 8, 20)}s">
           {#each tickerContent as c (c.id + Math.random())}
-            <span class="ticker-item" style="--color: {STATUS_COLOR[c.status]}">
-              <span class="t-icon">{STATUS_ICON[c.status]}</span>
-              <span class="t-text">{c.text}</span>
+            <span
+              class="inline-flex items-center gap-[0.4rem] px-2 text-(--color)"
+              style="--color: {STATUS_COLOR[c.status]}">
+              <span class="text-[0.85rem]">{STATUS_ICON[c.status]}</span>
+              <span class="max-w-87.5 overflow-hidden text-[0.85rem] text-ellipsis text-ash-300"
+                >{c.text}</span>
             </span>
-            <span class="ticker-sep">◆</span>
+            <span class="px-2 text-[0.6rem] text-[#cc0000]">◆</span>
           {/each}
         </div>
       {/if}
@@ -67,47 +76,10 @@
 </div>
 
 <style>
-  .ticker-layout {
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-    height: calc(100vh - 160px);
-    min-height: 500px;
-  }
-
-  h2 {
-    font-size: 1.2rem;
-    margin: 0;
-  }
-
-  /* Transcript */
-  .transcript-area {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    background: #0d0d1a;
-    border-radius: 10px 10px 0 0;
-    overflow: hidden;
-    border: 1px solid #1e1e3e;
-    border-bottom: none;
-  }
-
-  .transcript-header {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0.75rem 1.25rem;
-    background: #1a1a2e;
-    border-bottom: 1px solid #2e2e4e;
-  }
-
+  /* Animations (live pulse, scrolling ticker) — keyframes can't be utilities.
+     The ticker scroll duration is set inline since it depends on item count. */
   .live-dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: #ef4444;
     animation: pulse 1.5s ease-in-out infinite;
-    margin-left: auto;
   }
 
   @keyframes pulse {
@@ -122,100 +94,8 @@
     }
   }
 
-  .transcript-content {
-    flex: 1;
-    overflow-y: auto;
-    padding: 1rem 1.5rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    font-size: 1.05rem;
-    line-height: 1.7;
-  }
-
-  .transcript-entry {
-    display: flex;
-    gap: 0.75rem;
-    align-items: baseline;
-  }
-
-  .ts-time {
-    color: #444;
-    font-size: 0.75rem;
-    font-variant-numeric: tabular-nums;
-    flex-shrink: 0;
-    margin-top: 0.2rem;
-  }
-
-  .ts-text {
-    color: #d0d0d0;
-  }
-
-  .waiting {
-    color: #444;
-    margin: auto;
-    text-align: center;
-  }
-
-  .stats-bar {
-    display: flex;
-    gap: 1.5rem;
-    padding: 0.5rem 1.25rem;
-    background: #0d0d1a;
-    border-top: 1px solid #1e1e3e;
-    font-size: 0.8rem;
-  }
-
-  .stat {
-    font-variant-numeric: tabular-nums;
-  }
-
-  /* Ticker band */
-  .ticker-band {
-    display: flex;
-    align-items: stretch;
-    height: 42px;
-    background: #cc0000;
-    border-radius: 0 0 10px 10px;
-    overflow: hidden;
-    border: 1px solid #ff0000;
-    border-top: none;
-  }
-
-  .ticker-label {
-    background: #ff0000;
-    color: #fff;
-    font-weight: 800;
-    font-size: 0.75rem;
-    letter-spacing: 0.1em;
-    padding: 0 1rem;
-    display: flex;
-    align-items: center;
-    flex-shrink: 0;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
-  }
-
-  .ticker-scroll-wrapper {
-    flex: 1;
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    background: #1a0000;
-  }
-
-  .ticker-empty {
-    color: #666;
-    font-size: 0.85rem;
-    padding: 0 1rem;
-  }
-
   .ticker-track {
-    display: flex;
-    align-items: center;
-    gap: 0;
-    white-space: nowrap;
     animation: scroll-left linear infinite;
-    will-change: transform;
   }
 
   @keyframes scroll-left {
@@ -225,31 +105,5 @@
     100% {
       transform: translateX(-50%);
     }
-  }
-
-  .ticker-item {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    padding: 0 0.5rem;
-    color: var(--color);
-  }
-
-  .t-icon {
-    font-size: 0.85rem;
-  }
-
-  .t-text {
-    font-size: 0.85rem;
-    color: #ddd;
-    max-width: 350px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .ticker-sep {
-    color: #cc0000;
-    font-size: 0.6rem;
-    padding: 0 0.5rem;
   }
 </style>

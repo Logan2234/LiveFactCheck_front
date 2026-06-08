@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { claims, claimStats, sortedClaims } from "$lib/stores/claims";
   import { STATUS_COLOR, STATUS_LABEL } from "$lib/constants/status";
+  import { claimStats, sortedClaims } from "$lib/stores/claims";
 
   const R = 80;
   const C = 2 * Math.PI * R;
@@ -53,12 +53,12 @@
   );
 </script>
 
-<div class="trust-layout">
-  <div class="gauge-section">
-    <h2>🎯 Trust Meter</h2>
+<div class="grid grid-cols-[300px_1fr] items-start gap-8 max-[800px]:grid-cols-1">
+  <div class="sticky top-4 rounded-xl bg-ink-850 p-6 max-[800px]:static">
+    <h2 class="mt-0 mb-4 text-[1.1rem]">🎯 Trust Meter</h2>
 
-    <div class="gauge-wrapper">
-      <svg viewBox="0 0 200 200" class="gauge-svg">
+    <div class="mb-5 flex justify-center">
+      <svg viewBox="0 0 200 200" class="h-45 w-45">
         <!-- Track -->
         <circle cx={CX} cy={CY} r={R} fill="none" stroke="#2e2e3e" stroke-width="20" />
 
@@ -80,225 +80,69 @@
         {/if}
 
         <!-- Center text -->
-        <text x="100" y="92" text-anchor="middle" class="pct-text" fill={gaugeColor}>
+        <text
+          x="100"
+          y="92"
+          text-anchor="middle"
+          class="text-[2rem] font-bold tabular-nums"
+          fill={gaugeColor}>
           {trustPct}%
         </text>
-        <text x="100" y="112" text-anchor="middle" class="pct-label" fill="#888"> vérifié </text>
-        <text x="100" y="130" text-anchor="middle" class="pct-sub" fill="#555">
+        <text x="100" y="112" text-anchor="middle" class="text-[0.9rem]" fill="#888">
+          vérifié
+        </text>
+        <text x="100" y="130" text-anchor="middle" class="text-xs" fill="#555">
           {finalized} claim{finalized !== 1 ? "s" : ""}
         </text>
       </svg>
     </div>
 
     <!-- Legend -->
-    <div class="legend">
+    <div class="mb-4 flex flex-col gap-2">
       {#each Object.entries(STATUS_COLOR).filter(([k]) => k !== "pending") as [key, color]}
         {@const count = ($claimStats as Record<string, number>)[key] ?? 0}
-        <div class="legend-item">
-          <span class="dot" style="background: {color}"></span>
-          <span class="legend-label">{STATUS_LABEL[key]}</span>
-          <span class="legend-count" style="color: {color}">{count}</span>
+        <div class="flex items-center gap-2 text-[0.85rem]">
+          <span class="h-2.5 w-2.5 shrink-0 rounded-full" style="background: {color}"></span>
+          <span class="flex-1 text-ash-500">{STATUS_LABEL[key]}</span>
+          <span class="font-semibold tabular-nums" style="color: {color}">{count}</span>
         </div>
       {/each}
     </div>
 
     <!-- Overall totals -->
-    <div class="totals">
-      <div class="total-row">
+    <div class="flex flex-col gap-[0.4rem] border-t border-ink-720 pt-3">
+      <div class="flex justify-between text-[0.85rem] text-ash-600">
         <span>Total analysés</span>
-        <strong>{$claimStats.total}</strong>
+        <strong class="text-ash-300">{$claimStats.total}</strong>
       </div>
-      <div class="total-row">
+      <div class="flex justify-between text-[0.85rem] text-ash-600">
         <span>En attente</span>
-        <strong style="color: #f59e0b">{$claimStats.pending}</strong>
+        <strong class="text-amber-500">{$claimStats.pending}</strong>
       </div>
     </div>
   </div>
 
-  <div class="claims-section">
-    <h2>Derniers claims</h2>
-    <div class="claims-list">
+  <div class="min-w-0">
+    <h2 class="mt-0 mb-4 text-[1.1rem]">Derniers claims</h2>
+    <div class="flex max-h-150 flex-col gap-2 overflow-y-auto">
       {#each $sortedClaims as c (c.id)}
-        <div class="claim-row" style="--color: {STATUS_COLOR[c.status]}">
-          <div class="cr-status">
-            <span class="cr-dot" style="background: {STATUS_COLOR[c.status]}"></span>
-            <span class="cr-label" style="color: {STATUS_COLOR[c.status]}"
-              >{STATUS_LABEL[c.status]}</span>
+        <div
+          class="rounded-lg border-l-4 bg-ink-820 px-4 py-3 border-l-(--color)"
+          style="--color: {STATUS_COLOR[c.status]}">
+          <div class="mb-[0.35rem] flex items-center gap-2">
+            <span class="h-2 w-2 rounded-full" style="background: {STATUS_COLOR[c.status]}"></span>
+            <span
+              class="text-[0.8rem] font-semibold tracking-[0.04em] uppercase"
+              style="color: {STATUS_COLOR[c.status]}">{STATUS_LABEL[c.status]}</span>
           </div>
-          <p class="cr-text">« {c.text} »</p>
+          <p class="mt-0 mb-1 text-[0.9rem] text-fog-250 italic">« {c.text} »</p>
           {#if c.explanation}
-            <p class="cr-expl">{c.explanation}</p>
+            <p class="m-0 text-[0.82rem] leading-[1.4] text-ash-600">{c.explanation}</p>
           {/if}
         </div>
       {:else}
-        <p class="empty">Aucun claim détecté...</p>
+        <p class="m-0 p-8 text-center text-ash-700">Aucun claim détecté...</p>
       {/each}
     </div>
   </div>
 </div>
-
-<style>
-  .trust-layout {
-    display: grid;
-    grid-template-columns: 300px 1fr;
-    gap: 2rem;
-    align-items: start;
-  }
-
-  h2 {
-    font-size: 1.1rem;
-    margin: 0 0 1rem;
-  }
-
-  .gauge-section {
-    position: sticky;
-    top: 1rem;
-    background: #1a1a2a;
-    border-radius: 12px;
-    padding: 1.5rem;
-  }
-
-  .gauge-wrapper {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 1.25rem;
-  }
-
-  .gauge-svg {
-    width: 180px;
-    height: 180px;
-  }
-
-  .pct-text {
-    font-size: 2rem;
-    font-weight: 700;
-    font-variant-numeric: tabular-nums;
-  }
-
-  .pct-label {
-    font-size: 0.9rem;
-  }
-
-  .pct-sub {
-    font-size: 0.75rem;
-  }
-
-  .legend {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    margin-bottom: 1rem;
-  }
-
-  .legend-item {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 0.85rem;
-  }
-
-  .dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    flex-shrink: 0;
-  }
-
-  .legend-label {
-    color: #aaa;
-    flex: 1;
-  }
-
-  .legend-count {
-    font-weight: 600;
-    font-variant-numeric: tabular-nums;
-  }
-
-  .totals {
-    border-top: 1px solid #2e2e3e;
-    padding-top: 0.75rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
-  }
-
-  .total-row {
-    display: flex;
-    justify-content: space-between;
-    font-size: 0.85rem;
-    color: #888;
-  }
-
-  .total-row strong {
-    color: #ddd;
-  }
-
-  .claims-section {
-    min-width: 0;
-  }
-
-  .claims-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    max-height: 600px;
-    overflow-y: auto;
-  }
-
-  .claim-row {
-    background: #1e1e2e;
-    border-left: 4px solid var(--color);
-    border-radius: 8px;
-    padding: 0.75rem 1rem;
-  }
-
-  .cr-status {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin-bottom: 0.35rem;
-  }
-
-  .cr-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-  }
-
-  .cr-label {
-    font-size: 0.8rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-  }
-
-  .cr-text {
-    color: #e0e0e0;
-    font-style: italic;
-    font-size: 0.9rem;
-    margin: 0 0 0.25rem;
-  }
-
-  .cr-expl {
-    color: #888;
-    font-size: 0.82rem;
-    margin: 0;
-    line-height: 1.4;
-  }
-
-  .empty {
-    color: #555;
-    text-align: center;
-    padding: 2rem;
-    margin: 0;
-  }
-
-  @media (max-width: 800px) {
-    .trust-layout {
-      grid-template-columns: 1fr;
-    }
-    .gauge-section {
-      position: static;
-    }
-  }
-</style>

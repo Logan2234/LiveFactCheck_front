@@ -26,21 +26,31 @@
   });
 </script>
 
-<div class="audio-controls">
+<div class="flex items-center gap-3 px-4 py-3">
   <button
-    class="record-btn"
-    class:recording={isRecording}
+    class={[
+      "flex cursor-pointer items-center gap-2 rounded-full px-5 py-[0.65rem] text-[0.95rem] text-white transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-50",
+      isRecording ? "bg-red-600" : "bg-ink-760 enabled:hover:bg-[#3d3d4d]"
+    ]}
     onclick={toggle}
     disabled={status !== "connected"}
     title="Espace pour démarrer/arrêter">
-    <span class="record-dot"></span>
+    <span
+      class={[
+        "h-2.5 w-2.5 shrink-0 rounded-full",
+        isRecording ? "record-dot-animate bg-white" : "bg-red-500"
+      ]}></span>
     {isRecording ? "Arrêter" : "Enregistrer"}
   </button>
 
   {#if isRecording}
     <button
-      class="mute-btn"
-      class:muted={$isMuted}
+      class={[
+        "flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border p-0 text-base transition-all duration-150",
+        $isMuted
+          ? "border-red-900 bg-[#3a1a1a]"
+          : "border-ink-680 bg-ink-820 hover:border-ash-700 hover:bg-ink-720"
+      ]}
       onclick={toggleMute}
       title={$isMuted ? "Réactiver le micro" : "Couper le micro"}
       aria-label={$isMuted ? "Réactiver le micro" : "Couper le micro"}>
@@ -48,7 +58,7 @@
     </button>
   {/if}
 
-  <span class="ws-status" class:connected={status === "connected"}>
+  <span class="text-[0.82rem] text-ash-600">
     {status === "connected"
       ? "🟢 Connecté"
       : status === "connecting"
@@ -58,53 +68,7 @@
 </div>
 
 <style>
-  .audio-controls {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0.75rem 1rem;
-  }
-
-  .record-btn {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.65rem 1.25rem;
-    border: none;
-    border-radius: 999px;
-    background: #2d2d3d;
-    color: white;
-    font-size: 0.95rem;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-
-  .record-btn:hover:not(:disabled) {
-    background: #3d3d4d;
-  }
-
-  .record-btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-
-  .record-btn.recording {
-    background: #dc2626;
-  }
-
-  .record-dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: #ef4444;
-    flex-shrink: 0;
-  }
-
-  .recording .record-dot {
-    animation: pulse 1s infinite;
-    background: white;
-  }
-
+  /* Custom pulse (opacity 1 → 0.3, 1s) — distinct from Tailwind's built-in animate-pulse. */
   @keyframes pulse {
     0%,
     100% {
@@ -115,33 +79,7 @@
     }
   }
 
-  .mute-btn {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    border: 1px solid #3e3e4e;
-    background: #1e1e2e;
-    font-size: 1rem;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.15s;
-    padding: 0;
-  }
-
-  .mute-btn:hover {
-    background: #2e2e3e;
-    border-color: #555;
-  }
-
-  .mute-btn.muted {
-    background: #3a1a1a;
-    border-color: #7f1d1d;
-  }
-
-  .ws-status {
-    font-size: 0.82rem;
-    color: #888;
+  .record-dot-animate {
+    animation: pulse 1s infinite;
   }
 </style>

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { claimFilter, claimStats, filteredClaims, type ClaimFilter } from "$lib/stores/claims";
+  import { claimFilter, filteredClaims, type ClaimFilter } from "$lib/stores/claims";
 
   const STATUS_CONFIG: Record<string, { label: string; color: string; icon: string }> = {
     pending: { label: "En cours", color: "#f59e0b", icon: "⏳" },
@@ -21,62 +21,88 @@
   let expandedId = $state<string | null>(null);
 </script>
 
-<div class="table-view">
-  <div class="toolbar">
-    <div class="filters">
+<div class="flex flex-col gap-3">
+  <div class="flex flex-wrap items-center justify-between gap-3">
+    <div class="flex flex-wrap gap-[0.4rem]">
       {#each filters as f}
-        <button class:active={$claimFilter === f.key} onclick={() => claimFilter.set(f.key)}>
+        <button
+          class={[
+            "cursor-pointer rounded-[20px] border px-3 py-[0.3rem] text-[0.8rem] transition-all duration-150",
+            $claimFilter === f.key
+              ? "border-accent-700 bg-ink-700 text-white"
+              : "border-ink-720 bg-ink-820 text-ash-500 hover:border-ash-700 hover:text-ash-300"
+          ]}
+          onclick={() => claimFilter.set(f.key)}>
           {f.icon}
           {f.label}
         </button>
       {/each}
     </div>
-    <span class="total"
+    <span class="text-[0.85rem] whitespace-nowrap text-ash-700"
       >{$filteredClaims.length} fait{$filteredClaims.length !== 1 ? "s" : ""}</span>
   </div>
 
-  <div class="table-wrap">
-    <table>
-      <thead>
+  <div class="max-h-[calc(100vh-240px)] overflow-auto rounded-lg border border-ink-820">
+    <table class="w-full border-collapse text-sm">
+      <thead class="sticky top-0 z-[1]">
         <tr>
-          <th class="col-time">Heure</th>
-          <th class="col-status">Statut</th>
-          <th class="col-text">Affirmation</th>
-          <th class="col-expl">Explication</th>
+          <th
+            class="w-20 border-b border-ink-720 bg-ink-820 px-[0.9rem] py-[0.6rem] text-left text-xs font-semibold tracking-wider text-ash-650 uppercase"
+            >Heure</th>
+          <th
+            class="w-[130px] border-b border-ink-720 bg-ink-820 px-[0.9rem] py-[0.6rem] text-left text-xs font-semibold tracking-wider text-ash-650 uppercase"
+            >Statut</th>
+          <th
+            class="min-w-[200px] border-b border-ink-720 bg-ink-820 px-[0.9rem] py-[0.6rem] text-left text-xs font-semibold tracking-wider text-ash-650 uppercase"
+            >Affirmation</th>
+          <th
+            class="min-w-45 border-b border-ink-720 bg-ink-820 px-[0.9rem] py-[0.6rem] text-left text-xs font-semibold tracking-wider text-ash-650 uppercase"
+            >Explication</th>
         </tr>
       </thead>
       <tbody>
         {#if $filteredClaims.length === 0}
           <tr>
-            <td colspan="4" class="empty">Aucun fait détecté pour le moment...</td>
+            <td colspan="4" class="p-12 text-center text-ash-750"
+              >Aucun fait détecté pour le moment...</td>
           </tr>
         {:else}
           {#each $filteredClaims as claim (claim.id)}
             {@const cfg = STATUS_CONFIG[claim.status] ?? STATUS_CONFIG.pending}
             <tr
-              class="claim-row"
+              class="claim-row cursor-pointer border-b border-ink-850"
               class:expanded={expandedId === claim.id}
               style="--sc: {cfg.color}"
               onclick={() => (expandedId = expandedId === claim.id ? null : claim.id)}>
-              <td class="col-time">{new Date(claim.timestamp).toLocaleTimeString()}</td>
-              <td class="col-status">
-                <span class="status-badge" style="color: {cfg.color}">
+              <td
+                class="w-20 px-[0.9rem] py-[0.65rem] align-top text-[0.78rem] whitespace-nowrap tabular-nums text-ash-700"
+                >{new Date(claim.timestamp).toLocaleTimeString()}</td>
+              <td class="w-[130px] px-[0.9rem] py-[0.65rem] align-top whitespace-nowrap">
+                <span class="text-[0.8rem] font-medium" style="color: {cfg.color}">
                   {cfg.icon}
                   {cfg.label}
                 </span>
               </td>
-              <td class="col-text">
-                <span class="claim-text" class:truncated={expandedId !== claim.id}>
+              <td class="min-w-[200px] px-[0.9rem] py-[0.65rem] align-top">
+                <span
+                  class={[
+                    "leading-[1.4] text-ash-400 italic",
+                    expandedId !== claim.id && "line-clamp-2"
+                  ]}>
                   {claim.text}
                 </span>
               </td>
-              <td class="col-expl">
+              <td class="min-w-45 px-[0.9rem] py-[0.65rem] align-top">
                 {#if claim.explanation}
-                  <span class="expl-text" class:truncated={expandedId !== claim.id}>
+                  <span
+                    class={[
+                      "text-[0.82rem] leading-[1.4] text-[#777]",
+                      expandedId !== claim.id && "line-clamp-2"
+                    ]}>
                     {claim.explanation}
                   </span>
                 {:else if claim.status === "pending"}
-                  <span class="analyzing">analyse...</span>
+                  <span class="text-[0.78rem] text-ash-750 italic">analyse...</span>
                 {/if}
               </td>
             </tr>
@@ -88,89 +114,10 @@
 </div>
 
 <style>
-  .table-view {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-  }
-
-  .toolbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0.75rem;
-    flex-wrap: wrap;
-  }
-
-  .filters {
-    display: flex;
-    gap: 0.4rem;
-    flex-wrap: wrap;
-  }
-
-  .filters button {
-    background: #1e1e2e;
-    border: 1px solid #2e2e3e;
-    color: #aaa;
-    border-radius: 20px;
-    padding: 0.3rem 0.75rem;
-    font-size: 0.8rem;
-    cursor: pointer;
-    transition: all 0.15s;
-  }
-
-  .filters button:hover {
-    border-color: #555;
-    color: #ddd;
-  }
-  .filters button.active {
-    background: #2e2e4e;
-    border-color: #5555aa;
-    color: #fff;
-  }
-
-  .total {
-    color: #555;
-    font-size: 0.85rem;
-    white-space: nowrap;
-  }
-
-  /* Table */
-  .table-wrap {
-    overflow: auto;
-    max-height: calc(100vh - 240px);
-    border-radius: 8px;
-    border: 1px solid #1e1e2e;
-  }
-
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.875rem;
-  }
-
-  thead {
-    position: sticky;
-    top: 0;
-    z-index: 1;
-  }
-
-  th {
-    background: #1e1e2e;
-    color: #666;
-    font-size: 0.75rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    padding: 0.6rem 0.9rem;
-    text-align: left;
-    border-bottom: 1px solid #2e2e3e;
-  }
-
+  /* Row left-accent on hover/expanded uses the JS-injected --sc; the hover
+     state and the expanded class interplay are clearest kept in CSS. */
   .claim-row {
-    border-bottom: 1px solid #1a1a2a;
     border-left: 3px solid transparent;
-    cursor: pointer;
     transition:
       background 0.1s,
       border-color 0.1s;
@@ -184,68 +131,5 @@
   .claim-row.expanded {
     background: #1e1e2e;
     border-left-color: var(--sc);
-  }
-
-  td {
-    padding: 0.65rem 0.9rem;
-    vertical-align: top;
-  }
-
-  .col-time {
-    width: 80px;
-    color: #555;
-    font-size: 0.78rem;
-    font-variant-numeric: tabular-nums;
-    white-space: nowrap;
-  }
-
-  .col-status {
-    width: 130px;
-    white-space: nowrap;
-  }
-
-  .status-badge {
-    font-size: 0.8rem;
-    font-weight: 500;
-  }
-
-  .col-text {
-    min-width: 200px;
-  }
-
-  .claim-text {
-    color: #ccc;
-    font-style: italic;
-    line-height: 1.4;
-  }
-
-  .col-expl {
-    min-width: 180px;
-  }
-
-  .expl-text {
-    color: #777;
-    font-size: 0.82rem;
-    line-height: 1.4;
-  }
-
-  .analyzing {
-    color: #444;
-    font-size: 0.78rem;
-    font-style: italic;
-  }
-
-  .truncated {
-    display: -webkit-box;
-    line-clamp: 2;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-
-  .empty {
-    text-align: center;
-    color: #444;
-    padding: 3rem;
   }
 </style>

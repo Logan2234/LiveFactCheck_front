@@ -1,7 +1,7 @@
 <script lang="ts">
+  import ClaimCard from "$lib/components/ClaimCard.svelte";
   import { authFetch, clearToken } from "$lib/stores/auth";
   import type { Claim } from "$lib/stores/claims";
-  import ClaimCard from "$lib/components/ClaimCard.svelte";
 
   interface Usage {
     input_tokens: number;
@@ -130,103 +130,141 @@
 </svelte:head>
 
 <header>
-  <h1>🧪 Test de la pipeline</h1>
-  <p>Envoie un texte directement à l'extraction + vérification de claims (POST /fact-check).</p>
+  <h1 class="mt-0 mb-[0.3rem] text-[1.4rem]">🧪 Test de la pipeline</h1>
+  <p class="mt-0 mb-6 text-[0.88rem] text-fog-500">
+    Envoie un texte directement à l'extraction + vérification de claims (POST /fact-check).
+  </p>
 </header>
 
-<form onsubmit={run}>
-  <textarea bind:value={text} rows="6" placeholder="Colle ou écris un texte à analyser…"></textarea>
+<form onsubmit={run} class="mb-6">
+  <textarea
+    bind:value={text}
+    rows="6"
+    placeholder="Colle ou écris un texte à analyser…"
+    class="box-border w-full resize-y rounded-[10px] border border-ink-720 bg-ink-880 px-4 py-[0.9rem] font-[inherit] text-[0.95rem] leading-normal text-fog-100 transition-[border-color] duration-150 focus:border-accent-500 focus:outline-none"
+  ></textarea>
 
-  <div class="actions">
-    <div class="dropdown">
-      <button type="button" class="ghost" onclick={() => (menuOpen = !menuOpen)}>
+  <div class="mt-3 flex items-center gap-2">
+    <div class="relative">
+      <button
+        type="button"
+        class="cursor-pointer rounded-lg border border-ink-720 bg-ink-810 px-[1.1rem] py-[0.6rem] text-[0.88rem] font-medium text-fog-400 transition-[opacity,background] duration-150 enabled:hover:bg-ink-780 disabled:cursor-not-allowed disabled:opacity-40"
+        onclick={() => (menuOpen = !menuOpen)}>
         Exemples ▾
       </button>
       {#if menuOpen}
         <button
           type="button"
-          class="menu-backdrop"
+          class="fixed inset-0 z-40 cursor-default border-none bg-transparent p-0"
           aria-label="Fermer"
           onclick={() => (menuOpen = false)}></button>
-        <ul class="menu">
+        <ul
+          class="absolute top-[calc(100%+0.4rem)] left-0 z-50 m-0 flex min-w-65 list-none flex-col gap-[0.15rem] rounded-[10px] border border-ink-720 bg-ink-850 p-[0.35rem] shadow-[0_16px_40px_rgba(0,0,0,0.5)]">
           {#each examples as ex}
             <li>
-              <button type="button" onclick={() => loadExample(ex.text)}>
-                <span class="ex-label">{ex.label}</span>
-                <span class="ex-hint">{ex.hint}</span>
+              <button
+                type="button"
+                class="flex w-full cursor-pointer flex-col gap-[0.1rem] rounded-[7px] border-none bg-transparent px-[0.65rem] py-2 text-left transition-[background] duration-120 hover:bg-ink-780"
+                onclick={() => loadExample(ex.text)}>
+                <span class="text-[0.86rem] font-medium text-fog-100">{ex.label}</span>
+                <span class="text-[0.74rem] font-normal text-fog-600">{ex.hint}</span>
               </button>
             </li>
           {/each}
         </ul>
       {/if}
     </div>
-    <button type="button" class="ghost" onclick={() => (text = "")} disabled={!text}>
+    <button
+      type="button"
+      class="cursor-pointer rounded-lg border border-ink-720 bg-ink-810 px-[1.1rem] py-[0.6rem] text-[0.88rem] font-medium text-fog-400 transition-[opacity,background] duration-150 enabled:hover:bg-ink-780 disabled:cursor-not-allowed disabled:opacity-40"
+      onclick={() => (text = "")}
+      disabled={!text}>
       Vider
     </button>
-    <span class="spacer"></span>
+    <span class="flex-1"></span>
     <label class="switch" title="Activer / désactiver la recherche web pour cette analyse">
       <input type="checkbox" bind:checked={webSearch} />
       <span class="track"><span class="thumb"></span></span>
       <span class="switch-label">{webSearch ? "🌐 Web" : "🧠 Sans web"}</span>
     </label>
-    <button type="submit" disabled={loading || text.trim().length === 0}>
+    <button
+      type="submit"
+      disabled={loading || text.trim().length === 0}
+      class="cursor-pointer rounded-lg border-none bg-[linear-gradient(135deg,#5a5ad0,#7a4ad0)] px-[1.1rem] py-[0.6rem] text-[0.88rem] font-semibold text-white transition-[opacity,background] duration-150 enabled:hover:opacity-92 disabled:cursor-not-allowed disabled:opacity-40">
       {loading ? "Analyse en cours…" : "Analyser"}
     </button>
   </div>
 </form>
 
 {#if error}
-  <p class="error" role="alert">{error}</p>
+  <p
+    class="rounded-lg border border-red-500/40 bg-red-500/12 px-[0.9rem] py-[0.7rem] text-[0.85rem] text-red-300"
+    role="alert">
+    {error}
+  </p>
 {/if}
 
 {#if loading}
-  <div class="placeholder">
-    <span class="spinner"></span>
+  <div
+    class="flex items-center gap-[0.7rem] rounded-[10px] border border-dashed border-ink-720 bg-ink-880 p-6 text-[0.9rem] text-fog-500">
+    <span class="spinner h-4 w-4 shrink-0 rounded-full border-2 border-ink-640 border-t-accent-400"
+    ></span>
     Extraction et vérification… (le web search peut prendre quelques secondes)
   </div>
 {:else if claims !== null}
-  <div class="results-head">
-    <h2>
+  <div class="mb-[0.8rem] flex items-baseline justify-between">
+    <h2 class="m-0 text-[1.05rem]">
       {claims.length} claim{claims.length > 1 ? "s" : ""}
     </h2>
-    <span class="elapsed">{(elapsed / 1000).toFixed(1)} s</span>
+    <span class="text-[0.8rem] tabular-nums text-fog-700">{(elapsed / 1000).toFixed(1)} s</span>
   </div>
 
   {#if debug}
-    <div class="debug-bar">
-      <span class="debug-item">
-        <span class="debug-label">Modèle</span>
-        <code>{debug.model}</code>
+    <div
+      class="mb-[0.9rem] flex flex-wrap items-center gap-x-[0.6rem] gap-y-[0.4rem] rounded-lg border border-ink-820 bg-ink-950 px-[0.85rem] py-[0.45rem] text-[0.78rem] text-fog-600">
+      <span class="flex items-center gap-[0.35rem]">
+        <span class="text-ink-600">Modèle</span>
+        <code class="font-mono text-[0.74rem] text-[#8888b8]">{debug.model}</code>
       </span>
-      <span class="debug-sep">·</span>
-      <span class="debug-item">
-        <span class="debug-label">Tours</span>
-        <span class="chip {debug.turns === 2 ? 'chip-warn' : 'chip-ok'}">{debug.turns}</span>
+      <span class="text-ink-700">·</span>
+      <span class="flex items-center gap-[0.35rem]">
+        <span class="text-ink-600">Tours</span>
+        <span
+          class="rounded-full border px-[0.45rem] py-[0.1rem] text-[0.72rem] font-medium whitespace-nowrap {debug.turns ===
+          2
+            ? 'border-amber-500/20 bg-amber-500/10 text-amber-400'
+            : 'border-green-500/20 bg-green-500/10 text-green-400'}">{debug.turns}</span>
       </span>
-      <span class="debug-sep">·</span>
-      <span class="debug-item">
-        <span class="debug-label">Web search</span>
-        <span class="chip {debug.web_search_called ? 'chip-info' : 'chip-neutral'}">
+      <span class="text-ink-700">·</span>
+      <span class="flex items-center gap-[0.35rem]">
+        <span class="text-ink-600">Web search</span>
+        <span
+          class="rounded-full border px-[0.45rem] py-[0.1rem] text-[0.72rem] font-medium whitespace-nowrap {debug.web_search_called
+            ? 'border-[rgba(99,179,237,0.2)] bg-[rgba(99,179,237,0.1)] text-[#63b3ed]'
+            : 'border-[rgba(100,100,140,0.15)] bg-[rgba(100,100,140,0.1)] text-[#7070a0]'}">
           {debug.web_search_called ? "déclenchée" : "non utilisée"}
         </span>
       </span>
-      <span class="debug-sep">·</span>
-      <span class="debug-item">
-        <span class="debug-label">Tokens</span>
+      <span class="text-ink-700">·</span>
+      <span class="flex items-center gap-[0.35rem]">
+        <span class="text-ink-600">Tokens</span>
         <span>{(debug.usage.input_tokens + debug.usage.output_tokens).toLocaleString()}</span>
       </span>
       {#if debug.usage.cache_read > 0}
-        <span class="debug-sep">·</span>
-        <span class="debug-item">
-          <span class="debug-label">Cache hit</span>
-          <span class="cache-hit">{cacheRatio(debug.usage)}</span>
+        <span class="text-ink-700">·</span>
+        <span class="flex items-center gap-[0.35rem]">
+          <span class="text-ink-600">Cache hit</span>
+          <span class="font-medium text-green-400">{cacheRatio(debug.usage)}</span>
         </span>
       {/if}
     </div>
   {/if}
 
   {#if claims.length === 0}
-    <p class="empty">Aucun fait vérifiable trouvé dans ce texte.</p>
+    <p
+      class="rounded-[10px] border border-dashed border-ink-720 bg-ink-880 p-[1.2rem] text-center text-[0.9rem] text-fog-500">
+      Aucun fait vérifiable trouvé dans ce texte.
+    </p>
   {:else}
     <div class="claims">
       {#each claims as claim (claim.id)}
@@ -237,52 +275,9 @@
 {/if}
 
 <style>
-  header h1 {
-    font-size: 1.4rem;
-    margin: 0 0 0.3rem;
-  }
-
-  header p {
-    color: #8888a0;
-    font-size: 0.88rem;
-    margin: 0 0 1.5rem;
-  }
-
-  form {
-    margin-bottom: 1.5rem;
-  }
-
-  textarea {
-    width: 100%;
-    box-sizing: border-box;
-    background: #161624;
-    border: 1px solid #2e2e3e;
-    border-radius: 10px;
-    padding: 0.9rem 1rem;
-    color: #e8e8f0;
-    font-size: 0.95rem;
-    font-family: inherit;
-    line-height: 1.5;
-    resize: vertical;
-    transition: border-color 0.15s;
-  }
-
-  textarea:focus {
-    outline: none;
-    border-color: #6a6acc;
-  }
-
-  .actions {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin-top: 0.75rem;
-  }
-
-  .spacer {
-    flex: 1;
-  }
-
+  /* The web-search toggle is a custom checkbox styled via sibling + :checked +
+     nested selectors (input:checked + .track .thumb), which has no clean utility
+     equivalent. The spinner needs keyframes. Both kept in CSS. */
   .switch {
     display: inline-flex;
     align-items: center;
@@ -344,235 +339,13 @@
     min-width: 76px;
   }
 
-  .dropdown {
-    position: relative;
-  }
-
-  .menu-backdrop {
-    position: fixed;
-    inset: 0;
-    background: transparent;
-    border: none;
-    padding: 0;
-    z-index: 40;
-    cursor: default;
-  }
-
-  .menu {
-    position: absolute;
-    top: calc(100% + 0.4rem);
-    left: 0;
-    z-index: 50;
-    list-style: none;
-    margin: 0;
-    padding: 0.35rem;
-    min-width: 260px;
-    background: #1a1a2a;
-    border: 1px solid #2e2e3e;
-    border-radius: 10px;
-    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
-    display: flex;
-    flex-direction: column;
-    gap: 0.15rem;
-  }
-
-  .menu li button {
-    width: 100%;
-    text-align: left;
-    background: transparent;
-    border: none;
-    border-radius: 7px;
-    padding: 0.5rem 0.65rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.1rem;
-    cursor: pointer;
-    transition: background 0.12s;
-  }
-
-  .menu li button:hover {
-    background: #26263a;
-  }
-
-  .ex-label {
-    color: #e8e8f0;
-    font-size: 0.86rem;
-    font-weight: 500;
-  }
-
-  .ex-hint {
-    color: #7a7a98;
-    font-size: 0.74rem;
-    font-weight: 400;
-  }
-
-  button {
-    border-radius: 8px;
-    padding: 0.6rem 1.1rem;
-    font-size: 0.88rem;
-    font-weight: 600;
-    cursor: pointer;
-    border: none;
-    transition:
-      opacity 0.15s,
-      background 0.15s;
-  }
-
-  button[type="submit"] {
-    background: linear-gradient(135deg, #5a5ad0, #7a4ad0);
-    color: #fff;
-  }
-
-  button[type="submit"]:hover:not(:disabled) {
-    opacity: 0.92;
-  }
-
-  .ghost {
-    background: #1e1e30;
-    color: #b0b0c8;
-    border: 1px solid #2e2e3e;
-    font-weight: 500;
-  }
-
-  .ghost:hover:not(:disabled) {
-    background: #26263a;
-  }
-
-  button:disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
-  }
-
-  .error {
-    background: rgba(239, 68, 68, 0.12);
-    border: 1px solid rgba(239, 68, 68, 0.4);
-    color: #fca5a5;
-    border-radius: 8px;
-    padding: 0.7rem 0.9rem;
-    font-size: 0.85rem;
-  }
-
-  .placeholder {
-    display: flex;
-    align-items: center;
-    gap: 0.7rem;
-    color: #8888a0;
-    font-size: 0.9rem;
-    padding: 1.5rem;
-    background: #161624;
-    border: 1px dashed #2e2e3e;
-    border-radius: 10px;
-  }
-
   .spinner {
-    width: 16px;
-    height: 16px;
-    border: 2px solid #3a3a5a;
-    border-top-color: #7a7ad0;
-    border-radius: 50%;
     animation: spin 0.7s linear infinite;
-    flex-shrink: 0;
   }
 
   @keyframes spin {
     to {
       transform: rotate(360deg);
     }
-  }
-
-  .results-head {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    margin-bottom: 0.8rem;
-  }
-
-  .results-head h2 {
-    font-size: 1.05rem;
-    margin: 0;
-  }
-
-  .elapsed {
-    color: #6a6a88;
-    font-size: 0.8rem;
-    font-variant-numeric: tabular-nums;
-  }
-
-  .empty {
-    color: #8888a0;
-    font-size: 0.9rem;
-    padding: 1.2rem;
-    background: #161624;
-    border: 1px dashed #2e2e3e;
-    border-radius: 10px;
-    text-align: center;
-  }
-
-  .debug-bar {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 0.4rem 0.6rem;
-    background: #0e0e1c;
-    border: 1px solid #1e1e2e;
-    border-radius: 8px;
-    padding: 0.45rem 0.85rem;
-    margin-bottom: 0.9rem;
-    font-size: 0.78rem;
-    color: #7a7a98;
-  }
-
-  .debug-item {
-    display: flex;
-    align-items: center;
-    gap: 0.35rem;
-  }
-
-  .debug-label {
-    color: #4a4a68;
-  }
-
-  .debug-bar code {
-    font-family: "SF Mono", "Fira Code", monospace;
-    font-size: 0.74rem;
-    color: #8888b8;
-  }
-
-  .debug-sep {
-    color: #2e2e4e;
-  }
-
-  .chip {
-    border-radius: 999px;
-    padding: 0.1rem 0.45rem;
-    font-size: 0.72rem;
-    font-weight: 500;
-    white-space: nowrap;
-  }
-
-  .chip-ok {
-    background: rgba(34, 197, 94, 0.1);
-    color: #4ade80;
-    border: 1px solid rgba(34, 197, 94, 0.2);
-  }
-  .chip-warn {
-    background: rgba(245, 158, 11, 0.1);
-    color: #fbbf24;
-    border: 1px solid rgba(245, 158, 11, 0.2);
-  }
-  .chip-info {
-    background: rgba(99, 179, 237, 0.1);
-    color: #63b3ed;
-    border: 1px solid rgba(99, 179, 237, 0.2);
-  }
-  .chip-neutral {
-    background: rgba(100, 100, 140, 0.1);
-    color: #7070a0;
-    border: 1px solid rgba(100, 100, 140, 0.15);
-  }
-
-  .cache-hit {
-    color: #4ade80;
-    font-weight: 500;
   }
 </style>

@@ -13,174 +13,57 @@
   ];
 </script>
 
-<div class="content">
-  <section class="transcript-panel">
-    <h2>📝 Transcription</h2>
-    <div class="transcript-box">
+<div class="grid grid-cols-1 items-start gap-8 md:grid-cols-2">
+  <section>
+    <h2 class="mt-0 mb-3 text-[1.1rem]">📝 Transcription</h2>
+    <div class="flex max-h-115 flex-col gap-[0.4rem] overflow-y-auto rounded-lg bg-ink-820 p-3">
       {#if $transcriptEntries.length === 0}
-        <p class="empty">En attente de la transcription...</p>
+        <p class="m-0 p-8 text-center text-ash-700">En attente de la transcription...</p>
       {:else}
         {#each [...$transcriptEntries].reverse() as entry (entry.timestamp)}
-          <div class="entry">
-            <span class="time">{new Date(entry.timestamp).toLocaleTimeString()}</span>
-            <span class="text">{entry.text}</span>
+          <div class="flex items-baseline gap-3 rounded-md bg-ink-770 px-2 py-[0.4rem]">
+            <span class="shrink-0 text-xs whitespace-nowrap tabular-nums text-ash-700"
+              >{new Date(entry.timestamp).toLocaleTimeString()}</span>
+            <span class="text-[0.9rem] leading-normal text-ash-400">{entry.text}</span>
           </div>
         {/each}
       {/if}
     </div>
   </section>
 
-  <section class="claims-panel">
-    <div class="claims-top">
-      <h2>📊 Claims ({$claimStats.total})</h2>
-      <div class="stats">
-        <span class="s verified">✅ {$claimStats.verified}</span>
-        <span class="s false">❌ {$claimStats.false}</span>
-        <span class="s pending">⏳ {$claimStats.pending}</span>
-        <span class="s uncertain">❓ {$claimStats.uncertain}</span>
-        <span class="s unverifiable">🔍 {$claimStats.unverifiable}</span>
+  <section>
+    <div class="mb-2">
+      <h2 class="mt-0 mb-3 text-[1.1rem]">📊 Claims ({$claimStats.total})</h2>
+      <div class="mt-[0.3rem] flex flex-wrap gap-3 text-[0.85rem]">
+        <span class="text-emerald-500">✅ {$claimStats.verified}</span>
+        <span class="text-red-500">❌ {$claimStats.false}</span>
+        <span class="text-amber-500">⏳ {$claimStats.pending}</span>
+        <span class="text-gray-500">❓ {$claimStats.uncertain}</span>
+        <span class="text-violet-500">🔍 {$claimStats.unverifiable}</span>
       </div>
     </div>
-    <div class="filters">
+    <div class="mb-3 flex flex-wrap gap-[0.4rem]">
       {#each filters as f}
-        <button class:active={$claimFilter === f.key} onclick={() => claimFilter.set(f.key)}>
+        <button
+          class={[
+            "cursor-pointer rounded-[20px] border px-3 py-[0.3rem] text-[0.8rem] transition-all duration-150",
+            $claimFilter === f.key
+              ? "border-accent-700 bg-ink-700 text-white"
+              : "border-ink-720 bg-ink-820 text-ash-500 hover:border-ash-700 hover:text-ash-300"
+          ]}
+          onclick={() => claimFilter.set(f.key)}>
           {f.icon}
           {f.label}
         </button>
       {/each}
     </div>
-    <div class="claims-list">
+    <div class="flex max-h-115 flex-col gap-2 overflow-y-auto">
       {#each $filteredClaims as claim (claim.id)}
         <ClaimCard {claim} />
       {/each}
       {#if $filteredClaims.length === 0}
-        <p class="empty">Aucun fait détecté pour le moment...</p>
+        <p class="m-0 p-8 text-center text-ash-700">Aucun fait détecté pour le moment...</p>
       {/if}
     </div>
   </section>
 </div>
-
-<style>
-  .content {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 2rem;
-    align-items: start;
-  }
-
-  h2 {
-    font-size: 1.1rem;
-    margin: 0 0 0.75rem;
-  }
-
-  .transcript-box {
-    background: #1e1e2e;
-    border-radius: 8px;
-    padding: 0.75rem;
-    max-height: 460px;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
-  }
-
-  .entry {
-    display: flex;
-    gap: 0.75rem;
-    align-items: baseline;
-    padding: 0.4rem 0.5rem;
-    border-radius: 6px;
-    background: #252535;
-  }
-
-  .time {
-    color: #555;
-    font-size: 0.75rem;
-    white-space: nowrap;
-    font-variant-numeric: tabular-nums;
-    flex-shrink: 0;
-  }
-
-  .text {
-    color: #ccc;
-    font-size: 0.9rem;
-    line-height: 1.5;
-  }
-
-  .claims-top {
-    margin-bottom: 0.5rem;
-  }
-
-  .stats {
-    display: flex;
-    gap: 0.75rem;
-    font-size: 0.85rem;
-    flex-wrap: wrap;
-    margin-top: 0.3rem;
-  }
-
-  .s.verified {
-    color: #10b981;
-  }
-  .s.false {
-    color: #ef4444;
-  }
-  .s.pending {
-    color: #f59e0b;
-  }
-  .s.uncertain {
-    color: #6b7280;
-  }
-  .s.unverifiable {
-    color: #8b5cf6;
-  }
-
-  .filters {
-    display: flex;
-    gap: 0.4rem;
-    flex-wrap: wrap;
-    margin-bottom: 0.75rem;
-  }
-
-  .filters button {
-    background: #1e1e2e;
-    border: 1px solid #2e2e3e;
-    color: #aaa;
-    border-radius: 20px;
-    padding: 0.3rem 0.75rem;
-    font-size: 0.8rem;
-    cursor: pointer;
-    transition: all 0.15s;
-  }
-
-  .filters button:hover {
-    border-color: #555;
-    color: #ddd;
-  }
-  .filters button.active {
-    background: #2e2e4e;
-    border-color: #5555aa;
-    color: #fff;
-  }
-
-  .claims-list {
-    max-height: 460px;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-
-  .empty {
-    color: #555;
-    text-align: center;
-    padding: 2rem;
-    margin: 0;
-  }
-
-  @media (max-width: 768px) {
-    .content {
-      grid-template-columns: 1fr;
-    }
-  }
-</style>

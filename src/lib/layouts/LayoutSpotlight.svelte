@@ -28,158 +28,53 @@
   );
 </script>
 
-<div class="spotlight-layout">
+<div class="flex flex-col gap-6">
   {#if shown}
     {@const cfg = STATUS_CONFIG[shown.status] ?? STATUS_CONFIG.pending}
-    <div class="stage" style="--sc: {cfg.color}">
-      <div class="verdict">
-        <span class="verdict-icon">{cfg.icon}</span>
-        <span class="verdict-label" style="color: {cfg.color}">{cfg.label}</span>
+    <div
+      class="flex min-h-70 flex-col items-center justify-center gap-5 rounded-xl border border-t-4 border-ink-720 bg-ink-850 px-16 py-12 text-center transition-[border-color] duration-300 border-t-(--sc)"
+      style="--sc: {cfg.color}">
+      <div class="flex items-center gap-[0.6rem]">
+        <span class="text-[2rem]">{cfg.icon}</span>
+        <span class="text-[1.4rem] font-bold tracking-widest uppercase" style="color: {cfg.color}"
+          >{cfg.label}</span>
       </div>
-      <blockquote class="claim-text">
+      <blockquote class="m-0 max-w-170 text-[1.35rem] leading-normal text-fog-250 italic">
         « {shown.text} »
       </blockquote>
       {#if shown.explanation}
-        <p class="explanation">{shown.explanation}</p>
+        <p class="m-0 max-w-150 text-base leading-[1.6] text-ash-600">{shown.explanation}</p>
       {/if}
-      <span class="timestamp">{new Date(shown.timestamp).toLocaleTimeString()}</span>
+      <span class="text-[0.8rem] tabular-nums text-ash-750"
+        >{new Date(shown.timestamp).toLocaleTimeString()}</span>
     </div>
   {:else}
-    <div class="stage empty">
-      <p class="waiting">En attente d'un fait à vérifier...</p>
+    <div
+      class="flex min-h-70 flex-col items-center justify-center gap-5 rounded-xl border border-t-4 border-ink-720 bg-ink-850 px-16 py-12 text-center transition-[border-color] duration-300 border-t-(--sc)"
+      style="--sc: #333">
+      <p class="m-0 text-[1.1rem] text-ash-750">En attente d'un fait à vérifier...</p>
     </div>
   {/if}
 
   {#if strip.length > 0}
-    <div class="history-strip">
+    <div class="flex gap-2 overflow-x-auto pb-1">
       {#each strip as claim (claim.id)}
         {@const cfg = STATUS_CONFIG[claim.status] ?? STATUS_CONFIG.pending}
         <button
-          class="strip-pill"
-          class:selected={selectedId === claim.id || (!selectedId && claim.id === spotlight?.id)}
+          class={[
+            "flex shrink-0 cursor-pointer items-center gap-[0.4rem] rounded-[20px] border bg-ink-820 px-3 py-[0.3rem] whitespace-nowrap transition-all duration-150",
+            selectedId === claim.id || (!selectedId && claim.id === spotlight?.id)
+              ? "border-(--sc) bg-[#222235]"
+              : "border-ink-720 hover:border-(--sc)"
+          ]}
           style="--sc: {cfg.color}"
           onclick={() => (selectedId = claim.id === selectedId ? null : claim.id)}
           title={claim.text}>
-          <span class="pill-icon">{cfg.icon}</span>
-          <span class="pill-text"
+          <span class="text-[0.85rem]">{cfg.icon}</span>
+          <span class="text-[0.78rem] text-ash-500"
             >{claim.text.slice(0, 40)}{claim.text.length > 40 ? "…" : ""}</span>
         </button>
       {/each}
     </div>
   {/if}
 </div>
-
-<style>
-  .spotlight-layout {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-  }
-
-  /* Stage */
-  .stage {
-    background: #1a1a2a;
-    border: 1px solid #2e2e3e;
-    border-top: 4px solid var(--sc, #333);
-    border-radius: 12px;
-    padding: 3rem 4rem;
-    text-align: center;
-    min-height: 280px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 1.25rem;
-    transition: border-color 0.3s;
-  }
-
-  .stage.empty {
-    --sc: #333;
-  }
-
-  .verdict {
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-  }
-
-  .verdict-icon {
-    font-size: 2rem;
-  }
-
-  .verdict-label {
-    font-size: 1.4rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-  }
-
-  .claim-text {
-    font-size: 1.35rem;
-    font-style: italic;
-    color: #e0e0e0;
-    margin: 0;
-    max-width: 680px;
-    line-height: 1.5;
-  }
-
-  .explanation {
-    font-size: 1rem;
-    color: #888;
-    max-width: 600px;
-    line-height: 1.6;
-    margin: 0;
-  }
-
-  .timestamp {
-    font-size: 0.8rem;
-    color: #444;
-    font-variant-numeric: tabular-nums;
-  }
-
-  .waiting {
-    color: #444;
-    font-size: 1.1rem;
-    margin: 0;
-  }
-
-  /* History strip */
-  .history-strip {
-    display: flex;
-    gap: 0.5rem;
-    overflow-x: auto;
-    padding-bottom: 0.25rem;
-  }
-
-  .strip-pill {
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-    background: #1e1e2e;
-    border: 1px solid #2e2e3e;
-    border-radius: 20px;
-    padding: 0.3rem 0.75rem;
-    cursor: pointer;
-    white-space: nowrap;
-    transition: all 0.15s;
-    flex-shrink: 0;
-  }
-
-  .strip-pill:hover {
-    border-color: var(--sc);
-  }
-
-  .strip-pill.selected {
-    background: #222235;
-    border-color: var(--sc);
-  }
-
-  .pill-icon {
-    font-size: 0.85rem;
-  }
-
-  .pill-text {
-    font-size: 0.78rem;
-    color: #aaa;
-  }
-</style>

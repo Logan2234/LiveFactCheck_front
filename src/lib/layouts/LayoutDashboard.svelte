@@ -13,51 +13,63 @@
     ];
 </script>
 
-<div class="dashboard">
-  <div class="stat-row">
+<div class="flex flex-col gap-5">
+  <div class="grid grid-cols-5 gap-3 max-[900px]:grid-cols-3">
     {#each statCards as s}
       <button
-        class="stat-tile"
-        class:active={$claimFilter === s.key}
+        class={[
+          "stat-tile relative flex cursor-pointer flex-col items-center gap-1 overflow-hidden rounded-[10px] border bg-ink-820 px-3 py-4 transition-all duration-150",
+          $claimFilter === s.key ? "active border-(--c) bg-[#222235]" : "border-ink-720"
+        ]}
         style="--c: {s.color}"
         onclick={() => claimFilter.set($claimFilter === s.key ? "all" : (s.key as ClaimFilter))}
         title="Filtrer : {s.label}">
-        <span class="tile-icon">{s.icon}</span>
-        <span class="tile-num" style="color: {s.color}">{$claimStats[s.key]}</span>
-        <span class="tile-label">{s.label}</span>
+        <span class="text-xl">{s.icon}</span>
+        <span class="text-[1.75rem] leading-none font-bold" style="color: {s.color}"
+          >{$claimStats[s.key]}</span>
+        <span class="text-[0.7rem] tracking-wider text-ash-600 uppercase">{s.label}</span>
       </button>
     {/each}
   </div>
 
-  <div class="columns">
-    <div class="transcript-col">
-      <h3>📝 Transcript</h3>
-      <div class="transcript-log">
+  <div class="grid grid-cols-[1fr_2fr] items-start gap-6 max-[900px]:grid-cols-1">
+    <div>
+      <h3
+        class="mt-0 mb-3 flex items-center gap-2 text-[0.9rem] tracking-wider text-ash-600 uppercase">
+        📝 Transcript
+      </h3>
+      <div class="flex max-h-120 flex-col gap-2 overflow-y-auto rounded-lg bg-ink-850 p-3">
         {#if $transcriptEntries.length === 0}
-          <p class="empty">En attente...</p>
+          <p class="m-0 p-8 text-center text-[0.85rem] text-ash-750">En attente...</p>
         {:else}
           {#each [...$transcriptEntries].reverse() as entry (entry.timestamp)}
-            <div class="log-line">
-              <span class="time">{new Date(entry.timestamp).toLocaleTimeString()}</span>
-              <span class="text">{entry.text}</span>
+            <div
+              class="flex flex-col gap-[0.15rem] border-b border-ink-820 pb-2 last:border-b-0 last:pb-0">
+              <span class="text-[0.7rem] tabular-nums text-ash-750"
+                >{new Date(entry.timestamp).toLocaleTimeString()}</span>
+              <span class="text-[0.85rem] leading-[1.4] text-[#999]">{entry.text}</span>
             </div>
           {/each}
         {/if}
       </div>
     </div>
 
-    <div class="claims-col">
-      <h3>
+    <div>
+      <h3
+        class="mt-0 mb-3 flex items-center gap-2 text-[0.9rem] tracking-wider text-ash-600 uppercase">
         Faits
-        {#if $claimFilter !== "all"}<span class="filter-badge">{$claimFilter}</span>{/if}
-        <span class="count">({$filteredClaims.length})</span>
+        {#if $claimFilter !== "all"}<span
+            class="rounded-sm border border-accent-700 bg-ink-700 px-[0.4rem] py-[0.1rem] text-[0.7rem] text-ash-500 normal-case"
+            >{$claimFilter}</span
+          >{/if}
+        <span class="text-[0.8rem] text-ash-700">({$filteredClaims.length})</span>
       </h3>
-      <div class="claims-list">
+      <div class="flex max-h-120 flex-col gap-2 overflow-y-auto">
         {#each $filteredClaims as claim (claim.id)}
           <ClaimCard {claim} />
         {/each}
         {#if $filteredClaims.length === 0}
-          <p class="empty">Aucun fait détecté...</p>
+          <p class="m-0 p-8 text-center text-[0.85rem] text-ash-750">Aucun fait détecté...</p>
         {/if}
       </div>
     </div>
@@ -65,34 +77,8 @@
 </div>
 
 <style>
-  .dashboard {
-    display: flex;
-    flex-direction: column;
-    gap: 1.25rem;
-  }
-
-  /* Stat tiles */
-  .stat-row {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 0.75rem;
-  }
-
-  .stat-tile {
-    background: #1e1e2e;
-    border: 1px solid #2e2e3e;
-    border-radius: 10px;
-    padding: 1rem 0.75rem;
-    cursor: pointer;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.25rem;
-    transition: all 0.15s;
-    position: relative;
-    overflow: hidden;
-  }
-
+  /* Top accent bar — a pseudo-element can't be expressed as a utility.
+     --c is injected per-tile; .active mirrors the JS-driven selected state. */
   .stat-tile::before {
     content: "";
     position: absolute;
@@ -108,120 +94,5 @@
   .stat-tile:hover::before,
   .stat-tile.active::before {
     opacity: 1;
-  }
-
-  .stat-tile.active {
-    background: #222235;
-    border-color: var(--c);
-  }
-
-  .tile-icon {
-    font-size: 1.25rem;
-  }
-  .tile-num {
-    font-size: 1.75rem;
-    font-weight: 700;
-    line-height: 1;
-  }
-  .tile-label {
-    font-size: 0.7rem;
-    color: #888;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-
-  /* Two-column layout */
-  .columns {
-    display: grid;
-    grid-template-columns: 1fr 2fr;
-    gap: 1.5rem;
-    align-items: start;
-  }
-
-  h3 {
-    font-size: 0.9rem;
-    color: #888;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    margin: 0 0 0.75rem;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-
-  .filter-badge {
-    background: #2e2e4e;
-    border: 1px solid #5555aa;
-    color: #aaa;
-    border-radius: 4px;
-    padding: 0.1rem 0.4rem;
-    font-size: 0.7rem;
-    text-transform: none;
-  }
-
-  .count {
-    color: #555;
-    font-size: 0.8rem;
-  }
-
-  .transcript-log {
-    background: #1a1a2a;
-    border-radius: 8px;
-    padding: 0.75rem;
-    max-height: 480px;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-
-  .log-line {
-    display: flex;
-    flex-direction: column;
-    gap: 0.15rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 1px solid #1e1e2e;
-  }
-
-  .log-line:last-child {
-    border-bottom: none;
-    padding-bottom: 0;
-  }
-
-  .time {
-    color: #444;
-    font-size: 0.7rem;
-    font-variant-numeric: tabular-nums;
-  }
-
-  .text {
-    color: #999;
-    font-size: 0.85rem;
-    line-height: 1.4;
-  }
-
-  .claims-list {
-    max-height: 480px;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-
-  .empty {
-    color: #444;
-    text-align: center;
-    padding: 2rem;
-    margin: 0;
-    font-size: 0.85rem;
-  }
-
-  @media (max-width: 900px) {
-    .stat-row {
-      grid-template-columns: repeat(3, 1fr);
-    }
-    .columns {
-      grid-template-columns: 1fr;
-    }
   }
 </style>

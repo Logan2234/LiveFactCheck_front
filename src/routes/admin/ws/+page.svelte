@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { onMount, onDestroy } from "svelte";
   import { authFetch, clearToken } from "$lib/stores/auth";
+  import { onDestroy, onMount } from "svelte";
 
   interface Session {
     id: string;
@@ -71,40 +71,55 @@
   <title>WebSockets — Admin</title>
 </svelte:head>
 
-<header>
+<header class="mb-6 flex flex-wrap items-start justify-between gap-4">
   <div>
-    <h1>🔌 WebSockets</h1>
-    <p>Connexions actives — rafraîchissement toutes les 2 s.</p>
+    <h1 class="mt-0 mb-[0.3rem] text-[1.4rem]">🔌 WebSockets</h1>
+    <p class="m-0 text-[0.88rem] text-fog-500">
+      Connexions actives — rafraîchissement toutes les 2 s.
+    </p>
   </div>
   {#if lastPoll}
-    <span class="last-poll">Mis à jour à {lastPoll.toLocaleTimeString("fr-FR")}</span>
+    <span class="shrink-0 self-end text-xs tabular-nums text-ink-600"
+      >Mis à jour à {lastPoll.toLocaleTimeString("fr-FR")}</span>
   {/if}
 </header>
 
 {#if error}
-  <p class="error" role="alert">{error}</p>
+  <p
+    class="mb-4 rounded-lg border border-red-500/35 bg-red-500/10 px-[0.9rem] py-[0.7rem] text-[0.85rem] text-red-300"
+    role="alert">
+    {error}
+  </p>
 {/if}
 
 {#if data}
   <!-- Métriques globales -->
-  <div class="metrics">
-    <div class="metric">
-      <span class="metric-label">Connexions actives</span>
-      <span class="metric-val {data.active.length > 0 ? 'live' : ''}">
+  <div class="mb-5 flex flex-wrap gap-3">
+    <div
+      class="flex min-w-32.5 flex-col gap-[0.2rem] rounded-[10px] border border-ink-720 bg-ink-880 px-4 py-[0.65rem]">
+      <span class="text-[0.72rem] text-fog-600">Connexions actives</span>
+      <span
+        class={[
+          "flex items-center gap-[0.4rem] text-base font-semibold",
+          data.active.length > 0 ? "text-green-400" : "text-fog-200"
+        ]}>
         {#if data.active.length > 0}
-          <span class="pulse"></span>
+          <span class="pulse h-2 w-2 shrink-0 rounded-full bg-green-500"></span>
         {/if}
         {data.active.length}
       </span>
     </div>
-    <div class="metric">
-      <span class="metric-label">Total depuis démarrage</span>
-      <span class="metric-val">{data.total_since_start}</span>
+    <div
+      class="flex min-w-32.5 flex-col gap-[0.2rem] rounded-[10px] border border-ink-720 bg-ink-880 px-4 py-[0.65rem]">
+      <span class="text-[0.72rem] text-fog-600">Total depuis démarrage</span>
+      <span class="flex items-center gap-[0.4rem] text-base font-semibold text-fog-200"
+        >{data.total_since_start}</span>
     </div>
     {#if data.active.length > 0}
-      <div class="metric">
-        <span class="metric-label">Tasks Claude en cours</span>
-        <span class="metric-val">
+      <div
+        class="flex min-w-32.5 flex-col gap-[0.2rem] rounded-[10px] border border-ink-720 bg-ink-880 px-4 py-[0.65rem]">
+        <span class="text-[0.72rem] text-fog-600">Tasks Claude en cours</span>
+        <span class="flex items-center gap-[0.4rem] text-base font-semibold text-fog-200">
           {data.active.reduce((acc, s) => acc + s.active_tasks, 0)}
         </span>
       </div>
@@ -113,66 +128,80 @@
 
   <!-- Sessions actives -->
   {#if data.active.length === 0}
-    <div class="empty">
-      <span class="empty-icon">🔇</span>
+    <div
+      class="flex flex-col items-center gap-[0.6rem] rounded-xl border border-dashed border-ink-720 bg-ink-950 px-4 py-12 text-center text-[0.88rem] text-ink-600">
+      <span class="text-[1.8rem]">🔇</span>
       <span>Aucune connexion active — l'application live n'est pas ouverte.</span>
     </div>
   {:else}
-    <div class="sessions">
+    <div class="grid grid-cols-[repeat(auto-fill,minmax(340px,1fr))] gap-4">
       {#each data.active as session (session.id)}
-        <div class="session-card">
-          <div class="session-header">
-            <div class="session-id">
-              <span class="dot dot-live"></span>
-              <code>{session.id.slice(0, 8)}</code>
+        <div
+          class="flex flex-col gap-[0.8rem] rounded-xl border border-ink-720 bg-ink-880 px-[1.2rem] py-4">
+          <div class="flex items-center justify-between gap-2 border-b border-ink-780 pb-[0.7rem]">
+            <div class="flex items-center gap-2">
+              <span
+                class="h-2 w-2 shrink-0 rounded-full bg-green-500 shadow-[0_0_6px_rgba(34,197,94,0.5)]"
+              ></span>
+              <code class="font-mono text-[0.82rem] text-[#9a9aff]">{session.id.slice(0, 8)}</code>
             </div>
-            <span class="connected-since"
+            <span class="text-xs text-ink-560"
               >connecté depuis {formatDuration(session.connected_at)}</span>
           </div>
 
-          <dl>
-            <div class="row">
-              <dt>Client IP</dt>
-              <dd class="mono">{session.client}</dd>
+          <dl class="m-0 flex flex-col gap-[0.4rem]">
+            <div class="flex items-center justify-between gap-2">
+              <dt class="shrink-0 text-[0.78rem] text-fog-600">Client IP</dt>
+              <dd class="m-0 font-mono text-[0.76rem] text-fog-400">{session.client}</dd>
             </div>
-            <div class="row">
-              <dt>Connecté à</dt>
-              <dd class="mono">{formatTime(session.connected_at)}</dd>
+            <div class="flex items-center justify-between gap-2">
+              <dt class="shrink-0 text-[0.78rem] text-fog-600">Connecté à</dt>
+              <dd class="m-0 font-mono text-[0.76rem] text-fog-400">
+                {formatTime(session.connected_at)}
+              </dd>
             </div>
-            <div class="row">
-              <dt>Chunks audio reçus</dt>
-              <dd>{session.chunks_received}</dd>
+            <div class="flex items-center justify-between gap-2">
+              <dt class="shrink-0 text-[0.78rem] text-fog-600">Chunks audio reçus</dt>
+              <dd class="m-0 text-[0.82rem] text-fog-400">{session.chunks_received}</dd>
             </div>
-            <div class="row">
-              <dt>Transcriptions</dt>
-              <dd>{session.transcripts}</dd>
+            <div class="flex items-center justify-between gap-2">
+              <dt class="shrink-0 text-[0.78rem] text-fog-600">Transcriptions</dt>
+              <dd class="m-0 text-[0.82rem] text-fog-400">{session.transcripts}</dd>
             </div>
-            <div class="row">
-              <dt>Claims lancés</dt>
-              <dd>{session.claims_spawned}</dd>
+            <div class="flex items-center justify-between gap-2">
+              <dt class="shrink-0 text-[0.78rem] text-fog-600">Claims lancés</dt>
+              <dd class="m-0 text-[0.82rem] text-fog-400">{session.claims_spawned}</dd>
             </div>
-            <div class="row">
-              <dt>Tasks Claude actives</dt>
-              <dd>
+            <div class="flex items-center justify-between gap-2">
+              <dt class="shrink-0 text-[0.78rem] text-fog-600">Tasks Claude actives</dt>
+              <dd class="m-0 text-[0.82rem] text-fog-400">
                 {#if session.active_tasks > 0}
-                  <span class="badge badge-active">{session.active_tasks} en cours</span>
+                  <span
+                    class="rounded-full border border-[rgba(99,179,237,0.25)] bg-[rgba(99,179,237,0.12)] px-2 py-[0.12rem] text-[0.73rem] font-medium whitespace-nowrap text-[#63b3ed]"
+                    >{session.active_tasks} en cours</span>
                 {:else}
-                  <span class="dim">0</span>
+                  <span class="text-ink-640">0</span>
                 {/if}
               </dd>
             </div>
-            <div class="row">
-              <dt>Inactivité</dt>
-              <dd class={session.idle_s > 30 ? "idle-warn" : ""}>
+            <div class="flex items-center justify-between gap-2">
+              <dt class="shrink-0 text-[0.78rem] text-fog-600">Inactivité</dt>
+              <dd
+                class={[
+                  "m-0 text-[0.82rem]",
+                  session.idle_s > 30 ? "text-amber-500" : "text-fog-400"
+                ]}>
                 {session.idle_s} s
               </dd>
             </div>
           </dl>
 
           {#if session.last_transcript}
-            <div class="last-transcript">
-              <span class="lt-label">Dernier transcript</span>
-              <span class="lt-text"
+            <div
+              class="flex flex-col gap-[0.2rem] rounded-lg border border-ink-820 bg-ink-950 px-[0.7rem] py-2">
+              <span class="text-[0.68rem] tracking-[0.04em] text-ink-600 uppercase"
+                >Dernier transcript</span>
+              <span class="text-[0.8rem] leading-[1.4] text-[#9090b8] italic"
                 >{session.last_transcript}{session.last_transcript.length >= 120 ? "…" : ""}</span>
             </div>
           {/if}
@@ -183,87 +212,10 @@
 {/if}
 
 <style>
-  header {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
-    flex-wrap: wrap;
-  }
-
-  header h1 {
-    font-size: 1.4rem;
-    margin: 0 0 0.3rem;
-  }
-  header p {
-    color: #8888a0;
-    font-size: 0.88rem;
-    margin: 0;
-  }
-
-  .last-poll {
-    font-size: 0.75rem;
-    color: #4a4a68;
-    align-self: flex-end;
-    flex-shrink: 0;
-    font-variant-numeric: tabular-nums;
-  }
-
-  .error {
-    background: rgba(239, 68, 68, 0.1);
-    border: 1px solid rgba(239, 68, 68, 0.35);
-    color: #fca5a5;
-    border-radius: 8px;
-    padding: 0.7rem 0.9rem;
-    font-size: 0.85rem;
-    margin-bottom: 1rem;
-  }
-
-  .metrics {
-    display: flex;
-    gap: 0.75rem;
-    flex-wrap: wrap;
-    margin-bottom: 1.25rem;
-  }
-
-  .metric {
-    background: #161624;
-    border: 1px solid #2e2e3e;
-    border-radius: 10px;
-    padding: 0.65rem 1rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.2rem;
-    min-width: 130px;
-  }
-
-  .metric-label {
-    font-size: 0.72rem;
-    color: #7a7a98;
-  }
-
-  .metric-val {
-    font-size: 1rem;
-    color: #e0e0f8;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-  }
-
-  .metric-val.live {
-    color: #4ade80;
-  }
-
+  /* Expanding box-shadow ping on the live-connection dot — keyframes only. */
   .pulse {
-    width: 8px;
-    height: 8px;
-    background: #22c55e;
-    border-radius: 50%;
     box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.6);
     animation: pulse 1.4s ease-out infinite;
-    flex-shrink: 0;
   }
 
   @keyframes pulse {
@@ -276,150 +228,5 @@
     100% {
       box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
     }
-  }
-
-  .empty {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.6rem;
-    padding: 3rem 1rem;
-    color: #4a4a68;
-    font-size: 0.88rem;
-    background: #0e0e1c;
-    border: 1px dashed #2e2e3e;
-    border-radius: 12px;
-    text-align: center;
-  }
-
-  .empty-icon {
-    font-size: 1.8rem;
-  }
-
-  .sessions {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-    gap: 1rem;
-  }
-
-  .session-card {
-    background: #161624;
-    border: 1px solid #2e2e3e;
-    border-radius: 12px;
-    padding: 1rem 1.2rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.8rem;
-  }
-
-  .session-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding-bottom: 0.7rem;
-    border-bottom: 1px solid #26263a;
-    gap: 0.5rem;
-  }
-
-  .session-id {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-
-  .session-id code {
-    font-family: "SF Mono", "Fira Code", monospace;
-    font-size: 0.82rem;
-    color: #9a9aff;
-  }
-
-  .connected-since {
-    font-size: 0.75rem;
-    color: #5a5a78;
-  }
-
-  .dot-live {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: #22c55e;
-    box-shadow: 0 0 6px rgba(34, 197, 94, 0.5);
-    flex-shrink: 0;
-  }
-
-  dl {
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
-  }
-
-  .row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 0.5rem;
-  }
-
-  dt {
-    font-size: 0.78rem;
-    color: #7a7a98;
-    flex-shrink: 0;
-  }
-  dd {
-    font-size: 0.82rem;
-    color: #b0b0c8;
-    margin: 0;
-  }
-
-  .mono {
-    font-family: "SF Mono", "Fira Code", monospace;
-    font-size: 0.76rem;
-  }
-
-  .dim {
-    color: #3a3a5a;
-  }
-
-  .idle-warn {
-    color: #f59e0b;
-  }
-
-  .badge {
-    border-radius: 999px;
-    padding: 0.12rem 0.5rem;
-    font-size: 0.73rem;
-    font-weight: 500;
-    white-space: nowrap;
-  }
-
-  .badge-active {
-    background: rgba(99, 179, 237, 0.12);
-    color: #63b3ed;
-    border: 1px solid rgba(99, 179, 237, 0.25);
-  }
-
-  .last-transcript {
-    background: #0e0e1c;
-    border: 1px solid #1e1e2e;
-    border-radius: 8px;
-    padding: 0.5rem 0.7rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.2rem;
-  }
-
-  .lt-label {
-    font-size: 0.68rem;
-    color: #4a4a68;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-  }
-
-  .lt-text {
-    font-size: 0.8rem;
-    color: #9090b8;
-    font-style: italic;
-    line-height: 1.4;
   }
 </style>
