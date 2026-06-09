@@ -124,7 +124,7 @@
 
 {#if loading}
   <div class="grid grid-cols-2 gap-5">
-    {#each ["🌐 Avec web search", "🧠 Sans web search"] as label}
+    {#each ["🌐 Avec web search", "🧠 Sans web search"] as label (label)}
       <div class="flex min-w-0 flex-col gap-3">
         <div
           class="flex flex-wrap items-center gap-2 border-b border-edge pb-2 text-sm font-semibold text-slate-200">
@@ -144,7 +144,7 @@
     </div>
   {/if}
   <div class="grid grid-cols-2 gap-5">
-    {#each [{ label: "🌐 Avec web search", side: withWeb }, { label: "🧠 Sans web search", side: withoutWeb }] as { label, side }}
+    {#each [{ label: "🌐 Avec web search", side: withWeb }, { label: "🧠 Sans web search", side: withoutWeb }] as { label, side } (label)}
       <div class="flex min-w-0 flex-col gap-3">
         <div
           class="flex flex-wrap items-center gap-2 border-b border-edge pb-2 text-sm font-semibold text-slate-200">

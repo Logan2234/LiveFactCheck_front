@@ -107,11 +107,11 @@
   {#if claim.sources.length > 0}
     <div class="mt-2 flex flex-col gap-0.5 text-sm">
       <span class="text-zinc-600">Sources :</span>
-      {#each claim.sources as source}
+      {#each claim.sources as source (source)}
         <a
           href={source}
           target="_blank"
-          rel="noopener noreferrer"
+          rel="noopener noreferrer external"
           class="overflow-hidden text-ellipsis text-blue-400 no-underline hover:underline"
           >{source}</a>
       {/each}

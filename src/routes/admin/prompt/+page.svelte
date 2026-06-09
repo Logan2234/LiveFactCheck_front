@@ -1,4 +1,5 @@
 <script lang="ts">
+  import Alert from "$lib/components/Alert.svelte";
   import LoadingSpinner from "$lib/components/LoadingSpinner.svelte";
   import StatusBadge from "$lib/components/StatusBadge.svelte";
   import { authFetch, clearToken } from "$lib/stores/auth";
@@ -101,7 +102,7 @@
     )}
     <div class="mb-2.5 flex flex-wrap items-center gap-1.5 text-sm text-fg-faint">
       Statuts valides :
-      {#each data.valid_statuses as s}
+      {#each data.valid_statuses as s (s)}
         <StatusBadge color={STATUS_COLOR[s] ?? "gray"} label={s} />
       {/each}
     </div>

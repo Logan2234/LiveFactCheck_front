@@ -1,8 +1,10 @@
 ﻿<script lang="ts">
-  import { goto } from "$app/navigation";
+  import { resolve } from "$app/paths";
   import { page } from "$app/state";
+  import type { RouteId } from "$app/types";
   import Button from "$lib/components/Button.svelte";
   import { clearToken, getToken, token } from "$lib/stores/auth";
+  import { navigate } from "$lib/utils/navigation";
   import { onMount } from "svelte";
 
   let { children } = $props();
@@ -10,7 +12,7 @@
 
   onMount(() => {
     if (!getToken()) {
-      goto("/login");
+      navigate("/login");
     } else {
       ready = true;
     }
@@ -18,15 +20,15 @@
 
   // Redirect out if the token is cleared while on an admin page.
   $effect(() => {
-    if (ready && $token === null) goto("/login");
+    if (ready && $token === null) navigate("/login");
   });
 
   function logout() {
     clearToken();
-    goto("/login");
+    navigate("/login");
   }
 
-  const nav = [
+  const nav: { href: RouteId; label: string; icon: string }[] = [
     { href: "/admin", label: "Test pipeline", icon: "🧪" },
     { href: "/admin/benchmark", label: "Benchmark", icon: "⚡" },
     { href: "/admin/prompt", label: "Prompt & Outil", icon: "📋" },
@@ -53,7 +55,7 @@
       <nav class="flex flex-col gap-1">
         {#each nav as item (item.href)}
           <a
-            href={item.href}
+            href={resolve(item.href)}
             class={[
               "items-center flex gap-2.5 rounded-lg px-3 py-2.5 text-sm no-underline transition-[background,color] duration-150",
               page.url.pathname === item.href
@@ -66,8 +68,9 @@
         {/each}
       </nav>
       <div class="mt-auto flex flex-col gap-2">
-        <a class="px-3 py-1.5 text-sm text-fg-faint no-underline hover:text-fg-muted" href="/"
-          >↩ Application live</a>
+        <a
+          class="px-3 py-1.5 text-sm text-fg-faint no-underline hover:text-fg-muted"
+          href={resolve("/")}>↩ Application live</a>
         <Button onclick={logout} variant="danger" size="xs">Déconnexion</Button>
       </div>
     </aside>

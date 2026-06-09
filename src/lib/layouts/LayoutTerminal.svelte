@@ -59,14 +59,14 @@
       <span class="text-violet-500">{$claimStats.unverifiable}~</span>
     </span>
     <span class="flex gap-0.5">
-      {#each filterKeys as f}
+      {#each filterKeys as { key, label } (key)}
         <button
           class={[
             "cursor-pointer px-1 py-0.5 font-[inherit] text-sm transition-colors duration-100",
-            $claimFilter === f.key ? "text-accent-light" : "text-zinc-600 hover:text-zinc-400"
+            $claimFilter === key ? "text-accent-light" : "text-zinc-600 hover:text-zinc-400"
           ]}
-          onclick={() => claimFilter.set(f.key)}>
-          [{f.label}]
+          onclick={() => claimFilter.set(key)}>
+          [{label}]
         </button>
       {/each}
     </span>

@@ -66,10 +66,10 @@
 
 <Modal bind:open={helpOpen} title="Raccourcis clavier">
   <ul class="m-0 flex list-none flex-col gap-2.5 p-0">
-    {#each shortcuts as s}
+    {#each shortcuts as s (s.label)}
       <li class="flex items-center gap-3.5">
         <span class="flex min-w-17.5 shrink-0 gap-1.5">
-          {#each s.keys as k}
+          {#each s.keys as k (k)}
             <kbd
               class="min-w-5 rounded-md border border-b-2 border-edge-hi bg-background px-2 py-1 text-center font-[inherit] text-xs text-fg"
               >{k}</kbd>

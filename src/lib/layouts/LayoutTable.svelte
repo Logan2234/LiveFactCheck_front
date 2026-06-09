@@ -24,17 +24,17 @@
 <div class="flex flex-col gap-3">
   <div class="flex flex-wrap items-center justify-between gap-3">
     <div class="flex flex-wrap gap-1.5">
-      {#each filters as f}
+      {#each filters as { key, label, icon } (key)}
         <button
           class={[
             "cursor-pointer rounded-[20px] border px-3 py-1.5 text-sm transition-all duration-150",
-            $claimFilter === f.key
+            $claimFilter === key
               ? "border-accent-dim bg-surface-selected text-white"
               : "border-edge bg-surface text-zinc-400 hover:border-zinc-600 hover:text-zinc-200"
           ]}
-          onclick={() => claimFilter.set(f.key)}>
-          {f.icon}
-          {f.label}
+          onclick={() => claimFilter.set(key)}>
+          {icon}
+          {label}
         </button>
       {/each}
     </div>

@@ -1,7 +1,8 @@
 ﻿<script lang="ts">
-  import { goto } from "$app/navigation";
+  import { resolve } from "$app/paths";
   import Button from "$lib/components/Button.svelte";
   import { login } from "$lib/stores/auth";
+  import { navigate } from "$lib/utils/navigation";
 
   let password = $state("");
   let error = $state("");
@@ -14,7 +15,7 @@
     loading = true;
     try {
       await login(password);
-      await goto("/admin");
+      await navigate("/admin");
     } catch (err) {
       error = err instanceof Error ? err.message : "Erreur inconnue";
     } finally {
@@ -62,7 +63,8 @@
       {loading ? "Connexion…" : "Se connecter"}
     </Button>
 
-    <a class="text-center text-sm text-fg-faint no-underline hover:text-fg-muted" href="/"
-      >← Retour à l'application</a>
+    <a
+      class="text-center text-sm text-fg-faint no-underline hover:text-fg-muted"
+      href={resolve("/")}>← Retour à l'application</a>
   </form>
 </main>

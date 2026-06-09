@@ -15,7 +15,7 @@
 
 <div class="flex flex-col gap-5">
   <div class="grid grid-cols-5 gap-3 max-[900px]:grid-cols-3">
-    {#each statCards as s}
+    {#each statCards as s (s.key)}
       <button
         class={[
           "stat-tile relative flex cursor-pointer flex-col items-center gap-1 overflow-hidden rounded-xl border bg-surface px-3 py-4 transition-all duration-150",
