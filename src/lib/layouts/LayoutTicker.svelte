@@ -1,7 +1,8 @@
 ﻿<script lang="ts">
+  import { STATUS_COLOR, STATUS_ICON } from "$lib/constants/status";
   import { transcriptEntries } from "$lib/stores/audio";
   import { claims } from "$lib/stores/claims";
-  import { STATUS_COLOR, STATUS_ICON } from "$lib/constants/status";
+  import { formatTime } from "$lib/utils/format";
 
   // Ticker items: only finalized claims, repeated so there's always enough to scroll
   let tickerItems = $derived($claims.filter((c) => c.status !== "pending"));
@@ -26,7 +27,7 @@
         {#each [...$transcriptEntries].reverse() as entry (entry.timestamp)}
           <div class="flex items-baseline gap-3">
             <span class="mt-1 shrink-0 text-xs tabular-nums text-zinc-700"
-              >{new Date(entry.timestamp).toLocaleTimeString()}</span>
+              >{formatTime(entry.timestamp)}</span>
             <span class="text-fg">{entry.text}</span>
           </div>
         {/each}

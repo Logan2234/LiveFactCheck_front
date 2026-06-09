@@ -97,7 +97,7 @@
 
     <!-- Legend -->
     <div class="mb-4 flex flex-col gap-2">
-      {#each Object.entries(STATUS_COLOR).filter(([k]) => k !== "pending") as [key, color]}
+      {#each Object.entries(STATUS_COLOR).filter(([k]) => k !== "pending") as [key, color] (key)}
         {@const count = ($claimStats as Record<string, number>)[key] ?? 0}
         <div class="flex items-center gap-2 text-sm">
           <span class="h-2.5 w-2.5 shrink-0 rounded-full" style="background: {color}"></span>

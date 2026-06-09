@@ -150,7 +150,7 @@
 {#if result && !error}
   <!-- Métriques globales -->
   <div class="mb-4 flex flex-wrap gap-3">
-    {#each [{ label: "Langue", value: `${result.language.toUpperCase()} (${(result.language_probability * 100).toFixed(0)} %)` }, ...(result.duration_s !== null ? [{ label: "Durée audio", value: `${result.duration_s} s` }] : []), { label: "Temps transcription", value: `${result.elapsed_ms} ms` }, { label: "Segments", value: String(result.segments.length) }] as stat}
+    {#each [{ label: "Langue", value: `${result.language.toUpperCase()} (${(result.language_probability * 100).toFixed(0)} %)` }, ...(result.duration_s !== null ? [{ label: "Durée audio", value: `${result.duration_s} s` }] : []), { label: "Temps transcription", value: `${result.elapsed_ms} ms` }, { label: "Segments", value: String(result.segments.length) }] as stat (stat.label)}
       <div
         class="flex min-w-27.5 flex-col gap-1 rounded-xl border border-edge bg-surface-alt px-4 py-2.5">
         <span class="text-2xs text-fg-faint">{stat.label}</span>
@@ -183,7 +183,7 @@
       <table class="w-full border-collapse text-sm">
         <thead>
           <tr>
-            {#each ["Début", "Fin", "Texte", "Confiance", "No-speech"] as col}
+            {#each ["Début", "Fin", "Texte", "Confiance", "No-speech"] as col (col)}
               <th
                 class="border-b border-surface-raised px-2 pt-0 pb-2 text-left text-2xs font-medium text-fg-faint"
                 >{col}</th>
@@ -191,7 +191,7 @@
           </tr>
         </thead>
         <tbody>
-          {#each result.segments as seg}
+          {#each result.segments as seg (seg)}
             {@const conf = formatConfidence(seg.avg_logprob)}
             <tr>
               <td

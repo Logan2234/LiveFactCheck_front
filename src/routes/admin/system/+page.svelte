@@ -6,6 +6,7 @@
   import StatCard from "$lib/components/StatCard.svelte";
   import StatusBadge from "$lib/components/StatusBadge.svelte";
   import { authFetch, clearToken } from "$lib/stores/auth";
+  import { formatTime } from "$lib/utils/format";
   import { onDestroy, onMount } from "svelte";
 
   // Mirror of the backend descriptor contract (app/schemas/admin.py). Any change to
@@ -78,10 +79,6 @@
     if (h > 0) return `${h}h ${m}m ${sec}s`;
     if (m > 0) return `${m}m ${sec}s`;
     return `${sec}s`;
-  }
-
-  function formatTime(d: Date): string {
-    return d.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
   }
 
   function formatValue(f: ConfigFieldValue): string {

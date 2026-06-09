@@ -1,36 +1,18 @@
 ﻿<script lang="ts">
+  import { CATEGORY_COLORS } from "$lib/constants/categories";
+  import { STATUS_COLOR, STATUS_ICON, STATUS_LABEL } from "$lib/constants/status";
   import type { Claim } from "$lib/stores/claims";
+  import { formatTime } from "$lib/utils/format";
 
   let { claim }: { claim: Claim } = $props();
 
-  const statusConfig: Record<string, { label: string; color: string; icon: string }> = {
-    pending: { label: "En cours...", color: "#f59e0b", icon: "⏳" },
-    verified: { label: "Vérifié", color: "#10b981", icon: "✅" },
-    false: { label: "Faux", color: "#ef4444", icon: "❌" },
-    uncertain: { label: "Incertain", color: "#6b7280", icon: "❓" },
-    unverifiable: { label: "Non vérifiable", color: "#8b5cf6", icon: "🔍" }
-  };
-
-  const categoryColors: Record<string, string> = {
-    politique: "#3b82f6",
-    économie: "#f59e0b",
-    science: "#06b6d4",
-    santé: "#10b981",
-    histoire: "#8b5cf6",
-    sport: "#f97316",
-    société: "#ec4899",
-    technologie: "#6366f1",
-    autre: "#6b7280"
-  };
-
-  let config = $derived(statusConfig[claim.status] || statusConfig.pending);
-  let catColor = $derived(categoryColors[claim.category] || categoryColors.autre);
+  let catColor = $derived(CATEGORY_COLORS[claim.category] || CATEGORY_COLORS.autre);
 
   let copied = $state(false);
 
   function copy() {
     const lines = [
-      `${config.icon} ${config.label} — ${claim.text}`,
+      `${STATUS_ICON[claim.status] ?? STATUS_ICON.pending} ${STATUS_LABEL[claim.status] ?? STATUS_LABEL.pending} — ${claim.text}`,
       claim.explanation ? `→ ${claim.explanation}` : "",
       claim.counter_claim ? `✔ Réalité : ${claim.counter_claim}` : "",
       claim.sources.length ? `Sources : ${claim.sources.join(", ")}` : ""
@@ -47,10 +29,14 @@
 
 <div
   class="mb-3 rounded-lg border-l-4 bg-surface px-4 py-3.5"
-  style="border-left-color: {config.color}">
+  style="border-left-color: {STATUS_COLOR[claim.status] ?? STATUS_COLOR.pending}">
   <div class="mb-2 flex flex-wrap items-center gap-1.5">
-    <span>{config.icon}</span>
-    <span class="text-sm font-semibold" style="color: {config.color}">{config.label}</span>
+    <span>{STATUS_ICON[claim.status] ?? STATUS_ICON.pending}</span>
+    <span
+      class="text-sm font-semibold"
+      style="color: {STATUS_COLOR[claim.status] ?? STATUS_COLOR.pending}">
+      {STATUS_LABEL[claim.status] ?? STATUS_LABEL.pending}
+    </span>
 
     {#if claim.category && claim.status !== "pending"}
       <span
@@ -73,13 +59,14 @@
       <span class="ml-0.5 flex items-center gap-1.5" title="Score de confiance">
         <span
           class="inline-block h-1 max-w-12 min-w-1 rounded-xs opacity-80"
-          style="width: {claim.confidence * 10}%; background: {config.color}"></span>
+          style="width: {claim.confidence * 10}%; background: {STATUS_COLOR[claim.status] ??
+            STATUS_COLOR.pending}"></span>
         <span class="text-2xs tabular-nums text-zinc-600">{claim.confidence}/10</span>
       </span>
     {/if}
 
     <span class="ml-auto text-xs whitespace-nowrap tabular-nums text-zinc-500"
-      >{new Date(claim.timestamp).toLocaleTimeString()}</span>
+      >{formatTime(claim.timestamp)}</span>
 
     <button
       class="shrink-0 rounded-sm border border-transparent bg-transparent px-1.5 py-0.5 text-sm leading-none text-zinc-600 transition-all duration-150 hover:border-edge-hi hover:text-zinc-400"

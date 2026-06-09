@@ -1,13 +1,7 @@
 ﻿<script lang="ts">
+  import { STATUS_COLOR, STATUS_ICON, STATUS_LABEL } from "$lib/constants/status";
   import { claimFilter, filteredClaims, type ClaimFilter } from "$lib/stores/claims";
-
-  const STATUS_CONFIG: Record<string, { label: string; color: string; icon: string }> = {
-    pending: { label: "En cours", color: "#f59e0b", icon: "⏳" },
-    verified: { label: "Vérifié", color: "#10b981", icon: "✅" },
-    false: { label: "Faux", color: "#ef4444", icon: "❌" },
-    uncertain: { label: "Incertain", color: "#6b7280", icon: "❓" },
-    unverifiable: { label: "Invérifiable", color: "#8b5cf6", icon: "🔍" }
-  };
+  import { formatTime } from "$lib/utils/format";
 
   const filters: { key: ClaimFilter; label: string; icon: string }[] = [
     { key: "all", label: "Tous", icon: "📋" },
@@ -68,19 +62,20 @@
           </tr>
         {:else}
           {#each $filteredClaims as claim (claim.id)}
-            {@const cfg = STATUS_CONFIG[claim.status] ?? STATUS_CONFIG.pending}
             <tr
               class="claim-row cursor-pointer border-b border-surface-alt"
               class:expanded={expandedId === claim.id}
-              style="--sc: {cfg.color}"
+              style="--sc: {STATUS_COLOR[claim.status] ?? STATUS_COLOR.pending}"
               onclick={() => (expandedId = expandedId === claim.id ? null : claim.id)}>
               <td
                 class="w-20 px-3.5 py-2.5 align-top text-xs whitespace-nowrap tabular-nums text-zinc-600"
-                >{new Date(claim.timestamp).toLocaleTimeString()}</td>
+                >{formatTime(claim.timestamp)}</td>
               <td class="w-32.5 px-3.5 py-2.5 align-top whitespace-nowrap">
-                <span class="text-sm font-medium" style="color: {cfg.color}">
-                  {cfg.icon}
-                  {cfg.label}
+                <span
+                  class="text-sm font-medium"
+                  style="color: {STATUS_COLOR[claim.status] ?? STATUS_COLOR.pending}">
+                  {STATUS_ICON[claim.status] ?? STATUS_ICON.pending}
+                  {STATUS_LABEL[claim.status] ?? STATUS_LABEL.pending}
                 </span>
               </td>
               <td class="min-w-50 px-3.5 py-2.5 align-top">

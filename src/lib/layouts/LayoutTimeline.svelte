@@ -2,6 +2,7 @@
   import { STATUS_COLOR, STATUS_ICON, STATUS_LABEL } from "$lib/constants/status";
   import type { Claim } from "$lib/stores/claims";
   import { claims } from "$lib/stores/claims";
+  import { formatTime } from "$lib/utils/format";
 
   let selectedClaim = $state<Claim | null>(null);
 
@@ -54,7 +55,7 @@
               {STATUS_LABEL[selectedClaim.status]}
             </span>
             <span class="ml-auto text-sm tabular-nums text-zinc-600"
-              >{new Date(selectedClaim.timestamp).toLocaleTimeString()}</span>
+              >{formatTime(selectedClaim.timestamp)}</span>
             <button
               class="cursor-pointer p-0 text-sm leading-none text-zinc-600 hover:text-zinc-400"
               onclick={() => (selectedClaim = null)}>✕</button>
@@ -125,10 +126,10 @@
         <!-- Time labels -->
         {#if sorted.length >= 2}
           <text x="5" y="62" font-size="4" fill="#555" text-anchor="middle">
-            {new Date(minTs).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+            {formatTime(minTs, { withSeconds: false })}
           </text>
           <text x="95" y="62" font-size="4" fill="#555" text-anchor="middle">
-            {new Date(maxTs).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+            {formatTime(maxTs, { withSeconds: false })}
           </text>
         {/if}
       </svg>
@@ -152,11 +153,7 @@
           <span class="mt-px shrink-0 text-sm">{STATUS_ICON[c.status]}</span>
           <span class="flex-1 text-sm leading-snug text-zinc-300">{c.text}</span>
           <span class="mt-0.5 shrink-0 text-xs tabular-nums text-zinc-600"
-            >{new Date(c.timestamp).toLocaleTimeString([], {
-              hour: "2-digit",
-              minute: "2-digit",
-              second: "2-digit"
-            })}</span>
+            >{formatTime(c.timestamp)}</span>
         </button>
       {/each}
     </div>

@@ -2,6 +2,7 @@
   import Alert from "$lib/components/Alert.svelte";
   import Field from "$lib/components/Field.svelte";
   import { authFetch, clearToken } from "$lib/stores/auth";
+  import { formatDateTime, formatTime } from "$lib/utils/format";
   import { onDestroy, onMount } from "svelte";
 
   interface Session {
@@ -32,14 +33,6 @@
     const m = Math.floor(s / 60);
     if (m < 60) return `${m} min ${s % 60} s`;
     return `${Math.floor(m / 60)} h ${m % 60} min`;
-  }
-
-  function formatTime(ts: number): string {
-    return new Date(ts * 1000).toLocaleTimeString("fr-FR", {
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit"
-    });
   }
 
   async function poll() {
@@ -80,7 +73,7 @@
   </div>
   {#if lastPoll}
     <span class="shrink-0 self-end text-xs tabular-nums text-fg-faint"
-      >Mis à jour à {lastPoll.toLocaleTimeString("fr-FR")}</span>
+      >Mis à jour à {formatDateTime(lastPoll, { withSeconds: true })}</span>
   {/if}
 </header>
 
@@ -146,7 +139,8 @@
           <dl class="m-0 flex flex-col gap-1.5">
             <Field label="Client IP"><span class="font-mono text-xs">{session.client}</span></Field>
             <Field label="Connecté à"
-              ><span class="font-mono text-xs">{formatTime(session.connected_at)}</span></Field>
+              ><span class="font-mono text-xs">{formatTime(session.connected_at * 1000)}</span
+              ></Field>
             <Field label="Chunks audio reçus">{session.chunks_received}</Field>
             <Field label="Transcriptions">{session.transcripts}</Field>
             <Field label="Claims lancés">{session.claims_spawned}</Field>

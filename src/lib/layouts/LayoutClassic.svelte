@@ -2,6 +2,7 @@
   import ClaimCard from "$lib/components/ClaimCard.svelte";
   import { transcriptEntries } from "$lib/stores/audio";
   import { claimFilter, claimStats, filteredClaims, type ClaimFilter } from "$lib/stores/claims";
+  import { formatTime } from "$lib/utils/format";
 
   const filters: { key: ClaimFilter; label: string; icon: string }[] = [
     { key: "all", label: "Tous", icon: "📋" },
@@ -23,7 +24,7 @@
         {#each [...$transcriptEntries].reverse() as entry (entry.timestamp)}
           <div class="flex items-baseline gap-3 rounded-md bg-surface-raised px-2 py-1.5">
             <span class="shrink-0 text-xs whitespace-nowrap tabular-nums text-zinc-600"
-              >{new Date(entry.timestamp).toLocaleTimeString()}</span>
+              >{formatTime(entry.timestamp)}</span>
             <span class="text-sm leading-normal text-zinc-300">{entry.text}</span>
           </div>
         {/each}

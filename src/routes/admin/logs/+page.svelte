@@ -2,6 +2,7 @@
   import Alert from "$lib/components/Alert.svelte";
   import Button from "$lib/components/Button.svelte";
   import { authFetch, clearToken } from "$lib/stores/auth";
+  import { formatTime } from "$lib/utils/format";
   import { onDestroy, onMount, tick } from "svelte";
 
   interface LogEntry {
@@ -36,14 +37,6 @@
       ? entries
       : entries.filter((e) => (LEVEL_ORDER[e.level] ?? 0) >= (LEVEL_ORDER[filterLevel] ?? 0))
   );
-
-  function formatTime(ts: number): string {
-    return new Date(ts * 1000).toLocaleTimeString("fr-FR", {
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit"
-    });
-  }
 
   async function poll() {
     try {
@@ -103,7 +96,7 @@
       id="filter"
       bind:value={filterLevel}
       class="cursor-pointer rounded-lg border border-surface-selected bg-surface-alt px-2.5 py-1.5 text-sm text-slate-200 focus:border-accent focus:outline-none">
-      {#each LEVELS as l}
+      {#each LEVELS as l (l)}
         <option value={l}>{l}</option>
       {/each}
     </select>
@@ -138,7 +131,8 @@
     {#each visible as entry (entry.id)}
       <div
         class="line level-{entry.level.toLowerCase()} grid grid-cols-[7ch_8ch_22ch_1fr] gap-3 rounded py-0.5 hover:bg-white/3">
-        <span class="ts whitespace-nowrap text-edge-hi">{formatTime(entry.t)}</span>
+        <span class="ts whitespace-nowrap text-edge-hi"
+          >{formatTime(new Date(entry.t * 1000))}</span>
         <span class="lvl font-bold whitespace-nowrap">{entry.level}</span>
         <span class="logger overflow-hidden text-ellipsis whitespace-nowrap text-fg-faint"
           >{entry.logger}</span>

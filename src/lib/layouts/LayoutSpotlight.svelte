@@ -1,13 +1,7 @@
 ﻿<script lang="ts">
+  import { STATUS_COLOR, STATUS_ICON, STATUS_LABEL } from "$lib/constants/status";
   import { claims, sortedClaims } from "$lib/stores/claims";
-
-  const STATUS_CONFIG: Record<string, { label: string; color: string; icon: string }> = {
-    pending: { label: "Analyse en cours...", color: "#f59e0b", icon: "⏳" },
-    verified: { label: "Vérifié", color: "#10b981", icon: "✅" },
-    false: { label: "Faux", color: "#ef4444", icon: "❌" },
-    uncertain: { label: "Incertain", color: "#6b7280", icon: "❓" },
-    unverifiable: { label: "Non vérifiable", color: "#8b5cf6", icon: "🔍" }
-  };
+  import { formatTime } from "$lib/utils/format";
 
   // Most recent claim
   const spotlight = $derived($claims.length > 0 ? $claims[$claims.length - 1] : null);
@@ -30,14 +24,15 @@
 
 <div class="flex flex-col gap-6">
   {#if shown}
-    {@const cfg = STATUS_CONFIG[shown.status] ?? STATUS_CONFIG.pending}
     <div
       class="flex min-h-70 flex-col items-center justify-center gap-5 rounded-xl border border-t-4 border-edge bg-surface-alt px-16 py-12 text-center transition-[border-color] duration-300 border-t-(--sc)"
-      style="--sc: {cfg.color}">
+      style="--sc: {STATUS_COLOR[shown.status] ?? STATUS_COLOR.pending}">
       <div class="flex items-center gap-2.5">
-        <span class="text-[2rem]">{cfg.icon}</span>
-        <span class="text-2xl font-bold tracking-widest uppercase" style="color: {cfg.color}"
-          >{cfg.label}</span>
+        <span class="text-[2rem]">{STATUS_ICON[shown.status] ?? STATUS_ICON.pending}</span>
+        <span
+          class="text-2xl font-bold tracking-widest uppercase"
+          style="color: {STATUS_COLOR[shown.status] ?? STATUS_COLOR.pending}"
+          >{STATUS_LABEL[shown.status] ?? STATUS_LABEL.pending}</span>
       </div>
       <blockquote class="m-0 max-w-170 text-[1.35rem] leading-normal text-fg italic">
         « {shown.text} »
@@ -45,8 +40,7 @@
       {#if shown.explanation}
         <p class="m-0 max-w-150 text-base leading-relaxed text-zinc-500">{shown.explanation}</p>
       {/if}
-      <span class="text-sm tabular-nums text-zinc-700"
-        >{new Date(shown.timestamp).toLocaleTimeString()}</span>
+      <span class="text-sm tabular-nums text-zinc-700">{formatTime(shown.timestamp)}</span>
     </div>
   {:else}
     <div
@@ -59,7 +53,6 @@
   {#if strip.length > 0}
     <div class="flex gap-2 overflow-x-auto pb-1">
       {#each strip as claim (claim.id)}
-        {@const cfg = STATUS_CONFIG[claim.status] ?? STATUS_CONFIG.pending}
         <button
           class={[
             "flex shrink-0 cursor-pointer items-center gap-1.5 rounded-[20px] border bg-surface px-3 py-1.5 whitespace-nowrap transition-all duration-150",
@@ -67,10 +60,10 @@
               ? "border-(--sc) bg-[#222235]"
               : "border-edge hover:border-(--sc)"
           ]}
-          style="--sc: {cfg.color}"
+          style="--sc: {STATUS_COLOR[claim.status] ?? STATUS_COLOR.pending}"
           onclick={() => (selectedId = claim.id === selectedId ? null : claim.id)}
           title={claim.text}>
-          <span class="text-sm">{cfg.icon}</span>
+          <span class="text-sm">{STATUS_ICON[claim.status] ?? STATUS_ICON.pending}</span>
           <span class="text-xs text-zinc-400"
             >{claim.text.slice(0, 40)}{claim.text.length > 40 ? "…" : ""}</span>
         </button>

@@ -2,6 +2,7 @@
   import { STATUS_COLOR, STATUS_ICON, STATUS_LABEL } from "$lib/constants/status";
   import { transcriptEntries } from "$lib/stores/audio";
   import { claims } from "$lib/stores/claims";
+  import { formatTime } from "$lib/utils/format";
 
   // Merge transcripts and claims into a unified chronological feed
   type ChatItem =
@@ -61,7 +62,7 @@
             <div class="relative max-w-full rounded-2xl rounded-tl-sm bg-[#252540] px-3.5 py-2.5">
               <p class="mt-0 mb-1 text-sm leading-normal text-fg">{item.text}</p>
               <span class="block text-right text-2xs tabular-nums text-zinc-600"
-                >{new Date(item.timestamp).toLocaleTimeString()}</span>
+                >{formatTime(item.timestamp)}</span>
             </div>
           </div>
         {:else}
@@ -87,7 +88,7 @@
                 </p>
               {/if}
               <span class="block text-right text-2xs tabular-nums text-zinc-600"
-                >{new Date(item.timestamp).toLocaleTimeString()}</span>
+                >{formatTime(item.timestamp)}</span>
             </div>
             <div
               class="flex h-7 w-7 shrink-0 items-center justify-center self-end rounded-full bg-surface-raised text-sm">

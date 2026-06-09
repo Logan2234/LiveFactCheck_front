@@ -1,4 +1,5 @@
 ﻿<script lang="ts">
+  import { STATUS_COLOR } from "$lib/constants/status";
   import { transcriptEntries } from "$lib/stores/audio";
   import {
     claimFilter,
@@ -7,6 +8,7 @@
     type Claim,
     type ClaimFilter
   } from "$lib/stores/claims";
+  import { formatDate, formatTime } from "$lib/utils/format";
   import { derived } from "svelte/store";
 
   type LogItem =
@@ -19,14 +21,6 @@
     false: "✗",
     uncertain: "?",
     unverifiable: "~"
-  };
-
-  const STATUS_COLOR: Record<string, string> = {
-    pending: "#f59e0b",
-    verified: "#10b981",
-    false: "#ef4444",
-    uncertain: "#6b7280",
-    unverifiable: "#8b5cf6"
   };
 
   const log = derived([transcriptEntries, claims, claimFilter], ([$t, $c, $filter]) => {
@@ -76,7 +70,7 @@
     {#if $log.length === 0}
       <div class="flex items-baseline gap-3 text-sm leading-normal">
         <span class="shrink-0 text-xs whitespace-nowrap tabular-nums text-zinc-800"
-          >{new Date().toLocaleTimeString()}</span>
+          >{formatDate(new Date())}</span>
         <span class="w-[1ch] shrink-0 text-center font-bold text-zinc-800">_</span>
         <span class="flex-1 wrap-break-word text-zinc-700 italic">waiting for audio input...</span>
       </div>
@@ -85,7 +79,7 @@
         {#if item.kind === "transcript"}
           <div class="flex items-baseline gap-3 text-sm leading-normal">
             <span class="shrink-0 text-xs whitespace-nowrap tabular-nums text-zinc-800"
-              >{new Date(item.timestamp).toLocaleTimeString()}</span>
+              >{formatTime(item.timestamp)}</span>
             <span class="w-[1ch] shrink-0 text-center font-bold text-zinc-800">»</span>
             <span class="flex-1 wrap-break-word text-zinc-700 italic">{item.text}</span>
           </div>
@@ -94,7 +88,7 @@
             class="flex items-baseline gap-3 text-sm leading-normal"
             style="--sc: {STATUS_COLOR[item.claim.status] ?? '#888'}">
             <span class="shrink-0 text-xs whitespace-nowrap tabular-nums text-zinc-800"
-              >{new Date(item.timestamp).toLocaleTimeString()}</span>
+              >{formatTime(item.timestamp)}</span>
             <span class="w-[1ch] shrink-0 text-center font-bold" style="color: var(--sc)"
               >{STATUS_SYM[item.claim.status] ?? "?"}</span>
             <span class="flex-1 wrap-break-word text-zinc-500">
