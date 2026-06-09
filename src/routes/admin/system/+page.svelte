@@ -1,4 +1,5 @@
 <script lang="ts">
+  import Button from "$lib/components/Button.svelte";
   import { authFetch, clearToken } from "$lib/stores/auth";
   import { onDestroy, onMount } from "svelte";
   import Alert from "$lib/components/Alert.svelte";
@@ -6,27 +7,43 @@
   import LoadingSpinner from "$lib/components/LoadingSpinner.svelte";
   import StatCard from "$lib/components/StatCard.svelte";
   import StatusBadge from "$lib/components/StatusBadge.svelte";
+  import { authFetch, clearToken } from "$lib/stores/auth";
+  import { onDestroy, onMount } from "svelte";
 
-  interface HealthData {
-    uptime_seconds: number;
-    whisper: { model: string; device: string; loaded: boolean };
-    anthropic: { model: string; api_key_set: boolean; api_key_hint: string };
-    config: { log_level: string; jwt_expire_hours: number; max_claims_per_chunk: number };
-    python_version: string;
-    memory?: { rss_mb: number; vms_mb: number };
+  // Mirror of the backend descriptor contract (app/schemas/admin.py). Any change to
+  // ConfigFieldValue / ConfigBlockOut / AdminHealthResponse is a two-repo change.
+  type FieldKind = "readonly" | "editable" | "secret_status";
+  type ValueType = "str" | "int" | "bool" | "list";
+
+  interface ConfigFieldValue {
+    key: string;
+    label: string;
+    kind: FieldKind;
+    value: unknown;
+    configured: boolean | null;
+    options: string[] | null;
+    value_type: ValueType | null;
+  }
+
+  interface ConfigBlock {
+    id: string;
+    title: string;
+    fields: ConfigFieldValue[];
   }
 
   interface ConfigData {
-    editable: { anthropic_model: string; log_level: string };
-    options: { models: string[]; log_levels: string[] };
-    readonly: {
-      whisper_model: string;
-      whisper_device: string;
-      jwt_expire_hours: number;
-      max_claims_per_chunk: number;
-    };
+    blocks: ConfigBlock[];
     note: string;
   }
+
+  interface HealthData {
+    uptime_seconds: number;
+    python_version: string;
+    whisper_loaded: boolean;
+    memory?: { rss_mb: number; vms_mb: number };
+  }
+
+  type DraftValue = string | number | boolean;
 
   let health = $state<HealthData | null>(null);
   let config = $state<ConfigData | null>(null);
@@ -37,15 +54,24 @@
   let saving = $state(false);
   let saved = $state(false);
   let saveError = $state("");
-  let draftModel = $state("");
-  let draftLevel = $state("");
+  // Draft values for editable fields, keyed by their Settings key.
+  let drafts = $state<Record<string, DraftValue>>({});
 
-  let dirty = $derived(
-    config !== null &&
-      (draftModel !== config.editable.anthropic_model || draftLevel !== config.editable.log_level)
-  );
+  let dirty = $derived.by(() => {
+    if (!config) return false;
+    for (const block of config.blocks) {
+      for (const f of block.fields) {
+        if (f.kind === "editable" && drafts[f.key] !== f.value) return true;
+      }
+    }
+    return false;
+  });
 
   let interval: ReturnType<typeof setInterval>;
+
+  const controlClass =
+    "rounded-lg border border-edge-hi bg-[#0e0e1c] px-3 py-2 text-sm text-fg transition-[border-color] duration-150 focus:border-accent focus:outline-none";
+  const selectClass = `cursor-pointer appearance-auto ${controlClass}`;
 
   function formatUptime(s: number): string {
     const h = Math.floor(s / 3600);
@@ -58,6 +84,34 @@
 
   function formatTime(d: Date): string {
     return d.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+  }
+
+  function formatValue(f: ConfigFieldValue): string {
+    if (Array.isArray(f.value)) return f.value.length ? f.value.join(", ") : "—";
+    if (f.value_type === "bool") return f.value ? "Oui" : "Non";
+    return String(f.value);
+  }
+
+  // Green/red for blocks carrying secrets, green/amber for Whisper (runtime loaded state).
+  function blockDot(block: ConfigBlock): "green" | "amber" | "red" | "none" {
+    if (block.id === "whisper") return health?.whisper_loaded ? "green" : "amber";
+    const secrets = block.fields.filter((f) => f.kind === "secret_status");
+    if (secrets.length === 0) return "none";
+    return secrets.every((f) => f.configured) ? "green" : "red";
+  }
+
+  function initDrafts(cfg: ConfigData) {
+    const next: Record<string, DraftValue> = {};
+    for (const block of cfg.blocks) {
+      for (const f of block.fields) {
+        if (f.kind === "editable") next[f.key] = f.value as DraftValue;
+      }
+    }
+    drafts = next;
+  }
+
+  function setDraft(key: string, value: DraftValue) {
+    drafts[key] = value;
   }
 
   async function refreshHealth() {
@@ -93,8 +147,7 @@
       if (!hRes.ok) throw new Error(`Health: erreur ${hRes.status}`);
       if (!cRes.ok) throw new Error(`Config: erreur ${cRes.status}`);
       [health, config] = await Promise.all([hRes.json(), cRes.json()]);
-      draftModel = config!.editable.anthropic_model;
-      draftLevel = config!.editable.log_level;
+      if (config) initDrafts(config);
       lastRefresh = new Date();
     } catch (e) {
       loadError = e instanceof Error ? e.message : "Erreur réseau";
@@ -106,14 +159,17 @@
     saving = true;
     saveError = "";
     try {
-      const patch: Record<string, string> = {};
-      if (draftModel !== config.editable.anthropic_model) patch.anthropic_model = draftModel;
-      if (draftLevel !== config.editable.log_level) patch.log_level = draftLevel;
+      const updates: Record<string, DraftValue> = {};
+      for (const block of config.blocks) {
+        for (const f of block.fields) {
+          if (f.kind === "editable" && drafts[f.key] !== f.value) updates[f.key] = drafts[f.key];
+        }
+      }
 
       const res = await authFetch("/admin/config", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(patch)
+        body: JSON.stringify({ updates })
       });
       if (res.status === 401) {
         clearToken();
@@ -123,8 +179,16 @@
         const detail = await res.json().catch(() => null);
         throw new Error(detail?.detail ?? `Erreur ${res.status}`);
       }
-      config.editable.anthropic_model = draftModel;
-      config.editable.log_level = draftLevel;
+      const data: { changed: Record<string, unknown> } = await res.json();
+      // Reflect the server-accepted (coerced) values back into config + drafts.
+      for (const block of config.blocks) {
+        for (const f of block.fields) {
+          if (f.key in data.changed) {
+            f.value = data.changed[f.key];
+            drafts[f.key] = data.changed[f.key] as DraftValue;
+          }
+        }
+      }
       saved = true;
       setTimeout(() => (saved = false), 2000);
     } catch (e) {
@@ -135,9 +199,7 @@
   }
 
   function reset() {
-    if (!config) return;
-    draftModel = config.editable.anthropic_model;
-    draftLevel = config.editable.log_level;
+    if (config) initDrafts(config);
   }
 
   onMount(() => {
@@ -163,12 +225,9 @@
     {#if lastRefresh}
       <span class="text-xs tabular-nums text-fg-faint">Mis à jour à {formatTime(lastRefresh)}</span>
     {/if}
-    <button
-      onclick={refreshHealth}
-      disabled={refreshing}
-      class="cursor-pointer rounded-lg border border-edge bg-surface px-3.5 py-2 text-sm font-medium text-slate-300 transition-all duration-150 enabled:hover:bg-surface-raised enabled:hover:text-fg disabled:cursor-not-allowed disabled:opacity-50">
+    <Button variant="secondary" size="sm" onclick={refreshHealth} disabled={refreshing}>
       {refreshing ? "…" : "↺ Rafraîchir"}
-    </button>
+    </Button>
   </div>
 </header>
 
@@ -181,36 +240,13 @@
 {/if}
 
 {#if health}
-  <!-- ── État ── -->
+  <!-- ── Runtime (issu de /admin/health) ── -->
   <div class="mb-2.5 text-2xs font-semibold tracking-wider text-fg-faint uppercase">État</div>
   <div class="grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-3.5">
     <StatCard title="Serveur" dot="green">
       <dl class="m-0 flex flex-col gap-2">
         <Field label="Uptime" strong>{formatUptime(health.uptime_seconds)}</Field>
         <Field label="Python">{health.python_version}</Field>
-      </dl>
-    </StatCard>
-
-    <StatCard title="Whisper" dot={health.whisper.loaded ? "green" : "amber"}>
-      <dl class="m-0 flex flex-col gap-2">
-        <Field label="Modèle" strong>{health.whisper.model}</Field>
-        <Field label="Device">{health.whisper.device}</Field>
-        <Field label="Chargé">
-          <StatusBadge color={health.whisper.loaded ? "green" : "amber"} label={health.whisper.loaded ? "Oui" : "Non"} />
-        </Field>
-      </dl>
-    </StatCard>
-
-    <StatCard title="API Anthropic" dot={health.anthropic.api_key_set ? "green" : "red"}>
-      <dl class="m-0 flex flex-col gap-2">
-        <Field label="Clé API">
-          {#if health.anthropic.api_key_set}
-            <StatusBadge color="green" label="Configurée" />
-            <span class="font-mono text-xs text-fg-faint">{health.anthropic.api_key_hint}</span>
-          {:else}
-            <StatusBadge color="red" label="Manquante" />
-          {/if}
-        </Field>
       </dl>
     </StatCard>
 
@@ -226,73 +262,96 @@
 {/if}
 
 {#if config}
-  <!-- ── Paramètres éditables ── -->
+  <!-- ── Configuration (pilotée par le descripteur back) ── -->
   <div class="mt-7 mb-2.5 text-2xs font-semibold tracking-wider text-fg-faint uppercase">
-    Paramètres
+    Configuration
   </div>
 
   <div class="grid grid-cols-[repeat(auto-fit,minmax(260px,1fr))] items-start gap-3.5">
-    <StatCard title="Éditables">
-      <div class="mb-3.5 flex flex-col gap-1">
-        <label for="model" class="text-xs font-medium text-fg-muted">Modèle Anthropic</label>
-        <select
-          id="model"
-          bind:value={draftModel}
-          class="cursor-pointer appearance-auto rounded-lg border border-edge-hi bg-[#0e0e1c] px-3 py-2 text-sm text-fg transition-[border-color] duration-150 focus:border-accent focus:outline-none">
-          {#each config.options.models as m}
-            <option value={m}>{m}</option>
+    {#each config.blocks as block (block.id)}
+      <StatCard title={block.title} dot={blockDot(block)}>
+        <div class="flex flex-col gap-3">
+          {#each block.fields as f (f.key)}
+            {#if f.kind === "editable"}
+              <div class="flex flex-col gap-1">
+                <label for={f.key} class="text-xs font-medium text-fg-muted">{f.label}</label>
+                {#if f.options}
+                  <select
+                    id={f.key}
+                    value={drafts[f.key] as string}
+                    onchange={(e) => setDraft(f.key, e.currentTarget.value)}
+                    class={selectClass}>
+                    {#each f.options as opt}
+                      <option value={opt}>{opt}</option>
+                    {/each}
+                  </select>
+                {:else if f.value_type === "bool"}
+                  <label
+                    class="inline-flex cursor-pointer items-center gap-2 text-sm text-slate-300">
+                    <input
+                      type="checkbox"
+                      checked={drafts[f.key] as boolean}
+                      onchange={(e) => setDraft(f.key, e.currentTarget.checked)} />
+                    {drafts[f.key] ? "Activé" : "Désactivé"}
+                  </label>
+                {:else if f.value_type === "int"}
+                  <input
+                    id={f.key}
+                    type="number"
+                    value={drafts[f.key] as number}
+                    oninput={(e) => setDraft(f.key, e.currentTarget.valueAsNumber)}
+                    class={controlClass} />
+                {:else}
+                  <input
+                    id={f.key}
+                    type="text"
+                    value={drafts[f.key] as string}
+                    oninput={(e) => setDraft(f.key, e.currentTarget.value)}
+                    class={controlClass} />
+                {/if}
+              </div>
+            {:else}
+              <Field label={f.label}>
+                {#if f.kind === "secret_status"}
+                  {#if f.configured}
+                    <StatusBadge color="green" label="Configuré" />
+                  {:else}
+                    <StatusBadge color="red" label="Manquant" />
+                  {/if}
+                {:else}
+                  {formatValue(f)}
+                {/if}
+              </Field>
+            {/if}
           {/each}
-        </select>
-        <span class="text-2xs text-fg-faint">Appliqué immédiatement au prochain appel fact-check.</span>
-      </div>
 
-      <div class="mb-3.5 flex flex-col gap-1">
-        <label for="loglevel" class="text-xs font-medium text-fg-muted">Niveau de log</label>
-        <select
-          id="loglevel"
-          bind:value={draftLevel}
-          class="cursor-pointer appearance-auto rounded-lg border border-edge-hi bg-[#0e0e1c] px-3 py-2 text-sm text-fg transition-[border-color] duration-150 focus:border-accent focus:outline-none">
-          {#each config.options.log_levels as l}
-            <option value={l}>{l}</option>
-          {/each}
-        </select>
-        <span class="text-2xs text-fg-faint"
-          >Modifie <code class="font-mono text-accent-light">logging.getLogger("app")</code> en temps réel.</span>
-      </div>
+          {#if block.id === "whisper"}
+            <Field label="Chargé">
+              <StatusBadge
+                color={health?.whisper_loaded ? "green" : "amber"}
+                label={health?.whisper_loaded ? "Oui" : "Non"} />
+            </Field>
+          {/if}
+        </div>
+      </StatCard>
+    {/each}
+  </div>
 
-      {#if saveError}
-        <Alert message={saveError} />
-      {/if}
+  <!-- ── Barre d'action (les éditions peuvent couvrir plusieurs blocs) ── -->
+  {#if saveError}
+    <div class="mt-4"><AlertBanner message={saveError} /></div>
+  {/if}
 
-      <div class="mt-4 flex justify-end gap-2">
-        <button
-          class="cursor-pointer rounded-lg border border-edge bg-surface px-4 py-2 text-sm font-semibold text-slate-300 transition-all duration-150 enabled:hover:bg-surface-raised disabled:cursor-not-allowed disabled:opacity-40"
-          onclick={reset}
-          disabled={!dirty || saving}>Annuler</button>
-        <button
-          class="cursor-pointer rounded-lg bg-[linear-gradient(135deg,#5a5ad0,#7a4ad0)] px-4 py-2 text-sm font-semibold text-white transition-all duration-150 enabled:hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
-          onclick={save}
-          disabled={!dirty || saving}>
-          {#if saving}Enregistrement…{:else if saved}✓ Enregistré{:else}Enregistrer{/if}
-        </button>
-      </div>
-
-      <p
-        class="mt-3.5 mb-0 rounded-md border border-amber-500/18 bg-amber-500/7 px-3 py-2 text-xs text-amber-700/80">
-        ⚠ {config.note}
-      </p>
-    </StatCard>
-
-    <StatCard title="Lecture seule">
-      <dl class="m-0 flex flex-col gap-2">
-        <Field label="Modèle Whisper">{config.readonly.whisper_model}</Field>
-        <Field label="Device Whisper">{config.readonly.whisper_device}</Field>
-        <Field label="JWT expire">{config.readonly.jwt_expire_hours} h</Field>
-        <Field label="Max claims / chunk">
-          {config.readonly.max_claims_per_chunk}
-          <StatusBadge color="gray" label="non utilisé" />
-        </Field>
-      </dl>
-    </StatCard>
+  <div class="mt-4 flex flex-wrap items-center justify-between gap-3">
+    <p
+      class="m-0 rounded-md border border-amber-500/18 bg-amber-500/7 px-3 py-2 text-xs text-amber-700/80">
+      ⚠ {config.note}
+    </p>
+    <div class="flex gap-2">
+      <Button variant="secondary" onclick={reset} disabled={!dirty || saving}>Annuler</Button>
+      <Button onclick={save} disabled={!dirty || saving}>
+        {#if saving}Enregistrement…{:else if saved}✓ Enregistré{:else}Enregistrer{/if}
+      </Button>
+    </div>
   </div>
 {/if}
