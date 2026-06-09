@@ -250,7 +250,6 @@
 {/if}
 
 {#if health}
-  <!-- ── Runtime (issu de /admin/health) ── -->
   <div class="mb-2.5 text-2xs font-semibold tracking-wider text-fg-faint uppercase">État</div>
   <div class="grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-3.5">
     <StatCard title="Serveur" dot="green">
@@ -272,7 +271,6 @@
 {/if}
 
 {#if config}
-  <!-- ── Configuration (pilotée par le descripteur back) ── -->
   <div class="mt-7 mb-2.5 text-2xs font-semibold tracking-wider text-fg-faint uppercase">
     Configuration
   </div>
@@ -296,7 +294,7 @@
                       value={drafts[f.key] as string}
                       onchange={(e) => setDraft(f.key, e.currentTarget.value)}
                       class={selectClass}>
-                      {#each f.options as opt}
+                      {#each f.options as opt (opt)}
                         <option value={opt}>{opt}</option>
                       {/each}
                     </select>

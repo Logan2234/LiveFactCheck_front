@@ -47,7 +47,7 @@
         placeholder="••••••••"
         autocomplete="current-password"
         required
-        class="rounded-lg border border-edge bg-background px-3.5 py-3 text-base text-slate-100 transition-[border-color] duration-150 focus:border-accent focus:outline-none" />
+        class="border border-edge rounded-lg bg-background px-3.5 py-3 text-base text-slate-100 transition-[border-color] duration-150 focus:border-accent focus:outline-none" />
     </label>
 
     {#if error}
@@ -66,12 +66,3 @@
       >← Retour à l'application</a>
   </form>
 </main>
-
-<style>
-  :global(body) {
-    margin: 0;
-    background: var(--color-background);
-    color: var(--color-fg);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  }
-</style>

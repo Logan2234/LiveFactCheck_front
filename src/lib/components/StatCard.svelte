@@ -8,7 +8,7 @@
     dot = "none",
     icon = "",
     accent = "",
-    children,
+    children
   }: {
     title: string;
     dot?: DotColor;
@@ -21,14 +21,13 @@
     green: "bg-green-500 shadow-[0_0_6px_rgba(34,197,94,0.5)]",
     amber: "bg-amber-500 shadow-[0_0_6px_rgba(245,158,11,0.5)]",
     red: "bg-red-500 shadow-[0_0_6px_rgba(239,68,68,0.5)]",
-    none: "",
+    none: ""
   };
 </script>
 
 <div class="rounded-xl border border-edge bg-surface-alt px-4 py-4 {accent}">
   <div
-    class="mb-3.5 flex items-center gap-2 border-b border-surface-raised pb-2.5 text-sm font-semibold text-slate-200"
-  >
+    class="mb-3.5 flex items-center gap-2 border-b border-surface-raised pb-2.5 text-sm font-semibold text-slate-200">
     {#if icon}
       <span class="text-base leading-none">{icon}</span>
     {:else if dot !== "none"}

@@ -61,10 +61,7 @@ Aucun test aujourd'hui (pas de script de test dans `package.json`, cf. CLAUDE.md
       surfacer un message clair en cas de permission refusée / pas de micro.
 - [x] Afficher l'état WS (`wsStatus`: connecting/error/disconnected) de façon visible —
       l'utilisateur ne sait pas aujourd'hui que le back est injoignable.
-- [ ] Les claims ne sont pas persistés : un refresh vide tout. Décider si on garde
-      (sessionStorage / export) ou si c'est volontairement éphémère.
 
-## Accessibilité & finition
+## UI
 
-- [ ] Vérifier la navigation clavier / focus des 9 layouts et de `Modal.svelte`.
-- [ ] `svelte-check` et `format:check` doivent rester verts (gates CI) après chaque ajout.
+- [ ] Dark mode

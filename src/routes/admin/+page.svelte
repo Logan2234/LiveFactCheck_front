@@ -157,7 +157,7 @@
           onclick={() => (menuOpen = false)}></button>
         <ul
           class="absolute top-[calc(100%+0.4rem)] left-0 z-50 m-0 flex min-w-65 list-none flex-col gap-0.5 rounded-xl border border-edge bg-surface-alt p-1.5 shadow-[0_16px_40px_rgba(0,0,0,0.5)]">
-          {#each examples as ex}
+          {#each examples as ex (ex.text)}
             <li>
               <button
                 type="button"

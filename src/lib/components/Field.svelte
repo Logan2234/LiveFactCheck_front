@@ -4,7 +4,7 @@
   let {
     label,
     strong = false,
-    children,
+    children
   }: { label: string; strong?: boolean; children: Snippet } = $props();
 </script>
 
@@ -13,8 +13,7 @@
   <dd
     class="m-0 flex flex-wrap items-center justify-end gap-1.5 text-right text-sm {strong
       ? 'font-semibold text-slate-100'
-      : 'text-slate-300'}"
-  >
+      : 'text-slate-300'}">
     {@render children()}
   </dd>
 </div>

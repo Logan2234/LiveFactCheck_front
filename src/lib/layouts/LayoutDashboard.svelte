@@ -34,8 +34,7 @@
 
   <div class="grid grid-cols-[1fr_2fr] items-start gap-6 max-[900px]:grid-cols-1">
     <div>
-      <h3
-        class="mt-0 mb-3 flex items-center gap-2 text-sm tracking-wider text-zinc-500 uppercase">
+      <h3 class="mt-0 mb-3 flex items-center gap-2 text-sm tracking-wider text-zinc-500 uppercase">
         📝 Transcript
       </h3>
       <div class="flex max-h-120 flex-col gap-2 overflow-y-auto rounded-lg bg-surface-alt p-3">
@@ -55,8 +54,7 @@
     </div>
 
     <div>
-      <h3
-        class="mt-0 mb-3 flex items-center gap-2 text-sm tracking-wider text-zinc-500 uppercase">
+      <h3 class="mt-0 mb-3 flex items-center gap-2 text-sm tracking-wider text-zinc-500 uppercase">
         Faits
         {#if $claimFilter !== "all"}<span
             class="rounded-sm border border-accent-dim bg-surface-selected px-1.5 py-0.5 text-3 text-zinc-400 normal-case"

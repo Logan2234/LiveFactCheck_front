@@ -1,27 +1,27 @@
 ﻿<script lang="ts">
-  import { onMount, onDestroy } from "svelte";
+  import AudioControls from "$lib/components/AudioControls.svelte";
+  import KeyboardShortcuts from "$lib/components/KeyboardShortcuts.svelte";
+  import LayoutChat from "$lib/layouts/LayoutChat.svelte";
+  import LayoutClassic from "$lib/layouts/LayoutClassic.svelte";
+  import LayoutDashboard from "$lib/layouts/LayoutDashboard.svelte";
+  import LayoutSpotlight from "$lib/layouts/LayoutSpotlight.svelte";
+  import LayoutTable from "$lib/layouts/LayoutTable.svelte";
+  import LayoutTerminal from "$lib/layouts/LayoutTerminal.svelte";
+  import LayoutTicker from "$lib/layouts/LayoutTicker.svelte";
+  import LayoutTimeline from "$lib/layouts/LayoutTimeline.svelte";
+  import LayoutTrustMeter from "$lib/layouts/LayoutTrustMeter.svelte";
+  import { appendTranscript, onAudioChunk } from "$lib/stores/audio";
+  import { addOrUpdateClaim, removeClaim } from "$lib/stores/claims";
+  import { activeLayout, type Layout } from "$lib/stores/layout";
   import {
     connect,
     disconnect,
-    sendAudioChunk,
     onClaim,
     onRemoveClaim,
-    onTranscript
+    onTranscript,
+    sendAudioChunk
   } from "$lib/websocket";
-  import { addOrUpdateClaim, removeClaim } from "$lib/stores/claims";
-  import { onAudioChunk, appendTranscript } from "$lib/stores/audio";
-  import { activeLayout, type Layout } from "$lib/stores/layout";
-  import AudioControls from "$lib/components/AudioControls.svelte";
-  import KeyboardShortcuts from "$lib/components/KeyboardShortcuts.svelte";
-  import LayoutClassic from "$lib/layouts/LayoutClassic.svelte";
-  import LayoutDashboard from "$lib/layouts/LayoutDashboard.svelte";
-  import LayoutTerminal from "$lib/layouts/LayoutTerminal.svelte";
-  import LayoutSpotlight from "$lib/layouts/LayoutSpotlight.svelte";
-  import LayoutTable from "$lib/layouts/LayoutTable.svelte";
-  import LayoutTrustMeter from "$lib/layouts/LayoutTrustMeter.svelte";
-  import LayoutTicker from "$lib/layouts/LayoutTicker.svelte";
-  import LayoutTimeline from "$lib/layouts/LayoutTimeline.svelte";
-  import LayoutChat from "$lib/layouts/LayoutChat.svelte";
+  import { onDestroy, onMount } from "svelte";
 
   onMount(() => {
     connect();
@@ -56,13 +56,11 @@
   <header class="mb-6 flex flex-wrap items-center justify-between gap-4">
     <div>
       <h1 class="m-0 text-2xl">🔍 LiveFactChecker</h1>
-      <p class="mt-0.5 mb-0 text-sm text-zinc-500">
-        Vérification de faits en temps réel
-      </p>
+      <p class="mt-0.5 mb-0 text-sm text-zinc-500">Vérification de faits en temps réel</p>
     </div>
     <div class="flex flex-col items-end gap-2">
-      <div class="flex gap-1">
-        {#each layouts as l}
+      <div class="gap-1 flex">
+        {#each layouts as l (l.key)}
           <button
             class={[
               "cursor-pointer rounded-md border px-2.5 py-1.5 text-xs transition-all duration-150",
@@ -100,12 +98,3 @@
     <LayoutTable />
   {/if}
 </main>
-
-<style>
-  :global(body) {
-    margin: 0;
-    background: var(--color-background);
-    color: var(--color-fg);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  }
-</style>

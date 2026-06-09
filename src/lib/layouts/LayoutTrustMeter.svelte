@@ -88,9 +88,7 @@
           fill={gaugeColor}>
           {trustPct}%
         </text>
-        <text x="100" y="112" text-anchor="middle" class="text-sm" fill="#888">
-          vérifié
-        </text>
+        <text x="100" y="112" text-anchor="middle" class="text-sm" fill="#888"> vérifié </text>
         <text x="100" y="130" text-anchor="middle" class="text-xs" fill="#555">
           {finalized} claim{finalized !== 1 ? "s" : ""}
         </text>

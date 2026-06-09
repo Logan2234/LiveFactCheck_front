@@ -3,24 +3,23 @@
 /*
   Design tokens for the LiveFactChecker dark theme.
 
-  Static, recurring palette only. Status/category colors stay JS-driven
-  (injected via inline `style=` from `lib/constants/status.ts`) because they
-  are chosen at runtime. One-off shades use Tailwind arbitrary values (bg-[#hex]).
+  Static, recurring palette only.
 */
+/* stylelint-disable-next-line at-rule-no-unknown */
 @theme {
   /* ── Monospace stacks (code/log/terminal views) ── */
   --font-mono: "SF Mono", "Fira Code", monospace;
   --font-term: "Cascadia Code", "Fira Code", "Consolas", "Courier New", monospace;
 
   /* ── Surfaces (darkest → lightest) ── */
-  --color-background: #121220;       /* app bg */
-  --color-surface: #1e1e2e;          /* main card / panel */
-  --color-surface-alt: #1a1a2a;      /* login, modals, alternate panels */
-  --color-surface-raised: #26263a;   /* hover / interactive surfaces */
+  --color-background: #121220; /* app bg */
+  --color-surface: #1e1e2e; /* main card / panel */
+  --color-surface-alt: #1a1a2a; /* login, modals, alternate panels */
+  --color-surface-raised: #26263a; /* hover / interactive surfaces */
   --color-surface-selected: #2e2e4e; /* active / selected state */
 
   /* ── Borders ── */
-  --color-edge: #2e2e3e;    /* standard border */
+  --color-edge: #2e2e3e; /* standard border */
   --color-edge-hi: #3a3a4e; /* stronger border, focus rings */
 
   /* ── Accent (indigo / violet) ── */
@@ -29,7 +28,7 @@
   --color-accent-light: #7a7ad0;
 
   /* ── Foreground text ── */
-  --color-fg: #e0e0e0;       /* body text */
+  --color-fg: #e0e0e0; /* body text */
   --color-fg-muted: #9a9ac0; /* secondary labels */
   --color-fg-faint: #6a6a88; /* tertiary / hints */
 
@@ -40,6 +39,12 @@
 @layer base {
   html {
     font-family: ui-sans-serif, system-ui, sans-serif;
+  }
+
+  body {
+    margin: 0;
+    background: var(--color-background);
+    color: var(--color-fg);
   }
 
   .spinner {

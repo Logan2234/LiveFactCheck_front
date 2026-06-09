@@ -27,7 +27,8 @@
   <div
     class="flex items-center rounded-t-[10px] border border-b-0 border-surface-selected bg-surface-alt px-4 py-3 text-sm text-zinc-500">
     <div class="flex flex-1 items-center gap-2">
-      <div class="flex h-8 w-8 items-center justify-center rounded-full bg-surface-selected text-base">
+      <div
+        class="flex h-8 w-8 items-center justify-center rounded-full bg-surface-selected text-base">
         🎙
       </div>
       <span>Speaker</span>
@@ -35,7 +36,8 @@
     <div class="flex-none px-4 text-xs text-zinc-700">vs</div>
     <div class="flex flex-1 items-center justify-end gap-2">
       <span>Fact-Checker</span>
-      <div class="flex h-8 w-8 items-center justify-center rounded-full bg-surface-selected text-base">
+      <div
+        class="flex h-8 w-8 items-center justify-center rounded-full bg-surface-selected text-base">
         🔍
       </div>
     </div>
@@ -56,8 +58,7 @@
               class="flex h-7 w-7 shrink-0 items-center justify-center self-end rounded-full bg-surface-raised text-sm">
               🎙
             </div>
-            <div
-              class="relative max-w-full rounded-2xl rounded-tl-sm bg-[#252540] px-3.5 py-2.5">
+            <div class="relative max-w-full rounded-2xl rounded-tl-sm bg-[#252540] px-3.5 py-2.5">
               <p class="mt-0 mb-1 text-sm leading-normal text-fg">{item.text}</p>
               <span class="block text-right text-2xs tabular-nums text-zinc-600"
                 >{new Date(item.timestamp).toLocaleTimeString()}</span>

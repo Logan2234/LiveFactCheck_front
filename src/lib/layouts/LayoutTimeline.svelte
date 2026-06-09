@@ -73,12 +73,24 @@
     <div class="overflow-x-auto rounded-xl bg-surface-alt p-2">
       <svg viewBox="0 0 100 100" preserveAspectRatio="none" class="hidden">
         <!-- Horizontal axis line -->
-        <line x1="5" y1="50" x2="95" y2="50" stroke="var(--color-surface-selected)" stroke-width="0.5" />
+        <line
+          x1="5"
+          y1="50"
+          x2="95"
+          y2="50"
+          stroke="var(--color-surface-selected)"
+          stroke-width="0.5" />
       </svg>
 
       <svg viewBox="0 0 100 100" class="block h-30 w-full">
         <!-- Axis line -->
-        <line x1="5" y1="50" x2="95" y2="50" stroke="var(--color-surface-selected)" stroke-width="0.8" />
+        <line
+          x1="5"
+          y1="50"
+          x2="95"
+          y2="50"
+          stroke="var(--color-surface-selected)"
+          stroke-width="0.8" />
 
         <!-- Vertical tick for each claim -->
         {#each sorted as c, i (c.id)}

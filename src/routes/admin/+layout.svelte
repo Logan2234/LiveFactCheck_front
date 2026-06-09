@@ -51,11 +51,11 @@
         </div>
       </div>
       <nav class="flex flex-col gap-1">
-        {#each nav as item}
+        {#each nav as item (item.href)}
           <a
             href={item.href}
             class={[
-              "flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-sm no-underline transition-[background,color] duration-150",
+              "items-center flex gap-2.5 rounded-lg px-3 py-2.5 text-sm no-underline transition-[background,color] duration-150",
               page.url.pathname === item.href
                 ? "bg-surface-selected text-white"
                 : "text-fg-muted hover:bg-surface hover:text-fg"
@@ -76,12 +76,3 @@
     </main>
   </div>
 {/if}
-
-<style>
-  :global(body) {
-    margin: 0;
-    background: var(--color-background);
-    color: var(--color-fg);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  }
-</style>
