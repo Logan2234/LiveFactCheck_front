@@ -4,7 +4,8 @@
     startRecording,
     stopRecording,
     isMuted,
-    toggleMute
+    toggleMute,
+    audioError
   } from "$lib/stores/audio";
   import { wsStatus } from "$lib/websocket";
 
@@ -65,6 +66,10 @@
         ? "🟡 Connexion..."
         : "🔴 Déconnecté"}
   </span>
+
+  {#if $audioError}
+    <span class="text-sm text-red-400" role="alert">⚠️ {$audioError}</span>
+  {/if}
 </div>
 
 <style>
