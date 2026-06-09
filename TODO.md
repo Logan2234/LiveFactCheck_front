@@ -49,17 +49,17 @@ Aucun test aujourd'hui (pas de script de test dans `package.json`, cf. CLAUDE.md
 
 ## Config & DRY
 
-- [ ] `WS_URL = "ws://localhost:8000/ws"` est codé en dur (websocket.ts), tout comme
+- [x] `WS_URL = "ws://localhost:8000/ws"` est codé en dur (websocket.ts), tout comme
       l'URL backend côté admin (`authFetch`). Extraire dans une config unique
       (variable d'env Vite `PUBLIC_BACKEND_URL`) — nécessaire pour autre chose que localhost.
-- [ ] `CHUNK_INTERVAL_MS = 5000` (audio.ts) doit rester cohérent avec l'hypothèse
+- [x] `CHUNK_INTERVAL_MS = 5000` (audio.ts) doit rester cohérent avec l'hypothèse
       ~5 s côté back — le commenter comme valeur partagée du contrat.
 
 ## UX / capture audio
 
-- [ ] `startRecording` re-`throw` l'erreur micro mais rien ne l'affiche à l'utilisateur :
+- [x] `startRecording` re-`throw` l'erreur micro mais rien ne l'affiche à l'utilisateur :
       surfacer un message clair en cas de permission refusée / pas de micro.
-- [ ] Afficher l'état WS (`wsStatus`: connecting/error/disconnected) de façon visible —
+- [x] Afficher l'état WS (`wsStatus`: connecting/error/disconnected) de façon visible —
       l'utilisateur ne sait pas aujourd'hui que le back est injoignable.
 - [ ] Les claims ne sont pas persistés : un refresh vide tout. Décider si on garde
       (sessionStorage / export) ou si c'est volontairement éphémère.
