@@ -59,7 +59,7 @@
         <div
           class="ticker-track flex items-center gap-0 whitespace-nowrap will-change-transform"
           style="animation-duration: {Math.max(tickerItems.length * 8, 20)}s">
-          {#each tickerContent as c (c.id + Math.random())}
+          {#each tickerContent as c, i (c.id + "-" + i)}
             <span
               class="inline-flex items-center gap-1.5 px-2 text-(--color)"
               style="--color: {STATUS_COLOR[c.status]}">
