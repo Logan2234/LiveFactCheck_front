@@ -1,5 +1,6 @@
 import { writable } from "svelte/store";
 import type { Claim } from "./stores/claims";
+import { WS_URL } from "./config";
 
 export type WSMessage =
   | { type: "transcript"; text: string }
@@ -18,7 +19,6 @@ let retryTimer: ReturnType<typeof setTimeout> | null = null;
 let retryCount = 0;
 let manualDisconnect = false;
 
-const WS_URL = "ws://localhost:8000/ws";
 const MAX_RETRIES = 8;
 const BASE_DELAY_MS = 1000;
 

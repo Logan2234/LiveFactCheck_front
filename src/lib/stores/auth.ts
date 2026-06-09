@@ -1,8 +1,8 @@
 import { writable } from "svelte/store";
 import { browser } from "$app/environment";
+import { BACKEND_URL } from "$lib/config";
 
 const STORAGE_KEY = "lfc_admin_token";
-export const API_URL = "http://localhost:8000";
 
 function initialToken(): string | null {
   return browser ? localStorage.getItem(STORAGE_KEY) : null;
@@ -26,7 +26,7 @@ export function getToken(): string | null {
 
 /** POST /admin/login → stores the JWT on success, throws a message on failure. */
 export async function login(password: string): Promise<void> {
-  const res = await fetch(`${API_URL}/admin/login`, {
+  const res = await fetch(`${BACKEND_URL}/admin/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ password })
@@ -42,7 +42,7 @@ export async function login(password: string): Promise<void> {
 /** fetch wrapper that attaches the admin bearer token. */
 export async function authFetch(path: string, init: RequestInit = {}): Promise<Response> {
   const t = getToken();
-  return fetch(`${API_URL}${path}`, {
+  return fetch(`${BACKEND_URL}${path}`, {
     ...init,
     headers: {
       ...init.headers,
