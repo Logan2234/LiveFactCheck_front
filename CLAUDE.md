@@ -7,6 +7,16 @@ read it for anything descriptive; this file is only conventions and traps.
 SvelteKit 2 + Svelte 5 (TypeScript): mic capture → audio streamed to the backend over
 WebSocket → verified claims rendered live across several layouts. Plus an admin UI.
 
+## Tracking files (TODO.md, README.md)
+
+- Read them at the start of a task for **direction and intent** — where the project
+  is headed and the why behind choices.
+- Treat their **progress/done state as a hint, not the truth**: a task marked done
+  may not be, or may have drifted. Verify against the code before relying on it. When
+  they disagree, **the code wins** — flag the gap, don't edit code to match the docs.
+- Update these files **only when I ask** (or at the end of a task I've validated).
+  No speculative or routine updates.
+
 ## Commands
 
 Own git repo — run git/CI from `frontend/`.
