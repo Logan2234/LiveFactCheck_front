@@ -1,4 +1,4 @@
-<script lang="ts">
+﻿<script lang="ts">
   import { onMount, onDestroy } from "svelte";
   import {
     connect,
@@ -56,7 +56,7 @@
   <header class="mb-6 flex flex-wrap items-center justify-between gap-4">
     <div>
       <h1 class="m-0 text-2xl">🔍 LiveFactChecker</h1>
-      <p class="mt-[0.1rem] mb-0 text-[0.85rem] text-ash-600">
+      <p class="mt-[0.1rem] mb-0 text-[0.85rem] text-zinc-500">
         Vérification de faits en temps réel
       </p>
     </div>
@@ -67,8 +67,8 @@
             class={[
               "cursor-pointer rounded-md border px-[0.65rem] py-[0.3rem] text-xs transition-all duration-150",
               $activeLayout === l.key
-                ? "border-accent-700 bg-ink-700 text-white"
-                : "border-ink-720 bg-ink-820 text-ash-600 hover:border-ash-700 hover:text-ash-300"
+                ? "border-accent-dim bg-surface-selected text-white"
+                : "border-edge bg-surface text-zinc-500 hover:border-zinc-600 hover:text-zinc-200"
             ]}
             onclick={() => activeLayout.set(l.key)}
             title={l.label}>
@@ -104,8 +104,8 @@
 <style>
   :global(body) {
     margin: 0;
-    background: #121220;
-    color: #e0e0e0;
+    background: var(--color-background);
+    color: var(--color-fg);
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   }
 </style>

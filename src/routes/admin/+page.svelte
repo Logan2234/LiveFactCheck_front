@@ -1,4 +1,4 @@
-<script lang="ts">
+﻿<script lang="ts">
   import ClaimCard from "$lib/components/ClaimCard.svelte";
   import { authFetch, clearToken } from "$lib/stores/auth";
   import type { Claim } from "$lib/stores/claims";
@@ -131,7 +131,7 @@
 
 <header>
   <h1 class="mt-0 mb-[0.3rem] text-[1.4rem]">🧪 Test de la pipeline</h1>
-  <p class="mt-0 mb-6 text-[0.88rem] text-fog-500">
+  <p class="mt-0 mb-6 text-[0.88rem] text-fg-muted">
     Envoie un texte directement à l'extraction + vérification de claims (POST /fact-check).
   </p>
 </header>
@@ -141,14 +141,14 @@
     bind:value={text}
     rows="6"
     placeholder="Colle ou écris un texte à analyser…"
-    class="box-border w-full resize-y rounded-[10px] border border-ink-720 bg-ink-880 px-4 py-[0.9rem] font-[inherit] text-[0.95rem] leading-normal text-fog-100 transition-[border-color] duration-150 focus:border-accent-500 focus:outline-none"
+    class="box-border w-full resize-y rounded-[10px] border border-edge bg-surface-alt px-4 py-[0.9rem] font-[inherit] text-[0.95rem] leading-normal text-slate-100 transition-[border-color] duration-150 focus:border-accent focus:outline-none"
   ></textarea>
 
   <div class="mt-3 flex items-center gap-2">
     <div class="relative">
       <button
         type="button"
-        class="cursor-pointer rounded-lg border border-ink-720 bg-ink-810 px-[1.1rem] py-[0.6rem] text-[0.88rem] font-medium text-fog-400 transition-[opacity,background] duration-150 enabled:hover:bg-ink-780 disabled:cursor-not-allowed disabled:opacity-40"
+        class="cursor-pointer rounded-lg border border-edge bg-surface px-[1.1rem] py-[0.6rem] text-[0.88rem] font-medium text-slate-300 transition-[opacity,background] duration-150 enabled:hover:bg-surface-raised disabled:cursor-not-allowed disabled:opacity-40"
         onclick={() => (menuOpen = !menuOpen)}>
         Exemples ▾
       </button>
@@ -159,15 +159,15 @@
           aria-label="Fermer"
           onclick={() => (menuOpen = false)}></button>
         <ul
-          class="absolute top-[calc(100%+0.4rem)] left-0 z-50 m-0 flex min-w-65 list-none flex-col gap-[0.15rem] rounded-[10px] border border-ink-720 bg-ink-850 p-[0.35rem] shadow-[0_16px_40px_rgba(0,0,0,0.5)]">
+          class="absolute top-[calc(100%+0.4rem)] left-0 z-50 m-0 flex min-w-65 list-none flex-col gap-[0.15rem] rounded-[10px] border border-edge bg-surface-alt p-[0.35rem] shadow-[0_16px_40px_rgba(0,0,0,0.5)]">
           {#each examples as ex}
             <li>
               <button
                 type="button"
-                class="flex w-full cursor-pointer flex-col gap-[0.1rem] rounded-[7px] border-none bg-transparent px-[0.65rem] py-2 text-left transition-[background] duration-120 hover:bg-ink-780"
+                class="flex w-full cursor-pointer flex-col gap-[0.1rem] rounded-[7px] border-none bg-transparent px-[0.65rem] py-2 text-left transition-[background] duration-120 hover:bg-surface-raised"
                 onclick={() => loadExample(ex.text)}>
-                <span class="text-[0.86rem] font-medium text-fog-100">{ex.label}</span>
-                <span class="text-[0.74rem] font-normal text-fog-600">{ex.hint}</span>
+                <span class="text-[0.86rem] font-medium text-slate-100">{ex.label}</span>
+                <span class="text-[0.74rem] font-normal text-fg-faint">{ex.hint}</span>
               </button>
             </li>
           {/each}
@@ -176,7 +176,7 @@
     </div>
     <button
       type="button"
-      class="cursor-pointer rounded-lg border border-ink-720 bg-ink-810 px-[1.1rem] py-[0.6rem] text-[0.88rem] font-medium text-fog-400 transition-[opacity,background] duration-150 enabled:hover:bg-ink-780 disabled:cursor-not-allowed disabled:opacity-40"
+      class="cursor-pointer rounded-lg border border-edge bg-surface px-[1.1rem] py-[0.6rem] text-[0.88rem] font-medium text-slate-300 transition-[opacity,background] duration-150 enabled:hover:bg-surface-raised disabled:cursor-not-allowed disabled:opacity-40"
       onclick={() => (text = "")}
       disabled={!text}>
       Vider
@@ -206,8 +206,8 @@
 
 {#if loading}
   <div
-    class="flex items-center gap-[0.7rem] rounded-[10px] border border-dashed border-ink-720 bg-ink-880 p-6 text-[0.9rem] text-fog-500">
-    <span class="spinner h-4 w-4 shrink-0 rounded-full border-2 border-ink-640 border-t-accent-400"
+    class="flex items-center gap-[0.7rem] rounded-[10px] border border-dashed border-edge bg-surface-alt p-6 text-[0.9rem] text-fg-muted">
+    <span class="spinner h-4 w-4 shrink-0 rounded-full border-2 border-edge-hi border-t-accent-light"
     ></span>
     Extraction et vérification… (le web search peut prendre quelques secondes)
   </div>
@@ -216,28 +216,28 @@
     <h2 class="m-0 text-[1.05rem]">
       {claims.length} claim{claims.length > 1 ? "s" : ""}
     </h2>
-    <span class="text-[0.8rem] tabular-nums text-fog-700">{(elapsed / 1000).toFixed(1)} s</span>
+    <span class="text-[0.8rem] tabular-nums text-fg-faint">{(elapsed / 1000).toFixed(1)} s</span>
   </div>
 
   {#if debug}
     <div
-      class="mb-[0.9rem] flex flex-wrap items-center gap-x-[0.6rem] gap-y-[0.4rem] rounded-lg border border-ink-820 bg-ink-950 px-[0.85rem] py-[0.45rem] text-[0.78rem] text-fog-600">
+      class="mb-[0.9rem] flex flex-wrap items-center gap-x-[0.6rem] gap-y-[0.4rem] rounded-lg border border-surface bg-[#0e0e1c] px-[0.85rem] py-[0.45rem] text-[0.78rem] text-fg-faint">
       <span class="flex items-center gap-[0.35rem]">
-        <span class="text-ink-600">Modèle</span>
+        <span class="text-fg-faint">Modèle</span>
         <code class="font-mono text-[0.74rem] text-[#8888b8]">{debug.model}</code>
       </span>
-      <span class="text-ink-700">·</span>
+      <span class="text-surface-selected">·</span>
       <span class="flex items-center gap-[0.35rem]">
-        <span class="text-ink-600">Tours</span>
+        <span class="text-fg-faint">Tours</span>
         <span
           class="rounded-full border px-[0.45rem] py-[0.1rem] text-[0.72rem] font-medium whitespace-nowrap {debug.turns ===
           2
             ? 'border-amber-500/20 bg-amber-500/10 text-amber-400'
             : 'border-green-500/20 bg-green-500/10 text-green-400'}">{debug.turns}</span>
       </span>
-      <span class="text-ink-700">·</span>
+      <span class="text-surface-selected">·</span>
       <span class="flex items-center gap-[0.35rem]">
-        <span class="text-ink-600">Web search</span>
+        <span class="text-fg-faint">Web search</span>
         <span
           class="rounded-full border px-[0.45rem] py-[0.1rem] text-[0.72rem] font-medium whitespace-nowrap {debug.web_search_called
             ? 'border-[rgba(99,179,237,0.2)] bg-[rgba(99,179,237,0.1)] text-[#63b3ed]'
@@ -245,15 +245,15 @@
           {debug.web_search_called ? "déclenchée" : "non utilisée"}
         </span>
       </span>
-      <span class="text-ink-700">·</span>
+      <span class="text-surface-selected">·</span>
       <span class="flex items-center gap-[0.35rem]">
-        <span class="text-ink-600">Tokens</span>
+        <span class="text-fg-faint">Tokens</span>
         <span>{(debug.usage.input_tokens + debug.usage.output_tokens).toLocaleString()}</span>
       </span>
       {#if debug.usage.cache_read > 0}
-        <span class="text-ink-700">·</span>
+        <span class="text-surface-selected">·</span>
         <span class="flex items-center gap-[0.35rem]">
-          <span class="text-ink-600">Cache hit</span>
+          <span class="text-fg-faint">Cache hit</span>
           <span class="font-medium text-green-400">{cacheRatio(debug.usage)}</span>
         </span>
       {/if}
@@ -262,7 +262,7 @@
 
   {#if claims.length === 0}
     <p
-      class="rounded-[10px] border border-dashed border-ink-720 bg-ink-880 p-[1.2rem] text-center text-[0.9rem] text-fog-500">
+      class="rounded-[10px] border border-dashed border-edge bg-surface-alt p-[1.2rem] text-center text-[0.9rem] text-fg-muted">
       Aucun fait vérifiable trouvé dans ce texte.
     </p>
   {:else}
@@ -298,7 +298,7 @@
     width: 38px;
     height: 22px;
     border-radius: 999px;
-    background: #2e2e3e;
+    background: var(--color-edge);
     border: 1px solid #3a3a4e;
     transition:
       background 0.15s,
@@ -321,7 +321,7 @@
 
   .switch input:checked + .track {
     background: #3a3a7a;
-    border-color: #5a5ad0;
+    border-color: var(--color-accent);
   }
 
   .switch input:checked + .track .thumb {

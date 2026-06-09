@@ -1,4 +1,4 @@
-<script lang="ts">
+﻿<script lang="ts">
   import { STATUS_COLOR, STATUS_LABEL } from "$lib/constants/status";
   import { claimStats, sortedClaims } from "$lib/stores/claims";
 
@@ -54,13 +54,13 @@
 </script>
 
 <div class="grid grid-cols-[300px_1fr] items-start gap-8 max-[800px]:grid-cols-1">
-  <div class="sticky top-4 rounded-xl bg-ink-850 p-6 max-[800px]:static">
+  <div class="sticky top-4 rounded-xl bg-surface-alt p-6 max-[800px]:static">
     <h2 class="mt-0 mb-4 text-[1.1rem]">🎯 Trust Meter</h2>
 
     <div class="mb-5 flex justify-center">
       <svg viewBox="0 0 200 200" class="h-45 w-45">
         <!-- Track -->
-        <circle cx={CX} cy={CY} r={R} fill="none" stroke="#2e2e3e" stroke-width="20" />
+        <circle cx={CX} cy={CY} r={R} fill="none" stroke="var(--color-edge)" stroke-width="20" />
 
         {#if segments.length > 0}
           <!-- Segments (rotate -90° so we start at 12 o'clock) -->
@@ -103,19 +103,19 @@
         {@const count = ($claimStats as Record<string, number>)[key] ?? 0}
         <div class="flex items-center gap-2 text-[0.85rem]">
           <span class="h-2.5 w-2.5 shrink-0 rounded-full" style="background: {color}"></span>
-          <span class="flex-1 text-ash-500">{STATUS_LABEL[key]}</span>
+          <span class="flex-1 text-zinc-400">{STATUS_LABEL[key]}</span>
           <span class="font-semibold tabular-nums" style="color: {color}">{count}</span>
         </div>
       {/each}
     </div>
 
     <!-- Overall totals -->
-    <div class="flex flex-col gap-[0.4rem] border-t border-ink-720 pt-3">
-      <div class="flex justify-between text-[0.85rem] text-ash-600">
+    <div class="flex flex-col gap-[0.4rem] border-t border-edge pt-3">
+      <div class="flex justify-between text-[0.85rem] text-zinc-500">
         <span>Total analysés</span>
-        <strong class="text-ash-300">{$claimStats.total}</strong>
+        <strong class="text-zinc-200">{$claimStats.total}</strong>
       </div>
-      <div class="flex justify-between text-[0.85rem] text-ash-600">
+      <div class="flex justify-between text-[0.85rem] text-zinc-500">
         <span>En attente</span>
         <strong class="text-amber-500">{$claimStats.pending}</strong>
       </div>
@@ -127,7 +127,7 @@
     <div class="flex max-h-150 flex-col gap-2 overflow-y-auto">
       {#each $sortedClaims as c (c.id)}
         <div
-          class="rounded-lg border-l-4 bg-ink-820 px-4 py-3 border-l-(--color)"
+          class="rounded-lg border-l-4 bg-surface px-4 py-3 border-l-(--color)"
           style="--color: {STATUS_COLOR[c.status]}">
           <div class="mb-[0.35rem] flex items-center gap-2">
             <span class="h-2 w-2 rounded-full" style="background: {STATUS_COLOR[c.status]}"></span>
@@ -135,13 +135,13 @@
               class="text-[0.8rem] font-semibold tracking-[0.04em] uppercase"
               style="color: {STATUS_COLOR[c.status]}">{STATUS_LABEL[c.status]}</span>
           </div>
-          <p class="mt-0 mb-1 text-[0.9rem] text-fog-250 italic">« {c.text} »</p>
+          <p class="mt-0 mb-1 text-[0.9rem] text-fg italic">« {c.text} »</p>
           {#if c.explanation}
-            <p class="m-0 text-[0.82rem] leading-[1.4] text-ash-600">{c.explanation}</p>
+            <p class="m-0 text-[0.82rem] leading-[1.4] text-zinc-500">{c.explanation}</p>
           {/if}
         </div>
       {:else}
-        <p class="m-0 p-8 text-center text-ash-700">Aucun claim détecté...</p>
+        <p class="m-0 p-8 text-center text-zinc-600">Aucun claim détecté...</p>
       {/each}
     </div>
   </div>

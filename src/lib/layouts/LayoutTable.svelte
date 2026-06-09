@@ -1,4 +1,4 @@
-<script lang="ts">
+﻿<script lang="ts">
   import { claimFilter, filteredClaims, type ClaimFilter } from "$lib/stores/claims";
 
   const STATUS_CONFIG: Record<string, { label: string; color: string; icon: string }> = {
@@ -29,8 +29,8 @@
           class={[
             "cursor-pointer rounded-[20px] border px-3 py-[0.3rem] text-[0.8rem] transition-all duration-150",
             $claimFilter === f.key
-              ? "border-accent-700 bg-ink-700 text-white"
-              : "border-ink-720 bg-ink-820 text-ash-500 hover:border-ash-700 hover:text-ash-300"
+              ? "border-accent-dim bg-surface-selected text-white"
+              : "border-edge bg-surface text-zinc-400 hover:border-zinc-600 hover:text-zinc-200"
           ]}
           onclick={() => claimFilter.set(f.key)}>
           {f.icon}
@@ -38,55 +38,55 @@
         </button>
       {/each}
     </div>
-    <span class="text-[0.85rem] whitespace-nowrap text-ash-700"
+    <span class="text-[0.85rem] whitespace-nowrap text-zinc-600"
       >{$filteredClaims.length} fait{$filteredClaims.length !== 1 ? "s" : ""}</span>
   </div>
 
-  <div class="max-h-[calc(100vh-240px)] overflow-auto rounded-lg border border-ink-820">
+  <div class="max-h-[calc(100vh-240px)] overflow-auto rounded-lg border border-surface">
     <table class="w-full border-collapse text-sm">
-      <thead class="sticky top-0 z-[1]">
+      <thead class="sticky top-0 z-1">
         <tr>
           <th
-            class="w-20 border-b border-ink-720 bg-ink-820 px-[0.9rem] py-[0.6rem] text-left text-xs font-semibold tracking-wider text-ash-650 uppercase"
+            class="w-20 border-b border-edge bg-surface px-[0.9rem] py-[0.6rem] text-left text-xs font-semibold tracking-wider text-zinc-600 uppercase"
             >Heure</th>
           <th
-            class="w-[130px] border-b border-ink-720 bg-ink-820 px-[0.9rem] py-[0.6rem] text-left text-xs font-semibold tracking-wider text-ash-650 uppercase"
+            class="w-32.5 border-b border-edge bg-surface px-[0.9rem] py-[0.6rem] text-left text-xs font-semibold tracking-wider text-zinc-600 uppercase"
             >Statut</th>
           <th
-            class="min-w-[200px] border-b border-ink-720 bg-ink-820 px-[0.9rem] py-[0.6rem] text-left text-xs font-semibold tracking-wider text-ash-650 uppercase"
+            class="min-w-50 border-b border-edge bg-surface px-[0.9rem] py-[0.6rem] text-left text-xs font-semibold tracking-wider text-zinc-600 uppercase"
             >Affirmation</th>
           <th
-            class="min-w-45 border-b border-ink-720 bg-ink-820 px-[0.9rem] py-[0.6rem] text-left text-xs font-semibold tracking-wider text-ash-650 uppercase"
+            class="min-w-45 border-b border-edge bg-surface px-[0.9rem] py-[0.6rem] text-left text-xs font-semibold tracking-wider text-zinc-600 uppercase"
             >Explication</th>
         </tr>
       </thead>
       <tbody>
         {#if $filteredClaims.length === 0}
           <tr>
-            <td colspan="4" class="p-12 text-center text-ash-750"
+            <td colspan="4" class="p-12 text-center text-zinc-700"
               >Aucun fait détecté pour le moment...</td>
           </tr>
         {:else}
           {#each $filteredClaims as claim (claim.id)}
             {@const cfg = STATUS_CONFIG[claim.status] ?? STATUS_CONFIG.pending}
             <tr
-              class="claim-row cursor-pointer border-b border-ink-850"
+              class="claim-row cursor-pointer border-b border-surface-alt"
               class:expanded={expandedId === claim.id}
               style="--sc: {cfg.color}"
               onclick={() => (expandedId = expandedId === claim.id ? null : claim.id)}>
               <td
-                class="w-20 px-[0.9rem] py-[0.65rem] align-top text-[0.78rem] whitespace-nowrap tabular-nums text-ash-700"
+                class="w-20 px-[0.9rem] py-[0.65rem] align-top text-[0.78rem] whitespace-nowrap tabular-nums text-zinc-600"
                 >{new Date(claim.timestamp).toLocaleTimeString()}</td>
-              <td class="w-[130px] px-[0.9rem] py-[0.65rem] align-top whitespace-nowrap">
+              <td class="w-32.5 px-[0.9rem] py-[0.65rem] align-top whitespace-nowrap">
                 <span class="text-[0.8rem] font-medium" style="color: {cfg.color}">
                   {cfg.icon}
                   {cfg.label}
                 </span>
               </td>
-              <td class="min-w-[200px] px-[0.9rem] py-[0.65rem] align-top">
+              <td class="min-w-50 px-[0.9rem] py-[0.65rem] align-top">
                 <span
                   class={[
-                    "leading-[1.4] text-ash-400 italic",
+                    "leading-[1.4] text-zinc-300 italic",
                     expandedId !== claim.id && "line-clamp-2"
                   ]}>
                   {claim.text}
@@ -102,7 +102,7 @@
                     {claim.explanation}
                   </span>
                 {:else if claim.status === "pending"}
-                  <span class="text-[0.78rem] text-ash-750 italic">analyse...</span>
+                  <span class="text-[0.78rem] text-zinc-700 italic">analyse...</span>
                 {/if}
               </td>
             </tr>
@@ -129,7 +129,7 @@
   }
 
   .claim-row.expanded {
-    background: #1e1e2e;
+    background: var(--color-surface);
     border-left-color: var(--sc);
   }
 </style>

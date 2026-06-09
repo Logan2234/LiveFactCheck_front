@@ -1,4 +1,4 @@
-<script lang="ts">
+﻿<script lang="ts">
   import { transcriptEntries } from "$lib/stores/audio";
   import {
     claimFilter,
@@ -48,9 +48,9 @@
   ];
 </script>
 
-<div class="overflow-hidden rounded-lg border border-ink-820 bg-[#0d0d0f] font-term">
+<div class="overflow-hidden rounded-lg border border-surface bg-[#0d0d0f] font-term">
   <div
-    class="flex flex-wrap items-center justify-between gap-2 border-b border-ink-820 bg-[#111118] px-4 py-2">
+    class="flex flex-wrap items-center justify-between gap-2 border-b border-surface bg-[#111118] px-4 py-2">
     <span class="flex gap-3 text-[0.8rem] font-semibold">
       <span class="text-emerald-500">{$claimStats.verified}✓</span>
       <span class="text-red-500">{$claimStats.false}✗</span>
@@ -63,7 +63,7 @@
         <button
           class={[
             "cursor-pointer border-none bg-none px-1 py-[0.1rem] font-[inherit] text-[0.8rem] transition-colors duration-100",
-            $claimFilter === f.key ? "text-[#7b7bff]" : "text-ash-700 hover:text-ash-500"
+            $claimFilter === f.key ? "text-[#7b7bff]" : "text-zinc-600 hover:text-zinc-400"
           ]}
           onclick={() => claimFilter.set(f.key)}>
           [{f.label}]
@@ -75,32 +75,32 @@
   <div class="flex max-h-[calc(100vh-260px)] flex-col gap-[0.35rem] overflow-y-auto px-4 py-3">
     {#if $log.length === 0}
       <div class="flex items-baseline gap-3 text-[0.85rem] leading-normal">
-        <span class="shrink-0 text-xs whitespace-nowrap tabular-nums text-ash-800"
+        <span class="shrink-0 text-xs whitespace-nowrap tabular-nums text-zinc-800"
           >{new Date().toLocaleTimeString()}</span>
-        <span class="w-[1ch] shrink-0 text-center font-bold text-ash-800">_</span>
-        <span class="flex-1 wrap-break-word text-ash-750 italic">waiting for audio input...</span>
+        <span class="w-[1ch] shrink-0 text-center font-bold text-zinc-800">_</span>
+        <span class="flex-1 wrap-break-word text-zinc-700 italic">waiting for audio input...</span>
       </div>
     {:else}
       {#each $log as item (item.kind + "-" + (item.kind === "claim" ? item.claim.id : item.timestamp))}
         {#if item.kind === "transcript"}
           <div class="flex items-baseline gap-3 text-[0.85rem] leading-normal">
-            <span class="shrink-0 text-xs whitespace-nowrap tabular-nums text-ash-800"
+            <span class="shrink-0 text-xs whitespace-nowrap tabular-nums text-zinc-800"
               >{new Date(item.timestamp).toLocaleTimeString()}</span>
-            <span class="w-[1ch] shrink-0 text-center font-bold text-ash-800">»</span>
-            <span class="flex-1 wrap-break-word text-ash-750 italic">{item.text}</span>
+            <span class="w-[1ch] shrink-0 text-center font-bold text-zinc-800">»</span>
+            <span class="flex-1 wrap-break-word text-zinc-700 italic">{item.text}</span>
           </div>
         {:else}
           <div
             class="flex items-baseline gap-3 text-[0.85rem] leading-normal"
             style="--sc: {STATUS_COLOR[item.claim.status] ?? '#888'}">
-            <span class="shrink-0 text-xs whitespace-nowrap tabular-nums text-ash-800"
+            <span class="shrink-0 text-xs whitespace-nowrap tabular-nums text-zinc-800"
               >{new Date(item.timestamp).toLocaleTimeString()}</span>
             <span class="w-[1ch] shrink-0 text-center font-bold" style="color: var(--sc)"
               >{STATUS_SYM[item.claim.status] ?? "?"}</span>
-            <span class="flex-1 wrap-break-word text-ash-600">
+            <span class="flex-1 wrap-break-word text-zinc-500">
               <span class="font-medium" style="color: var(--sc)">"{item.claim.text}"</span>
               {#if item.claim.explanation}
-                <span class="text-[0.8rem] text-ash-700"> — {item.claim.explanation}</span>
+                <span class="text-[0.8rem] text-zinc-600"> — {item.claim.explanation}</span>
               {/if}
             </span>
           </div>

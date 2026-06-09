@@ -1,4 +1,4 @@
-<script lang="ts">
+﻿<script lang="ts">
   import { authFetch, clearToken } from "$lib/stores/auth";
   import { onDestroy, onMount, tick } from "svelte";
 
@@ -87,8 +87,8 @@
 <header>
   <div>
     <h1 class="mt-0 mb-[0.3rem] text-[1.4rem]">📜 Logs</h1>
-    <p class="mt-0 mb-[1.2rem] text-[0.88rem] text-fog-500">
-      Flux en direct du logger <code class="font-mono text-[0.85em] text-fog-450">app.*</code> — rafraîchissement
+    <p class="mt-0 mb-[1.2rem] text-[0.88rem] text-fg-muted">
+      Flux en direct du logger <code class="font-mono text-[0.85em] text-fg-muted">app.*</code> — rafraîchissement
       toutes les 1,5 s.
     </p>
   </div>
@@ -100,22 +100,22 @@
     <select
       id="filter"
       bind:value={filterLevel}
-      class="cursor-pointer rounded-[7px] border border-ink-700 bg-ink-840 px-[0.65rem] py-[0.35rem] text-[0.82rem] text-fog-300 focus:border-accent-500 focus:outline-none">
+      class="cursor-pointer rounded-[7px] border border-surface-selected bg-surface-alt px-[0.65rem] py-[0.35rem] text-[0.82rem] text-slate-200 focus:border-accent focus:outline-none">
       {#each LEVELS as l}
         <option value={l}>{l}</option>
       {/each}
     </select>
-    <span class="text-[0.78rem] tabular-nums text-ink-560"
+    <span class="text-[0.78rem] tabular-nums text-fg-faint"
       >{visible.length} entrée{visible.length !== 1 ? "s" : ""}</span>
   </div>
   <div class="flex items-center gap-[0.6rem]">
     <label
       class="flex cursor-pointer items-center gap-[0.35rem] text-[0.8rem] text-[#8888a8] select-none">
-      <input type="checkbox" bind:checked={autoScroll} class="cursor-pointer accent-accent-400" />
+      <input type="checkbox" bind:checked={autoScroll} class="cursor-pointer accent-accent-light" />
       Auto-scroll
     </label>
     <button
-      class="cursor-pointer rounded-[7px] border border-ink-720 bg-ink-810 px-3 py-[0.35rem] text-[0.8rem] text-fog-400 transition-[background] duration-150 enabled:hover:bg-ink-780 disabled:cursor-not-allowed disabled:opacity-40"
+      class="cursor-pointer rounded-[7px] border border-edge bg-surface px-3 py-[0.35rem] text-[0.8rem] text-slate-300 transition-[background] duration-150 enabled:hover:bg-surface-raised disabled:cursor-not-allowed disabled:opacity-40"
       onclick={clearLogs}
       disabled={entries.length === 0}>Vider</button>
   </div>
@@ -130,17 +130,17 @@
 {/if}
 
 <div
-  class="h-[calc(100vh-260px)] min-h-75 overflow-y-auto rounded-[10px] border border-ink-820 bg-[#080810] px-4 py-3 font-mono text-[0.78rem] leading-[1.55]"
+  class="h-[calc(100vh-260px)] min-h-75 overflow-y-auto rounded-[10px] border border-surface bg-[#080810] px-4 py-3 font-mono text-[0.78rem] leading-[1.55]"
   bind:this={logBox}>
   {#if visible.length === 0}
-    <div class="py-4 text-center text-[0.82rem] text-ink-640">
+    <div class="py-4 text-center text-[0.82rem] text-edge-hi">
       Aucun log — les messages apparaîtront dès que le backend émet quelque chose.
     </div>
   {:else}
     {#each visible as entry (entry.id)}
       <div
         class="line level-{entry.level.toLowerCase()} grid grid-cols-[7ch_8ch_22ch_1fr] gap-3 rounded-[3px] py-[0.1rem] hover:bg-white/3">
-        <span class="ts whitespace-nowrap text-ink-640">{formatTime(entry.t)}</span>
+        <span class="ts whitespace-nowrap text-edge-hi">{formatTime(entry.t)}</span>
         <span class="lvl font-bold whitespace-nowrap">{entry.level}</span>
         <span class="logger overflow-hidden text-ellipsis whitespace-nowrap text-[#5a5a88]"
           >{entry.logger}</span>

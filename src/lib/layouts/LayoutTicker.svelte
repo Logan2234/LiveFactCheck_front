@@ -1,4 +1,4 @@
-<script lang="ts">
+﻿<script lang="ts">
   import { transcriptEntries } from "$lib/stores/audio";
   import { claims } from "$lib/stores/claims";
   import { STATUS_COLOR, STATUS_ICON } from "$lib/constants/status";
@@ -14,18 +14,18 @@
   <!-- Main transcript area -->
   <div
     class="flex flex-1 flex-col overflow-hidden rounded-t-[10px] border border-b-0 border-[#1e1e3e] bg-[#0d0d1a]">
-    <div class="flex items-center gap-3 border-b border-ink-700 bg-ink-840 px-5 py-3">
+    <div class="flex items-center gap-3 border-b border-surface-selected bg-surface-alt px-5 py-3">
       <h2 class="m-0 text-[1.2rem]">📡 LiveFactChecker — En direct</h2>
       <div class="live-dot ml-auto h-2.5 w-2.5 rounded-full bg-red-500"></div>
     </div>
 
     <div class="flex flex-1 flex-col gap-3 overflow-y-auto px-6 py-4 text-[1.05rem] leading-[1.7]">
       {#if $transcriptEntries.length === 0}
-        <p class="m-auto text-center text-ash-750">En attente de la transcription...</p>
+        <p class="m-auto text-center text-zinc-700">En attente de la transcription...</p>
       {:else}
         {#each [...$transcriptEntries].reverse() as entry (entry.timestamp)}
           <div class="flex items-baseline gap-3">
-            <span class="mt-[0.2rem] shrink-0 text-xs tabular-nums text-ash-750"
+            <span class="mt-[0.2rem] shrink-0 text-xs tabular-nums text-zinc-700"
               >{new Date(entry.timestamp).toLocaleTimeString()}</span>
             <span class="text-[#d0d0d0]">{entry.text}</span>
           </div>
@@ -41,7 +41,7 @@
         >❌ {$claims.filter((c) => c.status === "false").length} faux</span>
       <span class="tabular-nums text-amber-500"
         >❓ {$claims.filter((c) => c.status === "uncertain").length} incertains</span>
-      <span class="tabular-nums text-ash-600">Total: {$claims.length}</span>
+      <span class="tabular-nums text-zinc-500">Total: {$claims.length}</span>
     </div>
   </div>
 
@@ -54,7 +54,7 @@
     </div>
     <div class="flex flex-1 items-center overflow-hidden bg-[#1a0000]">
       {#if tickerContent.length === 0}
-        <div class="px-4 text-[0.85rem] text-ash-650">En attente des claims...</div>
+        <div class="px-4 text-[0.85rem] text-zinc-600">En attente des claims...</div>
       {:else}
         <div
           class="ticker-track flex items-center gap-0 whitespace-nowrap will-change-transform"
@@ -64,7 +64,7 @@
               class="inline-flex items-center gap-[0.4rem] px-2 text-(--color)"
               style="--color: {STATUS_COLOR[c.status]}">
               <span class="text-[0.85rem]">{STATUS_ICON[c.status]}</span>
-              <span class="max-w-87.5 overflow-hidden text-[0.85rem] text-ellipsis text-ash-300"
+              <span class="max-w-87.5 overflow-hidden text-[0.85rem] text-ellipsis text-zinc-200"
                 >{c.text}</span>
             </span>
             <span class="px-2 text-[0.6rem] text-[#cc0000]">◆</span>

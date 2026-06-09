@@ -1,4 +1,4 @@
-<script lang="ts">
+﻿<script lang="ts">
   import type { Claim } from "$lib/stores/claims";
 
   let { claim }: { claim: Claim } = $props();
@@ -46,7 +46,7 @@
 </script>
 
 <div
-  class="mb-3 rounded-lg border-l-4 bg-ink-820 px-4 py-[0.85rem]"
+  class="mb-3 rounded-lg border-l-4 bg-surface px-4 py-[0.85rem]"
   style="border-left-color: {config.color}">
   <div class="mb-2 flex flex-wrap items-center gap-[0.4rem]">
     <span>{config.icon}</span>
@@ -74,15 +74,15 @@
         <span
           class="inline-block h-1 max-w-12 min-w-1 rounded-xs opacity-80"
           style="width: {claim.confidence * 10}%; background: {config.color}"></span>
-        <span class="text-[0.72rem] tabular-nums text-ash-650">{claim.confidence}/10</span>
+        <span class="text-[0.72rem] tabular-nums text-zinc-600">{claim.confidence}/10</span>
       </span>
     {/if}
 
-    <span class="ml-auto text-[0.78rem] whitespace-nowrap tabular-nums text-ash-600"
+    <span class="ml-auto text-[0.78rem] whitespace-nowrap tabular-nums text-zinc-500"
       >{new Date(claim.timestamp).toLocaleTimeString()}</span>
 
     <button
-      class="shrink-0 rounded-sm border border-transparent bg-transparent px-[0.35rem] py-[0.1rem] text-[0.85rem] leading-none text-ash-700 transition-all duration-150 hover:border-ink-680 hover:text-ash-500"
+      class="shrink-0 rounded-sm border border-transparent bg-transparent px-[0.35rem] py-[0.1rem] text-[0.85rem] leading-none text-zinc-600 transition-all duration-150 hover:border-edge-hi hover:text-zinc-400"
       onclick={copy}
       title="Copier ce claim"
       aria-label="Copier">
@@ -90,23 +90,23 @@
     </button>
   </div>
 
-  <p class="my-[0.2rem] text-[0.92rem] leading-normal text-fog-250 italic">« {claim.text} »</p>
+  <p class="my-[0.2rem] text-[0.92rem] leading-normal text-fg italic">« {claim.text} »</p>
 
   {#if claim.explanation}
-    <p class="mt-[0.45rem] text-sm leading-normal text-ash-500">{claim.explanation}</p>
+    <p class="mt-[0.45rem] text-sm leading-normal text-zinc-400">{claim.explanation}</p>
   {/if}
 
   {#if claim.counter_claim}
     <div
       class="mt-2 rounded-r-md border-l-[3px] border-emerald-500 bg-emerald-500/12 px-[0.65rem] py-[0.4rem] text-sm">
       <span class="mr-[0.35rem] font-semibold text-emerald-500">✔ Réalité :</span>
-      <span class="text-ash-400">{claim.counter_claim}</span>
+      <span class="text-zinc-300">{claim.counter_claim}</span>
     </div>
   {/if}
 
   {#if claim.sources.length > 0}
     <div class="mt-2 flex flex-col gap-[0.15rem] text-[0.8rem]">
-      <span class="text-ash-650">Sources :</span>
+      <span class="text-zinc-600">Sources :</span>
       {#each claim.sources as source}
         <a
           href={source}

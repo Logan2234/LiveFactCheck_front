@@ -3,65 +3,35 @@
 /*
   Design tokens for the LiveFactChecker dark theme.
 
-  Only the *static*, recurring palette lives here. Status/category colors stay
-  JS-driven (injected via inline `style=` from `lib/constants/status.ts` and the
-  per-component maps) because they're chosen at runtime — no utility class helps
-  there. Exact hex values are preserved (no merging of near-identical shades) so
-  the conversion to utilities doesn't shift any pixels.
+  Static, recurring palette only. Status/category colors stay JS-driven
+  (injected via inline `style=` from `lib/constants/status.ts`) because they
+  are chosen at runtime. One-off shades use Tailwind arbitrary values (bg-[#hex]).
 */
 @theme {
   /* ── Monospace stacks (code/log/terminal views) ── */
   --font-mono: "SF Mono", "Fira Code", monospace;
   --font-term: "Cascadia Code", "Fira Code", "Consolas", "Courier New", monospace;
 
-  /* ── Dark blue-purple surfaces & borders (darkest → lightest) ── */
-  --color-ink-950: #0e0e1c;
-  --color-ink-900: #121220; /* app background */
-  --color-ink-880: #161624;
-  --color-ink-870: #12121e;
-  --color-ink-850: #1a1a2a;
-  --color-ink-840: #1a1a2e;
-  --color-ink-820: #1e1e2e; /* main card surface */
-  --color-ink-810: #1e1e30;
-  --color-ink-790: #1d1d2d;
-  --color-ink-780: #26263a;
-  --color-ink-770: #252535;
-  --color-ink-760: #2d2d3d;
-  --color-ink-720: #2e2e3e; /* main border */
-  --color-ink-700: #2e2e4e; /* selected / accent surface */
-  --color-ink-680: #3e3e4e;
-  --color-ink-660: #3a3a4e;
-  --color-ink-640: #3a3a5a;
-  --color-ink-600: #4a4a68;
-  --color-ink-560: #5a5a78;
+  /* ── Surfaces (darkest → lightest) ── */
+  --color-background: #121220;       /* app bg */
+  --color-surface: #1e1e2e;          /* main card / panel */
+  --color-surface-alt: #1a1a2a;      /* login, modals, alternate panels */
+  --color-surface-raised: #26263a;   /* hover / interactive surfaces */
+  --color-surface-selected: #2e2e4e; /* active / selected state */
 
-  /* ── Indigo / violet accents ── */
-  --color-accent-700: #5555aa;
-  --color-accent-600: #5a5ad0;
-  --color-accent-500: #6a6acc;
-  --color-accent-400: #7a7ad0;
-  --color-accent-violet: #7a4ad0;
+  /* ── Borders ── */
+  --color-edge: #2e2e3e;   /* standard border */
+  --color-edge-hi: #3a3a4e; /* stronger border, focus rings */
 
-  /* ── Tinted text grays ── */
-  --color-fog-100: #e8e8f0;
-  --color-fog-200: #e0e0f8;
-  --color-fog-250: #e0e0e0; /* body text */
-  --color-fog-300: #c8c8e8;
-  --color-fog-400: #b0b0c8;
-  --color-fog-450: #9a9ac0;
-  --color-fog-500: #8888a0;
-  --color-fog-600: #7a7a98;
-  --color-fog-700: #6a6a88;
+  /* ── Accent (indigo / violet) ── */
+  --color-accent: #5a5ad0;
+  --color-accent-dim: #5555aa;
+  --color-accent-light: #7a7ad0;
 
-  /* ── Achromatic grays (plain CSS shorthand grays) ── */
-  --color-ash-300: #ddd;
-  --color-ash-400: #ccc;
-  --color-ash-500: #aaa;
-  --color-ash-600: #888;
-  --color-ash-650: #666;
-  --color-ash-700: #555;
-  --color-ash-750: #444;
-  --color-ash-800: #333;
+  /* ── Foreground text ── */
+  --color-fg: #e0e0e0;       /* body text */
+  --color-fg-muted: #9a9ac0; /* secondary labels */
+  --color-fg-faint: #6a6a88; /* tertiary / hints */
 }
 
 @layer base {

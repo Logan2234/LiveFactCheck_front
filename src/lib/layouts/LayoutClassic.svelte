@@ -1,4 +1,4 @@
-<script lang="ts">
+﻿<script lang="ts">
   import ClaimCard from "$lib/components/ClaimCard.svelte";
   import { transcriptEntries } from "$lib/stores/audio";
   import { claimFilter, claimStats, filteredClaims, type ClaimFilter } from "$lib/stores/claims";
@@ -16,15 +16,15 @@
 <div class="grid grid-cols-1 items-start gap-8 md:grid-cols-2">
   <section>
     <h2 class="mt-0 mb-3 text-[1.1rem]">📝 Transcription</h2>
-    <div class="flex max-h-115 flex-col gap-[0.4rem] overflow-y-auto rounded-lg bg-ink-820 p-3">
+    <div class="flex max-h-115 flex-col gap-[0.4rem] overflow-y-auto rounded-lg bg-surface p-3">
       {#if $transcriptEntries.length === 0}
-        <p class="m-0 p-8 text-center text-ash-700">En attente de la transcription...</p>
+        <p class="m-0 p-8 text-center text-zinc-600">En attente de la transcription...</p>
       {:else}
         {#each [...$transcriptEntries].reverse() as entry (entry.timestamp)}
-          <div class="flex items-baseline gap-3 rounded-md bg-ink-770 px-2 py-[0.4rem]">
-            <span class="shrink-0 text-xs whitespace-nowrap tabular-nums text-ash-700"
+          <div class="flex items-baseline gap-3 rounded-md bg-surface-raised px-2 py-[0.4rem]">
+            <span class="shrink-0 text-xs whitespace-nowrap tabular-nums text-zinc-600"
               >{new Date(entry.timestamp).toLocaleTimeString()}</span>
-            <span class="text-[0.9rem] leading-normal text-ash-400">{entry.text}</span>
+            <span class="text-[0.9rem] leading-normal text-zinc-300">{entry.text}</span>
           </div>
         {/each}
       {/if}
@@ -48,8 +48,8 @@
           class={[
             "cursor-pointer rounded-[20px] border px-3 py-[0.3rem] text-[0.8rem] transition-all duration-150",
             $claimFilter === f.key
-              ? "border-accent-700 bg-ink-700 text-white"
-              : "border-ink-720 bg-ink-820 text-ash-500 hover:border-ash-700 hover:text-ash-300"
+              ? "border-accent-dim bg-surface-selected text-white"
+              : "border-edge bg-surface text-zinc-400 hover:border-zinc-600 hover:text-zinc-200"
           ]}
           onclick={() => claimFilter.set(f.key)}>
           {f.icon}
@@ -62,7 +62,7 @@
         <ClaimCard {claim} />
       {/each}
       {#if $filteredClaims.length === 0}
-        <p class="m-0 p-8 text-center text-ash-700">Aucun fait détecté pour le moment...</p>
+        <p class="m-0 p-8 text-center text-zinc-600">Aucun fait détecté pour le moment...</p>
       {/if}
     </div>
   </section>

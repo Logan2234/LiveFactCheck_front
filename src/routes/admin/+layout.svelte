@@ -1,4 +1,4 @@
-<script lang="ts">
+﻿<script lang="ts">
   import { goto } from "$app/navigation";
   import { page } from "$app/state";
   import { clearToken, getToken, token } from "$lib/stores/auth";
@@ -41,7 +41,7 @@
     <aside
       aria-label="Navigation principale"
       role="navigation"
-      class="flex w-60 shrink-0 flex-col gap-6 border-r border-ink-780 bg-ink-880 px-[0.9rem] py-5">
+      class="flex w-60 shrink-0 flex-col gap-6 border-r border-surface-raised bg-surface-alt px-[0.9rem] py-5">
       <div class="flex items-center gap-[0.6rem] px-[0.4rem]">
         <span class="text-[1.4rem]">🔍</span>
         <div class="flex flex-col leading-[1.2]">
@@ -57,7 +57,7 @@
               "flex items-center gap-[0.6rem] rounded-lg px-[0.7rem] py-[0.6rem] text-[0.88rem] no-underline transition-[background,color] duration-150",
               page.url.pathname === item.href
                 ? "bg-[#26264a] text-white"
-                : "text-[#9a9ab0] hover:bg-ink-810 hover:text-fog-250"
+                : "text-[#9a9ab0] hover:bg-surface hover:text-fg"
             ]}>
             <span>{item.icon}</span>
             {item.label}
@@ -66,7 +66,7 @@
       </nav>
       <div class="mt-auto flex flex-col gap-2">
         <a
-          class="px-[0.7rem] py-[0.3rem] text-[0.8rem] text-fog-700 no-underline hover:text-fog-450"
+          class="px-[0.7rem] py-[0.3rem] text-[0.8rem] text-fg-faint no-underline hover:text-fg-muted"
           href="/">↩ Application live</a>
         <button
           onclick={logout}
@@ -83,8 +83,8 @@
 <style>
   :global(body) {
     margin: 0;
-    background: #121220;
-    color: #e0e0e0;
+    background: var(--color-background);
+    color: var(--color-fg);
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   }
 </style>

@@ -1,4 +1,4 @@
-<script lang="ts">
+﻿<script lang="ts">
   import {
     recordingState,
     startRecording,
@@ -30,7 +30,7 @@
   <button
     class={[
       "flex cursor-pointer items-center gap-2 rounded-full px-5 py-[0.65rem] text-[0.95rem] text-white transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-50",
-      isRecording ? "bg-red-600" : "bg-ink-760 enabled:hover:bg-[#3d3d4d]"
+      isRecording ? "bg-red-600" : "bg-surface-raised enabled:hover:bg-[#3d3d4d]"
     ]}
     onclick={toggle}
     disabled={status !== "connected"}
@@ -49,7 +49,7 @@
         "flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border p-0 text-base transition-all duration-150",
         $isMuted
           ? "border-red-900 bg-[#3a1a1a]"
-          : "border-ink-680 bg-ink-820 hover:border-ash-700 hover:bg-ink-720"
+          : "border-edge-hi bg-surface hover:border-zinc-600 hover:bg-edge"
       ]}
       onclick={toggleMute}
       title={$isMuted ? "Réactiver le micro" : "Couper le micro"}
@@ -58,7 +58,7 @@
     </button>
   {/if}
 
-  <span class="text-[0.82rem] text-ash-600">
+  <span class="text-[0.82rem] text-zinc-500">
     {status === "connected"
       ? "🟢 Connecté"
       : status === "connecting"

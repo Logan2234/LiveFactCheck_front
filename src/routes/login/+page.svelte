@@ -1,4 +1,4 @@
-<script lang="ts">
+﻿<script lang="ts">
   import { goto } from "$app/navigation";
   import { login } from "$lib/stores/auth";
 
@@ -30,12 +30,12 @@
   class="flex min-h-screen items-center justify-center p-6"
   style="background: radial-gradient(1200px 600px at 50% -10%, rgba(85, 85, 170, 0.25), transparent 60%), #121220;">
   <form
-    class="flex w-full max-w-90 flex-col gap-[1.1rem] rounded-2xl border border-ink-720 bg-ink-850 p-8 shadow-[0_20px_60px_rgba(0,0,0,0.45)]"
+    class="flex w-full max-w-90 flex-col gap-[1.1rem] rounded-2xl border border-edge bg-surface-alt p-8 shadow-[0_20px_60px_rgba(0,0,0,0.45)]"
     onsubmit={submit}>
     <div class="mb-2 text-center">
       <span class="text-[2rem]">🔍</span>
       <h1 class="mt-[0.4rem] mb-[0.1rem] text-xl">LiveFactChecker</h1>
-      <p class="m-0 text-[0.82rem] text-fog-500">Panel administrateur</p>
+      <p class="m-0 text-[0.82rem] text-fg-muted">Panel administrateur</p>
     </div>
 
     <label class="flex flex-col gap-[0.4rem] text-[0.82rem] text-[#a0a0b8]">
@@ -46,7 +46,7 @@
         placeholder="••••••••"
         autocomplete="current-password"
         required
-        class="rounded-lg border border-ink-720 bg-ink-870 px-[0.9rem] py-[0.7rem] text-[0.95rem] text-fog-100 transition-[border-color] duration-150 focus:border-accent-500 focus:outline-none" />
+        class="rounded-lg border border-edge bg-background px-[0.9rem] py-[0.7rem] text-[0.95rem] text-slate-100 transition-[border-color] duration-150 focus:border-accent focus:outline-none" />
     </label>
 
     {#if error}
@@ -64,7 +64,7 @@
       {loading ? "Connexion…" : "Se connecter"}
     </button>
 
-    <a class="text-center text-[0.8rem] text-fog-700 no-underline hover:text-fog-450" href="/"
+    <a class="text-center text-[0.8rem] text-fg-faint no-underline hover:text-fg-muted" href="/"
       >← Retour à l'application</a>
   </form>
 </main>
@@ -72,8 +72,8 @@
 <style>
   :global(body) {
     margin: 0;
-    background: #121220;
-    color: #e0e0e0;
+    background: var(--color-background);
+    color: var(--color-fg);
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   }
 </style>

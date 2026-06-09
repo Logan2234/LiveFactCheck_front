@@ -1,4 +1,4 @@
-<script lang="ts">
+﻿<script lang="ts">
   import { authFetch, clearToken } from "$lib/stores/auth";
   import { onMount } from "svelte";
 
@@ -53,7 +53,7 @@
 
 <header>
   <h1 class="mt-0 mb-[0.3rem] text-[1.4rem]">📋 Prompt & Outil Claude</h1>
-  <p class="mt-0 mb-6 text-[0.88rem] text-fog-500">
+  <p class="mt-0 mb-6 text-[0.88rem] text-fg-muted">
     Configuration exacte envoyée à l'API Anthropic à chaque appel de fact-checking.
   </p>
 </header>
@@ -65,14 +65,14 @@
     {error}
   </p>
 {:else if !data}
-  <div class="flex items-center gap-[0.7rem] text-[0.9rem] text-fog-500">
+  <div class="flex items-center gap-[0.7rem] text-[0.9rem] text-fg-muted">
     <span
-      class="spinner inline-block h-4 w-4 rounded-full border-2 border-ink-640 border-t-accent-400"
+      class="spinner inline-block h-4 w-4 rounded-full border-2 border-edge-hi border-t-accent-light"
     ></span> Chargement…
   </div>
 {:else}
   <div
-    class="mb-6 rounded-lg border border-ink-700 bg-ink-840 px-4 py-[0.6rem] text-[0.85rem] text-[#9a9ab8]">
+    class="mb-6 rounded-lg border border-surface-selected bg-surface-alt px-4 py-[0.6rem] text-[0.85rem] text-[#9a9ab8]">
     Modèle actif : <strong class="text-[#c8c8ff]">{data.model}</strong>
     &nbsp;·&nbsp; min. <strong class="text-[#c8c8ff]">{data.min_words}</strong> mots pour déclencher une
     analyse
@@ -80,29 +80,29 @@
 
   <section class="mb-8">
     <div class="mb-[0.6rem] flex items-center justify-between">
-      <h2 class="m-0 text-base text-fog-300">Prompt système</h2>
+      <h2 class="m-0 text-base text-slate-200">Prompt système</h2>
       <button
-        class="cursor-pointer rounded-md border border-ink-720 bg-ink-810 px-3 py-[0.3rem] text-[0.78rem] text-[#8888b0] transition-all duration-150 hover:bg-ink-780 hover:text-fog-300"
+        class="cursor-pointer rounded-md border border-edge bg-surface px-3 py-[0.3rem] text-[0.78rem] text-[#8888b0] transition-all duration-150 hover:bg-surface-raised hover:text-slate-200"
         onclick={() => copyToClipboard("prompt", data!.system_prompt)}>
         {copied === "prompt" ? "✓ Copié" : "Copier"}
       </button>
     </div>
     <pre
-      class="m-0 max-h-100 overflow-x-auto overflow-y-auto rounded-[10px] border border-[#2a2a3e] bg-ink-950 px-[1.2rem] py-4 font-mono text-[0.8rem] leading-[1.6] break-words whitespace-pre-wrap text-fog-300">{data.system_prompt}</pre>
+      class="m-0 max-h-100 overflow-x-auto overflow-y-auto rounded-[10px] border border-edge bg-[#0e0e1c] px-[1.2rem] py-4 font-mono text-[0.8rem] leading-[1.6] break-words whitespace-pre-wrap text-slate-200">{data.system_prompt}</pre>
   </section>
 
   <section class="mb-8">
     <div class="mb-[0.6rem] flex items-center justify-between">
-      <h2 class="m-0 text-base text-fog-300">
+      <h2 class="m-0 text-base text-slate-200">
         Outil <code class="font-mono text-[0.95em] text-[#a0a0ff]">submit_claims</code>
       </h2>
       <button
-        class="cursor-pointer rounded-md border border-ink-720 bg-ink-810 px-3 py-[0.3rem] text-[0.78rem] text-[#8888b0] transition-all duration-150 hover:bg-ink-780 hover:text-fog-300"
+        class="cursor-pointer rounded-md border border-edge bg-surface px-3 py-[0.3rem] text-[0.78rem] text-[#8888b0] transition-all duration-150 hover:bg-surface-raised hover:text-slate-200"
         onclick={() => copyToClipboard("claim", JSON.stringify(data!.claim_tool, null, 2))}>
         {copied === "claim" ? "✓ Copié" : "Copier JSON"}
       </button>
     </div>
-    <div class="mb-[0.6rem] flex flex-wrap items-center gap-[0.4rem] text-[0.8rem] text-fog-600">
+    <div class="mb-[0.6rem] flex flex-wrap items-center gap-[0.4rem] text-[0.8rem] text-fg-faint">
       Statuts valides :
       {#each data.valid_statuses as s}
         <span
@@ -112,7 +112,7 @@
       {/each}
     </div>
     <pre
-      class="m-0 max-h-100 overflow-x-auto overflow-y-auto rounded-[10px] border border-[#2a2a3e] bg-ink-950 px-[1.2rem] py-4 font-mono text-[0.8rem] leading-[1.6] break-words whitespace-pre-wrap text-fog-300">{JSON.stringify(
+      class="m-0 max-h-100 overflow-x-auto overflow-y-auto rounded-[10px] border border-edge bg-[#0e0e1c] px-[1.2rem] py-4 font-mono text-[0.8rem] leading-[1.6] break-words whitespace-pre-wrap text-slate-200">{JSON.stringify(
         data.claim_tool,
         null,
         2
@@ -121,17 +121,17 @@
 
   <section class="mb-8">
     <div class="mb-[0.6rem] flex items-center justify-between">
-      <h2 class="m-0 text-base text-fog-300">
+      <h2 class="m-0 text-base text-slate-200">
         Outil <code class="font-mono text-[0.95em] text-[#a0a0ff]">web_search</code>
       </h2>
       <button
-        class="cursor-pointer rounded-md border border-ink-720 bg-ink-810 px-3 py-[0.3rem] text-[0.78rem] text-[#8888b0] transition-all duration-150 hover:bg-ink-780 hover:text-fog-300"
+        class="cursor-pointer rounded-md border border-edge bg-surface px-3 py-[0.3rem] text-[0.78rem] text-[#8888b0] transition-all duration-150 hover:bg-surface-raised hover:text-slate-200"
         onclick={() => copyToClipboard("ws", JSON.stringify(data!.web_search_tool, null, 2))}>
         {copied === "ws" ? "✓ Copié" : "Copier JSON"}
       </button>
     </div>
     <pre
-      class="m-0 max-h-100 overflow-x-auto overflow-y-auto rounded-[10px] border border-[#2a2a3e] bg-ink-950 px-[1.2rem] py-4 font-mono text-[0.8rem] leading-[1.6] break-words whitespace-pre-wrap text-fog-300">{JSON.stringify(
+      class="m-0 max-h-100 overflow-x-auto overflow-y-auto rounded-[10px] border border-edge bg-[#0e0e1c] px-[1.2rem] py-4 font-mono text-[0.8rem] leading-[1.6] break-words whitespace-pre-wrap text-slate-200">{JSON.stringify(
         data.web_search_tool,
         null,
         2

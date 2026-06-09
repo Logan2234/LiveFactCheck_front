@@ -1,4 +1,4 @@
-<script lang="ts">
+﻿<script lang="ts">
   import { STATUS_COLOR, STATUS_ICON, STATUS_LABEL } from "$lib/constants/status";
   import type { Claim } from "$lib/stores/claims";
   import { claims } from "$lib/stores/claims";
@@ -31,7 +31,7 @@
   <h2 class="m-0 text-[1.1rem]">⏱ Timeline des claims</h2>
 
   {#if sorted.length === 0}
-    <div class="p-12 text-center text-ash-700">
+    <div class="p-12 text-center text-zinc-600">
       <p>Aucun claim détecté pour le moment...</p>
       <p class="mt-2 text-[0.85rem]">Les claims apparaîtront ici au fil de la conversation.</p>
     </div>
@@ -44,7 +44,7 @@
       ]}>
       {#if selectedClaim}
         <div
-          class="rounded-lg border-l-4 bg-ink-820 px-4 py-3 border-l-(--color)"
+          class="rounded-lg border-l-4 bg-surface px-4 py-3 border-l-(--color)"
           style="--color: {STATUS_COLOR[selectedClaim.status]}">
           <div class="mb-[0.35rem] flex items-center gap-2">
             <span class="text-base">{STATUS_ICON[selectedClaim.status]}</span>
@@ -53,15 +53,15 @@
               style="color: {STATUS_COLOR[selectedClaim.status]}">
               {STATUS_LABEL[selectedClaim.status]}
             </span>
-            <span class="ml-auto text-[0.8rem] tabular-nums text-ash-650"
+            <span class="ml-auto text-[0.8rem] tabular-nums text-zinc-600"
               >{new Date(selectedClaim.timestamp).toLocaleTimeString()}</span>
             <button
-              class="cursor-pointer border-none bg-none p-0 text-[0.85rem] leading-none text-ash-650 hover:text-ash-500"
+              class="cursor-pointer border-none bg-none p-0 text-[0.85rem] leading-none text-zinc-600 hover:text-zinc-400"
               onclick={() => (selectedClaim = null)}>✕</button>
           </div>
-          <p class="mt-0 mb-1 text-[0.9rem] text-fog-250 italic">« {selectedClaim.text} »</p>
+          <p class="mt-0 mb-1 text-[0.9rem] text-fg italic">« {selectedClaim.text} »</p>
           {#if selectedClaim.explanation}
-            <p class="m-0 text-[0.85rem] leading-normal text-ash-600">
+            <p class="m-0 text-[0.85rem] leading-normal text-zinc-500">
               {selectedClaim.explanation}
             </p>
           {/if}
@@ -70,15 +70,15 @@
     </div>
 
     <!-- SVG timeline -->
-    <div class="overflow-x-auto rounded-[10px] bg-ink-850 p-2">
+    <div class="overflow-x-auto rounded-[10px] bg-surface-alt p-2">
       <svg viewBox="0 0 100 100" preserveAspectRatio="none" class="hidden">
         <!-- Horizontal axis line -->
-        <line x1="5" y1="50" x2="95" y2="50" stroke="#2e2e4e" stroke-width="0.5" />
+        <line x1="5" y1="50" x2="95" y2="50" stroke="var(--color-surface-selected)" stroke-width="0.5" />
       </svg>
 
       <svg viewBox="0 0 100 100" class="block h-30 w-full">
         <!-- Axis line -->
-        <line x1="5" y1="50" x2="95" y2="50" stroke="#2e2e4e" stroke-width="0.8" />
+        <line x1="5" y1="50" x2="95" y2="50" stroke="var(--color-surface-selected)" stroke-width="0.8" />
 
         <!-- Vertical tick for each claim -->
         {#each sorted as c, i (c.id)}
@@ -123,7 +123,7 @@
     </div>
 
     <!-- Hint -->
-    <p class="-mt-2 text-center text-[0.8rem] text-ash-750">
+    <p class="-mt-2 text-center text-[0.8rem] text-zinc-700">
       Cliquez sur un point pour voir les détails.
     </p>
 
@@ -132,14 +132,14 @@
       {#each sorted.reverse() as c (c.id)}
         <button
           class={[
-            "flex w-full cursor-pointer items-start gap-2 rounded-md border border-l-[3px] border-ink-720 bg-ink-820 px-3 py-2 text-left transition-[background] duration-150 border-l-(--color)",
-            selectedClaim?.id === c.id ? "bg-ink-770" : "hover:bg-ink-770"
+            "flex w-full cursor-pointer items-start gap-2 rounded-md border border-l-[3px] border-edge bg-surface px-3 py-2 text-left transition-[background] duration-150 border-l-(--color)",
+            selectedClaim?.id === c.id ? "bg-surface-raised" : "hover:bg-surface-raised"
           ]}
           style="--color: {STATUS_COLOR[c.status]}"
           onclick={() => selectClaim(c)}>
           <span class="mt-px shrink-0 text-[0.85rem]">{STATUS_ICON[c.status]}</span>
-          <span class="flex-1 text-[0.85rem] leading-[1.4] text-ash-400">{c.text}</span>
-          <span class="mt-0.5 shrink-0 text-xs tabular-nums text-ash-700"
+          <span class="flex-1 text-[0.85rem] leading-[1.4] text-zinc-300">{c.text}</span>
+          <span class="mt-0.5 shrink-0 text-xs tabular-nums text-zinc-600"
             >{new Date(c.timestamp).toLocaleTimeString([], {
               hour: "2-digit",
               minute: "2-digit",

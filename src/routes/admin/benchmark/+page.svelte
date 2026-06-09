@@ -1,4 +1,4 @@
-<script lang="ts">
+﻿<script lang="ts">
   import ClaimCard from "$lib/components/ClaimCard.svelte";
   import { authFetch, clearToken } from "$lib/stores/auth";
   import type { Claim } from "$lib/stores/claims";
@@ -96,7 +96,7 @@
 
 <header>
   <h1 class="mt-0 mb-[0.3rem] text-[1.4rem]">⚡ Benchmark</h1>
-  <p class="mt-0 mb-6 text-[0.88rem] text-fog-500">
+  <p class="mt-0 mb-6 text-[0.88rem] text-fg-muted">
     Compare le même texte avec et sans recherche web en parallèle.
   </p>
 </header>
@@ -107,12 +107,12 @@
     rows="5"
     placeholder="Colle un texte à analyser…"
     disabled={loading}
-    class="box-border w-full resize-y rounded-[10px] border border-ink-720 bg-ink-880 px-4 py-[0.9rem] font-[inherit] text-[0.95rem] leading-normal text-fog-100 transition-[border-color] duration-150 focus:border-accent-500 focus:outline-none disabled:opacity-50"
+    class="box-border w-full resize-y rounded-[10px] border border-edge bg-surface-alt px-4 py-[0.9rem] font-[inherit] text-[0.95rem] leading-normal text-slate-100 transition-[border-color] duration-150 focus:border-accent focus:outline-none disabled:opacity-50"
   ></textarea>
   <div class="mt-3 flex items-center gap-2">
     <button
       type="button"
-      class="cursor-pointer rounded-lg border border-ink-720 bg-ink-810 px-[1.1rem] py-[0.6rem] text-[0.88rem] font-medium text-fog-400 transition-[opacity,background] duration-150 enabled:hover:bg-ink-780 disabled:cursor-not-allowed disabled:opacity-40"
+      class="cursor-pointer rounded-lg border border-edge bg-surface px-[1.1rem] py-[0.6rem] text-[0.88rem] font-medium text-slate-300 transition-[opacity,background] duration-150 enabled:hover:bg-surface-raised disabled:cursor-not-allowed disabled:opacity-40"
       onclick={() => (text = "")}
       disabled={!text || loading}>
       Vider
@@ -132,13 +132,13 @@
     {#each ["🌐 Avec web search", "🧠 Sans web search"] as label}
       <div class="flex min-w-0 flex-col gap-3">
         <div
-          class="flex flex-wrap items-center gap-2 border-b border-ink-720 pb-2 text-[0.9rem] font-semibold text-fog-300">
+          class="flex flex-wrap items-center gap-2 border-b border-edge pb-2 text-[0.9rem] font-semibold text-slate-200">
           {label}
         </div>
         <div
-          class="flex items-center gap-[0.7rem] rounded-[10px] border border-dashed border-ink-720 bg-ink-880 p-6 text-[0.9rem] text-fog-500">
+          class="flex items-center gap-[0.7rem] rounded-[10px] border border-dashed border-edge bg-surface-alt p-6 text-[0.9rem] text-fg-muted">
           <span
-            class="spinner h-4 w-4 shrink-0 rounded-full border-2 border-ink-640 border-t-accent-400"
+            class="spinner h-4 w-4 shrink-0 rounded-full border-2 border-edge-hi border-t-accent-light"
           ></span> Analyse…
         </div>
       </div>
@@ -147,7 +147,7 @@
 {:else if ran}
   {#if delta()}
     <div
-      class="mb-4 rounded-lg border border-ink-700 bg-[#1a1a30] px-4 py-[0.45rem] text-center text-[0.82rem] text-fog-450">
+      class="mb-4 rounded-lg border border-surface-selected bg-[#1a1a30] px-4 py-[0.45rem] text-center text-[0.82rem] text-fg-muted">
       {delta()}
     </div>
   {/if}
@@ -155,14 +155,14 @@
     {#each [{ label: "🌐 Avec web search", side: withWeb }, { label: "🧠 Sans web search", side: withoutWeb }] as { label, side }}
       <div class="flex min-w-0 flex-col gap-3">
         <div
-          class="flex flex-wrap items-center gap-2 border-b border-ink-720 pb-2 text-[0.9rem] font-semibold text-fog-300">
+          class="flex flex-wrap items-center gap-2 border-b border-edge pb-2 text-[0.9rem] font-semibold text-slate-200">
           {label}
           <span
-            class="rounded-full border border-ink-640 bg-ink-780 px-[0.55rem] py-[0.15rem] text-[0.75rem] font-normal tabular-nums text-[#8888b0]"
+            class="rounded-full border border-edge-hi bg-surface-raised px-[0.55rem] py-[0.15rem] text-[0.75rem] font-normal tabular-nums text-[#8888b0]"
             >{(side.elapsed / 1000).toFixed(1)} s</span>
           {#if side.claims !== null}
             <span
-              class="rounded-full border border-ink-640 bg-ink-780 px-[0.55rem] py-[0.15rem] text-[0.75rem] font-normal tabular-nums text-[#8888b0]"
+              class="rounded-full border border-edge-hi bg-surface-raised px-[0.55rem] py-[0.15rem] text-[0.75rem] font-normal tabular-nums text-[#8888b0]"
               >{side.claims.length} claim{side.claims.length !== 1 ? "s" : ""}</span>
           {/if}
         </div>
@@ -174,7 +174,7 @@
           </p>
         {:else if side.claims !== null && side.claims.length === 0}
           <p
-            class="m-0 rounded-[10px] border border-dashed border-ink-720 bg-ink-880 p-[1.2rem] text-center text-[0.9rem] text-fog-500">
+            class="m-0 rounded-[10px] border border-dashed border-edge bg-surface-alt p-[1.2rem] text-center text-[0.9rem] text-fg-muted">
             Aucun fait vérifiable trouvé.
           </p>
         {:else if side.claims !== null}

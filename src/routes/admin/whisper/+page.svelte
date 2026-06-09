@@ -1,4 +1,4 @@
-<script lang="ts">
+﻿<script lang="ts">
   import { authFetch, clearToken } from "$lib/stores/auth";
 
   interface Segment {
@@ -79,7 +79,7 @@
 
 <header>
   <h1 class="mt-0 mb-[0.3rem] text-[1.4rem]">🎙️ Test Whisper</h1>
-  <p class="mt-0 mb-6 text-[0.88rem] text-fog-500">
+  <p class="mt-0 mb-6 text-[0.88rem] text-fg-muted">
     Transcris un fichier audio et inspecte les segments, la langue détectée et les scores de
     confiance.
   </p>
@@ -88,12 +88,12 @@
 <!-- Drop zone -->
 <div
   class={[
-    "flex cursor-pointer flex-col items-center gap-[0.4rem] rounded-xl border-2 border-dashed bg-ink-950 p-8 text-center transition-[border-color,background] duration-150",
+    "flex cursor-pointer flex-col items-center gap-[0.4rem] rounded-xl border-2 border-dashed bg-[#0e0e1c] p-8 text-center transition-[border-color,background] duration-150",
     dragging
-      ? "border-accent-500 bg-[#12122a]"
+      ? "border-accent bg-[#12122a]"
       : file
         ? "border-solid border-[#3a3a6a]"
-        : "border-ink-700 hover:border-accent-500 hover:bg-[#12122a]"
+        : "border-surface-selected hover:border-accent hover:bg-[#12122a]"
   ]}
   role="button"
   tabindex="0"
@@ -112,10 +112,10 @@
     onchange={onFileInput}
     style="display:none" />
   {#if file}
-    <span class="text-[0.9rem] font-medium text-fog-300">🎵 {file.name}</span>
-    <span class="text-[0.75rem] text-fog-700">{(file.size / 1024).toFixed(0)} Ko</span>
+    <span class="text-[0.9rem] font-medium text-slate-200">🎵 {file.name}</span>
+    <span class="text-[0.75rem] text-fg-faint">{(file.size / 1024).toFixed(0)} Ko</span>
   {:else}
-    <span class="text-[0.88rem] text-fog-700"
+    <span class="text-[0.88rem] text-fg-faint"
       >Glisser un fichier audio ici ou cliquer pour choisir</span>
     <span class="text-[0.75rem] text-[#3a3a58]">WebM · MP3 · WAV · OGG · M4A · FLAC</span>
   {/if}
@@ -124,7 +124,7 @@
 <div class="mt-3 mb-5 flex items-center gap-2">
   {#if file}
     <button
-      class="cursor-pointer rounded-lg border border-ink-720 bg-ink-810 px-[1.1rem] py-[0.55rem] text-[0.86rem] font-semibold text-fog-400 transition-all duration-150 enabled:hover:bg-ink-780 disabled:cursor-not-allowed disabled:opacity-40"
+      class="cursor-pointer rounded-lg border border-edge bg-surface px-[1.1rem] py-[0.55rem] text-[0.86rem] font-semibold text-slate-300 transition-all duration-150 enabled:hover:bg-surface-raised disabled:cursor-not-allowed disabled:opacity-40"
       onclick={() => {
         file = null;
         result = null;
@@ -141,9 +141,9 @@
 </div>
 
 {#if loading}
-  <div class="mb-4 flex items-center gap-[0.7rem] text-[0.9rem] text-fog-500">
+  <div class="mb-4 flex items-center gap-[0.7rem] text-[0.9rem] text-fg-muted">
     <span
-      class="spinner inline-block h-4 w-4 shrink-0 rounded-full border-2 border-ink-640 border-t-accent-400"
+      class="spinner inline-block h-4 w-4 shrink-0 rounded-full border-2 border-edge-hi border-t-accent-light"
     ></span> En cours — peut prendre quelques secondes…
   </div>
 {/if}
@@ -160,9 +160,9 @@
   <!-- Métriques globales -->
   <div class="mb-4 flex flex-wrap gap-3">
     <div
-      class="flex min-w-27.5 flex-col gap-[0.2rem] rounded-[10px] border border-ink-720 bg-ink-880 px-4 py-[0.6rem]">
-      <span class="text-[0.72rem] text-fog-600">Langue</span>
-      <span class="text-[0.92rem] font-semibold text-fog-200"
+      class="flex min-w-27.5 flex-col gap-[0.2rem] rounded-[10px] border border-edge bg-surface-alt px-4 py-[0.6rem]">
+      <span class="text-[0.72rem] text-fg-faint">Langue</span>
+      <span class="text-[0.92rem] font-semibold text-slate-100"
         >{result.language.toUpperCase()}
         <span class="text-[0.75rem] font-normal text-[#8888a8]"
           >{(result.language_probability * 100).toFixed(0)} %</span
@@ -170,28 +170,28 @@
     </div>
     {#if result.duration_s !== null}
       <div
-        class="flex min-w-27.5 flex-col gap-[0.2rem] rounded-[10px] border border-ink-720 bg-ink-880 px-4 py-[0.6rem]">
-        <span class="text-[0.72rem] text-fog-600">Durée audio</span>
-        <span class="text-[0.92rem] font-semibold text-fog-200">{result.duration_s} s</span>
+        class="flex min-w-27.5 flex-col gap-[0.2rem] rounded-[10px] border border-edge bg-surface-alt px-4 py-[0.6rem]">
+        <span class="text-[0.72rem] text-fg-faint">Durée audio</span>
+        <span class="text-[0.92rem] font-semibold text-slate-100">{result.duration_s} s</span>
       </div>
     {/if}
     <div
-      class="flex min-w-27.5 flex-col gap-[0.2rem] rounded-[10px] border border-ink-720 bg-ink-880 px-4 py-[0.6rem]">
-      <span class="text-[0.72rem] text-fog-600">Temps transcription</span>
-      <span class="text-[0.92rem] font-semibold text-fog-200">{result.elapsed_ms} ms</span>
+      class="flex min-w-27.5 flex-col gap-[0.2rem] rounded-[10px] border border-edge bg-surface-alt px-4 py-[0.6rem]">
+      <span class="text-[0.72rem] text-fg-faint">Temps transcription</span>
+      <span class="text-[0.92rem] font-semibold text-slate-100">{result.elapsed_ms} ms</span>
     </div>
     <div
-      class="flex min-w-27.5 flex-col gap-[0.2rem] rounded-[10px] border border-ink-720 bg-ink-880 px-4 py-[0.6rem]">
-      <span class="text-[0.72rem] text-fog-600">Segments</span>
-      <span class="text-[0.92rem] font-semibold text-fog-200">{result.segments.length}</span>
+      class="flex min-w-27.5 flex-col gap-[0.2rem] rounded-[10px] border border-edge bg-surface-alt px-4 py-[0.6rem]">
+      <span class="text-[0.72rem] text-fg-faint">Segments</span>
+      <span class="text-[0.92rem] font-semibold text-slate-100">{result.segments.length}</span>
     </div>
   </div>
 
   <!-- Texte complet -->
   {#if result.text}
-    <section class="mb-4 rounded-xl border border-ink-720 bg-ink-880 px-[1.2rem] py-[1.1rem]">
+    <section class="mb-4 rounded-xl border border-edge bg-surface-alt px-[1.2rem] py-[1.1rem]">
       <div
-        class="mb-[0.8rem] border-b border-ink-780 pb-[0.6rem] text-[0.85rem] font-semibold text-fog-300">
+        class="mb-[0.8rem] border-b border-surface-raised pb-[0.6rem] text-[0.85rem] font-semibold text-slate-200">
         Transcription complète
       </div>
       <p class="m-0 text-[0.9rem] leading-[1.65] whitespace-pre-wrap text-[#d0d0e8]">
@@ -200,35 +200,35 @@
     </section>
   {:else}
     <p
-      class="rounded-[10px] border border-dashed border-ink-720 bg-ink-950 p-6 text-center text-[0.88rem] text-ink-560">
+      class="rounded-[10px] border border-dashed border-edge bg-[#0e0e1c] p-6 text-center text-[0.88rem] text-fg-faint">
       Aucun contenu vocal détecté (VAD filtre les silences).
     </p>
   {/if}
 
   <!-- Segments -->
   {#if result.segments.length > 0}
-    <section class="mb-4 rounded-xl border border-ink-720 bg-ink-880 px-[1.2rem] py-[1.1rem]">
+    <section class="mb-4 rounded-xl border border-edge bg-surface-alt px-[1.2rem] py-[1.1rem]">
       <div
-        class="mb-[0.8rem] border-b border-ink-780 pb-[0.6rem] text-[0.85rem] font-semibold text-fog-300">
+        class="mb-[0.8rem] border-b border-surface-raised pb-[0.6rem] text-[0.85rem] font-semibold text-slate-200">
         Segments ({result.segments.length})
       </div>
       <table class="w-full border-collapse text-[0.8rem]">
         <thead>
           <tr>
             <th
-              class="border-b border-ink-780 px-2 pt-0 pb-2 text-left text-[0.74rem] font-medium text-[#5a5a7a]"
+              class="border-b border-surface-raised px-2 pt-0 pb-2 text-left text-[0.74rem] font-medium text-[#5a5a7a]"
               >Début</th>
             <th
-              class="border-b border-ink-780 px-2 pt-0 pb-2 text-left text-[0.74rem] font-medium text-[#5a5a7a]"
+              class="border-b border-surface-raised px-2 pt-0 pb-2 text-left text-[0.74rem] font-medium text-[#5a5a7a]"
               >Fin</th>
             <th
-              class="border-b border-ink-780 px-2 pt-0 pb-2 text-left text-[0.74rem] font-medium text-[#5a5a7a]"
+              class="border-b border-surface-raised px-2 pt-0 pb-2 text-left text-[0.74rem] font-medium text-[#5a5a7a]"
               >Texte</th>
             <th
-              class="border-b border-ink-780 px-2 pt-0 pb-2 text-left text-[0.74rem] font-medium text-[#5a5a7a]"
+              class="border-b border-surface-raised px-2 pt-0 pb-2 text-left text-[0.74rem] font-medium text-[#5a5a7a]"
               >Confiance</th>
             <th
-              class="border-b border-ink-780 px-2 pt-0 pb-2 text-left text-[0.74rem] font-medium text-[#5a5a7a]"
+              class="border-b border-surface-raised px-2 pt-0 pb-2 text-left text-[0.74rem] font-medium text-[#5a5a7a]"
               >No-speech</th>
           </tr>
         </thead>
@@ -237,21 +237,21 @@
             {@const conf = formatConfidence(seg.avg_logprob)}
             <tr>
               <td
-                class="border-b border-ink-840 px-2 py-[0.4rem] align-top font-mono text-[0.76rem] text-[#8888a8]"
+                class="border-b border-surface-alt px-2 py-[0.4rem] align-top font-mono text-[0.76rem] text-[#8888a8]"
                 >{seg.start}s</td>
               <td
-                class="border-b border-ink-840 px-2 py-[0.4rem] align-top font-mono text-[0.76rem] text-[#8888a8]"
+                class="border-b border-surface-alt px-2 py-[0.4rem] align-top font-mono text-[0.76rem] text-[#8888a8]"
                 >{seg.end}s</td>
-              <td class="border-b border-ink-840 px-2 py-[0.4rem] align-top text-fog-400"
+              <td class="border-b border-surface-alt px-2 py-[0.4rem] align-top text-slate-300"
                 >{seg.text}</td>
-              <td class="border-b border-ink-840 px-2 py-[0.4rem] align-top text-fog-400"
+              <td class="border-b border-surface-alt px-2 py-[0.4rem] align-top text-slate-300"
                 ><span
                   class="rounded-full border px-2 py-[0.12rem] text-[0.72rem] font-medium whitespace-nowrap {conf.cls}"
                   >{conf.label}</span
                 ></td>
               <td
                 class={[
-                  "border-b border-ink-840 px-2 py-[0.4rem] align-top font-mono text-[0.76rem]",
+                  "border-b border-surface-alt px-2 py-[0.4rem] align-top font-mono text-[0.76rem]",
                   seg.no_speech_prob > 0.5 ? "text-amber-500" : "text-[#8888a8]"
                 ]}>{(seg.no_speech_prob * 100).toFixed(0)} %</td>
             </tr>

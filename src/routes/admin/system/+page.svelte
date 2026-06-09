@@ -1,4 +1,4 @@
-<script lang="ts">
+﻿<script lang="ts">
   import { authFetch, clearToken } from "$lib/stores/auth";
   import { onDestroy, onMount } from "svelte";
 
@@ -150,19 +150,19 @@
 <header class="mb-6 flex flex-wrap items-start justify-between gap-4">
   <div>
     <h1 class="mt-0 mb-[0.3rem] text-[1.4rem]">🖥️ Système</h1>
-    <p class="m-0 text-[0.88rem] text-fog-500">
+    <p class="m-0 text-[0.88rem] text-fg-muted">
       État du serveur et configuration — rafraîchissement automatique toutes les 30 s.
     </p>
   </div>
   <div class="flex shrink-0 items-center gap-3">
     {#if lastRefresh}
-      <span class="text-[0.78rem] tabular-nums text-fog-700"
+      <span class="text-[0.78rem] tabular-nums text-fg-faint"
         >Mis à jour à {formatTime(lastRefresh)}</span>
     {/if}
     <button
       onclick={refreshHealth}
       disabled={refreshing}
-      class="cursor-pointer rounded-lg border border-ink-720 bg-ink-810 px-[0.9rem] py-2 text-[0.82rem] font-medium text-fog-400 transition-all duration-150 enabled:hover:bg-ink-780 enabled:hover:text-[#e0e0f0] disabled:cursor-not-allowed disabled:opacity-50">
+      class="cursor-pointer rounded-lg border border-edge bg-surface px-[0.9rem] py-2 text-[0.82rem] font-medium text-slate-300 transition-all duration-150 enabled:hover:bg-surface-raised enabled:hover:text-fg disabled:cursor-not-allowed disabled:opacity-50">
       {refreshing ? "…" : "↺ Rafraîchir"}
     </button>
   </div>
@@ -177,23 +177,23 @@
 {/if}
 
 {#if !health && !loadError}
-  <div class="flex items-center gap-[0.7rem] text-[0.9rem] text-fog-500">
+  <div class="flex items-center gap-[0.7rem] text-[0.9rem] text-fg-muted">
     <span
-      class="spinner inline-block h-4 w-4 shrink-0 rounded-full border-2 border-ink-640 border-t-accent-400"
+      class="spinner inline-block h-4 w-4 shrink-0 rounded-full border-2 border-edge-hi border-t-accent-light"
     ></span> Chargement…
   </div>
 {/if}
 
 {#if health}
   <!-- ── État ── -->
-  <div class="mb-[0.6rem] text-[0.72rem] font-semibold tracking-[0.07em] text-ink-600 uppercase">
+  <div class="mb-[0.6rem] text-[0.72rem] font-semibold tracking-[0.07em] text-fg-faint uppercase">
     État
   </div>
   <div class="grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-[0.85rem]">
     <!-- Serveur -->
-    <div class="rounded-xl border border-ink-720 bg-ink-880 px-[1.1rem] py-4">
+    <div class="rounded-xl border border-edge bg-surface-alt px-[1.1rem] py-4">
       <div
-        class="mb-[0.85rem] flex items-center gap-2 border-b border-ink-780 pb-[0.6rem] text-[0.85rem] font-semibold text-fog-300">
+        class="mb-[0.85rem] flex items-center gap-2 border-b border-surface-raised pb-[0.6rem] text-[0.85rem] font-semibold text-slate-200">
         <span
           class="h-2 w-2 shrink-0 rounded-full bg-green-500 shadow-[0_0_6px_rgba(34,197,94,0.5)]"
         ></span
@@ -201,16 +201,16 @@
       </div>
       <dl class="m-0 flex flex-col gap-[0.45rem]">
         <div class="flex min-w-0 items-center justify-between gap-2">
-          <dt class="shrink-0 text-[0.78rem] text-fog-600">Uptime</dt>
+          <dt class="shrink-0 text-[0.78rem] text-fg-faint">Uptime</dt>
           <dd
-            class="m-0 flex flex-wrap items-center justify-end gap-[0.35rem] text-right text-[0.8rem] font-semibold text-fog-200">
+            class="m-0 flex flex-wrap items-center justify-end gap-[0.35rem] text-right text-[0.8rem] font-semibold text-slate-100">
             {formatUptime(health.uptime_seconds)}
           </dd>
         </div>
         <div class="flex min-w-0 items-center justify-between gap-2">
-          <dt class="shrink-0 text-[0.78rem] text-fog-600">Python</dt>
+          <dt class="shrink-0 text-[0.78rem] text-fg-faint">Python</dt>
           <dd
-            class="m-0 flex flex-wrap items-center justify-end gap-[0.35rem] text-right text-[0.8rem] text-fog-400">
+            class="m-0 flex flex-wrap items-center justify-end gap-[0.35rem] text-right text-[0.8rem] text-slate-300">
             {health.python_version}
           </dd>
         </div>
@@ -218,9 +218,9 @@
     </div>
 
     <!-- Whisper -->
-    <div class="rounded-xl border border-ink-720 bg-ink-880 px-[1.1rem] py-4">
+    <div class="rounded-xl border border-edge bg-surface-alt px-[1.1rem] py-4">
       <div
-        class="mb-[0.85rem] flex items-center gap-2 border-b border-ink-780 pb-[0.6rem] text-[0.85rem] font-semibold text-fog-300">
+        class="mb-[0.85rem] flex items-center gap-2 border-b border-surface-raised pb-[0.6rem] text-[0.85rem] font-semibold text-slate-200">
         <span
           class={[
             "h-2 w-2 shrink-0 rounded-full",
@@ -232,23 +232,23 @@
       </div>
       <dl class="m-0 flex flex-col gap-[0.45rem]">
         <div class="flex min-w-0 items-center justify-between gap-2">
-          <dt class="shrink-0 text-[0.78rem] text-fog-600">Modèle</dt>
+          <dt class="shrink-0 text-[0.78rem] text-fg-faint">Modèle</dt>
           <dd
-            class="m-0 flex flex-wrap items-center justify-end gap-[0.35rem] text-right text-[0.8rem] font-semibold text-fog-200">
+            class="m-0 flex flex-wrap items-center justify-end gap-[0.35rem] text-right text-[0.8rem] font-semibold text-slate-100">
             {health.whisper.model}
           </dd>
         </div>
         <div class="flex min-w-0 items-center justify-between gap-2">
-          <dt class="shrink-0 text-[0.78rem] text-fog-600">Device</dt>
+          <dt class="shrink-0 text-[0.78rem] text-fg-faint">Device</dt>
           <dd
-            class="m-0 flex flex-wrap items-center justify-end gap-[0.35rem] text-right text-[0.8rem] text-fog-400">
+            class="m-0 flex flex-wrap items-center justify-end gap-[0.35rem] text-right text-[0.8rem] text-slate-300">
             {health.whisper.device}
           </dd>
         </div>
         <div class="flex min-w-0 items-center justify-between gap-2">
-          <dt class="shrink-0 text-[0.78rem] text-fog-600">Chargé</dt>
+          <dt class="shrink-0 text-[0.78rem] text-fg-faint">Chargé</dt>
           <dd
-            class="m-0 flex flex-wrap items-center justify-end gap-[0.35rem] text-right text-[0.8rem] text-fog-400">
+            class="m-0 flex flex-wrap items-center justify-end gap-[0.35rem] text-right text-[0.8rem] text-slate-300">
             {#if health.whisper.loaded}
               <span
                 class="rounded-full border border-green-500/25 bg-green-500/12 px-2 py-[0.13rem] text-[0.72rem] font-medium whitespace-nowrap text-green-400"
@@ -264,9 +264,9 @@
     </div>
 
     <!-- Anthropic -->
-    <div class="rounded-xl border border-ink-720 bg-ink-880 px-[1.1rem] py-4">
+    <div class="rounded-xl border border-edge bg-surface-alt px-[1.1rem] py-4">
       <div
-        class="mb-[0.85rem] flex items-center gap-2 border-b border-ink-780 pb-[0.6rem] text-[0.85rem] font-semibold text-fog-300">
+        class="mb-[0.85rem] flex items-center gap-2 border-b border-surface-raised pb-[0.6rem] text-[0.85rem] font-semibold text-slate-200">
         <span
           class={[
             "h-2 w-2 shrink-0 rounded-full",
@@ -278,14 +278,14 @@
       </div>
       <dl class="m-0 flex flex-col gap-[0.45rem]">
         <div class="flex min-w-0 items-center justify-between gap-2">
-          <dt class="shrink-0 text-[0.78rem] text-fog-600">Clé API</dt>
+          <dt class="shrink-0 text-[0.78rem] text-fg-faint">Clé API</dt>
           <dd
-            class="m-0 flex flex-wrap items-center justify-end gap-[0.35rem] text-right text-[0.8rem] text-fog-400">
+            class="m-0 flex flex-wrap items-center justify-end gap-[0.35rem] text-right text-[0.8rem] text-slate-300">
             {#if health.anthropic.api_key_set}
               <span
                 class="rounded-full border border-green-500/25 bg-green-500/12 px-2 py-[0.13rem] text-[0.72rem] font-medium whitespace-nowrap text-green-400"
                 >Configurée</span>
-              <span class="font-mono text-[0.73rem] text-fog-700"
+              <span class="font-mono text-[0.73rem] text-fg-faint"
                 >{health.anthropic.api_key_hint}</span>
             {:else}
               <span
@@ -299,9 +299,9 @@
 
     <!-- Mémoire -->
     {#if health.memory}
-      <div class="rounded-xl border border-ink-720 bg-ink-880 px-[1.1rem] py-4">
+      <div class="rounded-xl border border-edge bg-surface-alt px-[1.1rem] py-4">
         <div
-          class="mb-[0.85rem] flex items-center gap-2 border-b border-ink-780 pb-[0.6rem] text-[0.85rem] font-semibold text-fog-300">
+          class="mb-[0.85rem] flex items-center gap-2 border-b border-surface-raised pb-[0.6rem] text-[0.85rem] font-semibold text-slate-200">
           <span
             class="h-2 w-2 shrink-0 rounded-full bg-green-500 shadow-[0_0_6px_rgba(34,197,94,0.5)]"
           ></span
@@ -309,16 +309,16 @@
         </div>
         <dl class="m-0 flex flex-col gap-[0.45rem]">
           <div class="flex min-w-0 items-center justify-between gap-2">
-            <dt class="shrink-0 text-[0.78rem] text-fog-600">RSS</dt>
+            <dt class="shrink-0 text-[0.78rem] text-fg-faint">RSS</dt>
             <dd
-              class="m-0 flex flex-wrap items-center justify-end gap-[0.35rem] text-right text-[0.8rem] font-semibold text-fog-200">
+              class="m-0 flex flex-wrap items-center justify-end gap-[0.35rem] text-right text-[0.8rem] font-semibold text-slate-100">
               {health.memory.rss_mb} Mo
             </dd>
           </div>
           <div class="flex min-w-0 items-center justify-between gap-2">
-            <dt class="shrink-0 text-[0.78rem] text-fog-600">VMS</dt>
+            <dt class="shrink-0 text-[0.78rem] text-fg-faint">VMS</dt>
             <dd
-              class="m-0 flex flex-wrap items-center justify-end gap-[0.35rem] text-right text-[0.8rem] text-fog-400">
+              class="m-0 flex flex-wrap items-center justify-end gap-[0.35rem] text-right text-[0.8rem] text-slate-300">
               {health.memory.vms_mb} Mo
             </dd>
           </div>
@@ -331,13 +331,13 @@
 {#if config}
   <!-- ── Paramètres éditables ── -->
   <div
-    class="mt-7 mb-[0.6rem] text-[0.72rem] font-semibold tracking-[0.07em] text-ink-600 uppercase">
+    class="mt-7 mb-[0.6rem] text-[0.72rem] font-semibold tracking-[0.07em] text-fg-faint uppercase">
     Paramètres
   </div>
   <div class="grid grid-cols-[repeat(auto-fit,minmax(260px,1fr))] items-start gap-[0.85rem]">
-    <div class="rounded-xl border border-ink-720 bg-ink-880 px-[1.2rem] py-[1.1rem]">
+    <div class="rounded-xl border border-edge bg-surface-alt px-[1.2rem] py-[1.1rem]">
       <div
-        class="mb-[0.85rem] flex items-center gap-2 border-b border-ink-780 pb-[0.6rem] text-[0.85rem] font-semibold text-fog-300">
+        class="mb-[0.85rem] flex items-center gap-2 border-b border-surface-raised pb-[0.6rem] text-[0.85rem] font-semibold text-slate-200">
         Éditables
       </div>
 
@@ -347,12 +347,12 @@
         <select
           id="model"
           bind:value={draftModel}
-          class="cursor-pointer appearance-auto rounded-lg border border-ink-640 bg-ink-950 px-[0.7rem] py-[0.45rem] text-[0.86rem] text-[#e0e0f0] transition-[border-color] duration-150 focus:border-accent-500 focus:outline-none">
+          class="cursor-pointer appearance-auto rounded-lg border border-edge-hi bg-[#0e0e1c] px-[0.7rem] py-[0.45rem] text-[0.86rem] text-fg transition-[border-color] duration-150 focus:border-accent focus:outline-none">
           {#each config.options.models as m}
             <option value={m}>{m}</option>
           {/each}
         </select>
-        <span class="text-[0.72rem] text-ink-560"
+        <span class="text-[0.72rem] text-fg-faint"
           >Appliqué immédiatement au prochain appel fact-check.</span>
       </div>
 
@@ -362,12 +362,12 @@
         <select
           id="loglevel"
           bind:value={draftLevel}
-          class="cursor-pointer appearance-auto rounded-lg border border-ink-640 bg-ink-950 px-[0.7rem] py-[0.45rem] text-[0.86rem] text-[#e0e0f0] transition-[border-color] duration-150 focus:border-accent-500 focus:outline-none">
+          class="cursor-pointer appearance-auto rounded-lg border border-edge-hi bg-[#0e0e1c] px-[0.7rem] py-[0.45rem] text-[0.86rem] text-fg transition-[border-color] duration-150 focus:border-accent focus:outline-none">
           {#each config.options.log_levels as l}
             <option value={l}>{l}</option>
           {/each}
         </select>
-        <span class="text-[0.72rem] text-ink-560"
+        <span class="text-[0.72rem] text-fg-faint"
           >Modifie <code class="font-mono text-[#7a7aaa]">logging.getLogger("app")</code> en temps réel.</span>
       </div>
 
@@ -381,7 +381,7 @@
 
       <div class="mt-4 flex justify-end gap-2">
         <button
-          class="cursor-pointer rounded-lg border border-ink-720 bg-ink-810 px-[0.95rem] py-[0.48rem] text-[0.83rem] font-semibold text-fog-400 transition-all duration-150 enabled:hover:bg-ink-780 disabled:cursor-not-allowed disabled:opacity-40"
+          class="cursor-pointer rounded-lg border border-edge bg-surface px-[0.95rem] py-[0.48rem] text-[0.83rem] font-semibold text-slate-300 transition-all duration-150 enabled:hover:bg-surface-raised disabled:cursor-not-allowed disabled:opacity-40"
           onclick={reset}
           disabled={!dirty || saving}>Annuler</button>
         <button
@@ -398,40 +398,40 @@
       </p>
     </div>
 
-    <div class="rounded-xl border border-ink-720 bg-ink-880 px-[1.2rem] py-[1.1rem]">
+    <div class="rounded-xl border border-edge bg-surface-alt px-[1.2rem] py-[1.1rem]">
       <div
-        class="mb-[0.85rem] flex items-center gap-2 border-b border-ink-780 pb-[0.6rem] text-[0.85rem] font-semibold text-fog-300">
+        class="mb-[0.85rem] flex items-center gap-2 border-b border-surface-raised pb-[0.6rem] text-[0.85rem] font-semibold text-slate-200">
         Lecture seule
       </div>
       <dl class="m-0 flex flex-col gap-[0.45rem]">
         <div class="flex min-w-0 items-center justify-between gap-2">
-          <dt class="shrink-0 text-[0.78rem] text-fog-600">Modèle Whisper</dt>
+          <dt class="shrink-0 text-[0.78rem] text-fg-faint">Modèle Whisper</dt>
           <dd
-            class="m-0 flex flex-wrap items-center justify-end gap-[0.35rem] text-right text-[0.8rem] text-fog-400">
+            class="m-0 flex flex-wrap items-center justify-end gap-[0.35rem] text-right text-[0.8rem] text-slate-300">
             {config.readonly.whisper_model}
           </dd>
         </div>
         <div class="flex min-w-0 items-center justify-between gap-2">
-          <dt class="shrink-0 text-[0.78rem] text-fog-600">Device Whisper</dt>
+          <dt class="shrink-0 text-[0.78rem] text-fg-faint">Device Whisper</dt>
           <dd
-            class="m-0 flex flex-wrap items-center justify-end gap-[0.35rem] text-right text-[0.8rem] text-fog-400">
+            class="m-0 flex flex-wrap items-center justify-end gap-[0.35rem] text-right text-[0.8rem] text-slate-300">
             {config.readonly.whisper_device}
           </dd>
         </div>
         <div class="flex min-w-0 items-center justify-between gap-2">
-          <dt class="shrink-0 text-[0.78rem] text-fog-600">JWT expire</dt>
+          <dt class="shrink-0 text-[0.78rem] text-fg-faint">JWT expire</dt>
           <dd
-            class="m-0 flex flex-wrap items-center justify-end gap-[0.35rem] text-right text-[0.8rem] text-fog-400">
+            class="m-0 flex flex-wrap items-center justify-end gap-[0.35rem] text-right text-[0.8rem] text-slate-300">
             {config.readonly.jwt_expire_hours} h
           </dd>
         </div>
         <div class="flex min-w-0 items-center justify-between gap-2">
-          <dt class="shrink-0 text-[0.78rem] text-fog-600">Max claims / chunk</dt>
+          <dt class="shrink-0 text-[0.78rem] text-fg-faint">Max claims / chunk</dt>
           <dd
-            class="m-0 flex flex-wrap items-center justify-end gap-[0.35rem] text-right text-[0.8rem] text-fog-400">
+            class="m-0 flex flex-wrap items-center justify-end gap-[0.35rem] text-right text-[0.8rem] text-slate-300">
             {config.readonly.max_claims_per_chunk}
             <span
-              class="rounded-full border border-[rgba(100,100,140,0.2)] bg-[rgba(100,100,140,0.12)] px-[0.4rem] py-[0.08rem] text-[0.68rem] text-ink-560"
+              class="rounded-full border border-[rgba(100,100,140,0.2)] bg-[rgba(100,100,140,0.12)] px-[0.4rem] py-[0.08rem] text-[0.68rem] text-fg-faint"
               >non utilisé</span>
           </dd>
         </div>

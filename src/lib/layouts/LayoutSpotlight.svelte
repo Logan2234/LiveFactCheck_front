@@ -1,4 +1,4 @@
-<script lang="ts">
+﻿<script lang="ts">
   import { claims, sortedClaims } from "$lib/stores/claims";
 
   const STATUS_CONFIG: Record<string, { label: string; color: string; icon: string }> = {
@@ -32,27 +32,27 @@
   {#if shown}
     {@const cfg = STATUS_CONFIG[shown.status] ?? STATUS_CONFIG.pending}
     <div
-      class="flex min-h-70 flex-col items-center justify-center gap-5 rounded-xl border border-t-4 border-ink-720 bg-ink-850 px-16 py-12 text-center transition-[border-color] duration-300 border-t-(--sc)"
+      class="flex min-h-70 flex-col items-center justify-center gap-5 rounded-xl border border-t-4 border-edge bg-surface-alt px-16 py-12 text-center transition-[border-color] duration-300 border-t-(--sc)"
       style="--sc: {cfg.color}">
       <div class="flex items-center gap-[0.6rem]">
         <span class="text-[2rem]">{cfg.icon}</span>
         <span class="text-[1.4rem] font-bold tracking-widest uppercase" style="color: {cfg.color}"
           >{cfg.label}</span>
       </div>
-      <blockquote class="m-0 max-w-170 text-[1.35rem] leading-normal text-fog-250 italic">
+      <blockquote class="m-0 max-w-170 text-[1.35rem] leading-normal text-fg italic">
         « {shown.text} »
       </blockquote>
       {#if shown.explanation}
-        <p class="m-0 max-w-150 text-base leading-[1.6] text-ash-600">{shown.explanation}</p>
+        <p class="m-0 max-w-150 text-base leading-[1.6] text-zinc-500">{shown.explanation}</p>
       {/if}
-      <span class="text-[0.8rem] tabular-nums text-ash-750"
+      <span class="text-[0.8rem] tabular-nums text-zinc-700"
         >{new Date(shown.timestamp).toLocaleTimeString()}</span>
     </div>
   {:else}
     <div
-      class="flex min-h-70 flex-col items-center justify-center gap-5 rounded-xl border border-t-4 border-ink-720 bg-ink-850 px-16 py-12 text-center transition-[border-color] duration-300 border-t-(--sc)"
+      class="flex min-h-70 flex-col items-center justify-center gap-5 rounded-xl border border-t-4 border-edge bg-surface-alt px-16 py-12 text-center transition-[border-color] duration-300 border-t-(--sc)"
       style="--sc: #333">
-      <p class="m-0 text-[1.1rem] text-ash-750">En attente d'un fait à vérifier...</p>
+      <p class="m-0 text-[1.1rem] text-zinc-700">En attente d'un fait à vérifier...</p>
     </div>
   {/if}
 
@@ -62,16 +62,16 @@
         {@const cfg = STATUS_CONFIG[claim.status] ?? STATUS_CONFIG.pending}
         <button
           class={[
-            "flex shrink-0 cursor-pointer items-center gap-[0.4rem] rounded-[20px] border bg-ink-820 px-3 py-[0.3rem] whitespace-nowrap transition-all duration-150",
+            "flex shrink-0 cursor-pointer items-center gap-[0.4rem] rounded-[20px] border bg-surface px-3 py-[0.3rem] whitespace-nowrap transition-all duration-150",
             selectedId === claim.id || (!selectedId && claim.id === spotlight?.id)
               ? "border-(--sc) bg-[#222235]"
-              : "border-ink-720 hover:border-(--sc)"
+              : "border-edge hover:border-(--sc)"
           ]}
           style="--sc: {cfg.color}"
           onclick={() => (selectedId = claim.id === selectedId ? null : claim.id)}
           title={claim.text}>
           <span class="text-[0.85rem]">{cfg.icon}</span>
-          <span class="text-[0.78rem] text-ash-500"
+          <span class="text-[0.78rem] text-zinc-400"
             >{claim.text.slice(0, 40)}{claim.text.length > 40 ? "…" : ""}</span>
         </button>
       {/each}

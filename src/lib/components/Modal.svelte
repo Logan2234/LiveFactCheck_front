@@ -1,4 +1,4 @@
-<script lang="ts">
+﻿<script lang="ts">
   import type { Snippet } from "svelte";
 
   let {
@@ -43,7 +43,7 @@
       aria-label="Fermer"
       onclick={closeOnBackdrop ? close : undefined}></button>
     <div
-      class="anim-pop relative m-6 w-full rounded-[14px] border border-ink-720 bg-ink-850 p-[1.4rem] shadow-[0_24px_60px_rgba(0,0,0,0.55)]"
+      class="anim-pop relative m-6 w-full rounded-[14px] border border-edge bg-surface-alt p-[1.4rem] shadow-[0_24px_60px_rgba(0,0,0,0.55)]"
       role="dialog"
       aria-modal="true"
       aria-label={title || "Fenêtre modale"}
