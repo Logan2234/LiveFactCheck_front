@@ -34,25 +34,25 @@
     <div
       class="flex min-h-70 flex-col items-center justify-center gap-5 rounded-xl border border-t-4 border-edge bg-surface-alt px-16 py-12 text-center transition-[border-color] duration-300 border-t-(--sc)"
       style="--sc: {cfg.color}">
-      <div class="flex items-center gap-[0.6rem]">
+      <div class="flex items-center gap-2.5">
         <span class="text-[2rem]">{cfg.icon}</span>
-        <span class="text-[1.4rem] font-bold tracking-widest uppercase" style="color: {cfg.color}"
+        <span class="text-2xl font-bold tracking-widest uppercase" style="color: {cfg.color}"
           >{cfg.label}</span>
       </div>
       <blockquote class="m-0 max-w-170 text-[1.35rem] leading-normal text-fg italic">
         « {shown.text} »
       </blockquote>
       {#if shown.explanation}
-        <p class="m-0 max-w-150 text-base leading-[1.6] text-zinc-500">{shown.explanation}</p>
+        <p class="m-0 max-w-150 text-base leading-relaxed text-zinc-500">{shown.explanation}</p>
       {/if}
-      <span class="text-[0.8rem] tabular-nums text-zinc-700"
+      <span class="text-sm tabular-nums text-zinc-700"
         >{new Date(shown.timestamp).toLocaleTimeString()}</span>
     </div>
   {:else}
     <div
       class="flex min-h-70 flex-col items-center justify-center gap-5 rounded-xl border border-t-4 border-edge bg-surface-alt px-16 py-12 text-center transition-[border-color] duration-300 border-t-(--sc)"
       style="--sc: #333">
-      <p class="m-0 text-[1.1rem] text-zinc-700">En attente d'un fait à vérifier...</p>
+      <p class="m-0 text-lg text-zinc-700">En attente d'un fait à vérifier...</p>
     </div>
   {/if}
 
@@ -62,7 +62,7 @@
         {@const cfg = STATUS_CONFIG[claim.status] ?? STATUS_CONFIG.pending}
         <button
           class={[
-            "flex shrink-0 cursor-pointer items-center gap-[0.4rem] rounded-[20px] border bg-surface px-3 py-[0.3rem] whitespace-nowrap transition-all duration-150",
+            "flex shrink-0 cursor-pointer items-center gap-1.5 rounded-[20px] border bg-surface px-3 py-1.5 whitespace-nowrap transition-all duration-150",
             selectedId === claim.id || (!selectedId && claim.id === spotlight?.id)
               ? "border-(--sc) bg-[#222235]"
               : "border-edge hover:border-(--sc)"
@@ -70,8 +70,8 @@
           style="--sc: {cfg.color}"
           onclick={() => (selectedId = claim.id === selectedId ? null : claim.id)}
           title={claim.text}>
-          <span class="text-[0.85rem]">{cfg.icon}</span>
-          <span class="text-[0.78rem] text-zinc-400"
+          <span class="text-sm">{cfg.icon}</span>
+          <span class="text-xs text-zinc-400"
             >{claim.text.slice(0, 40)}{claim.text.length > 40 ? "…" : ""}</span>
         </button>
       {/each}

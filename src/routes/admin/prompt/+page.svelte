@@ -1,6 +1,9 @@
-﻿<script lang="ts">
+<script lang="ts">
   import { authFetch, clearToken } from "$lib/stores/auth";
   import { onMount } from "svelte";
+  import AlertBanner from "$lib/components/AlertBanner.svelte";
+  import LoadingSpinner from "$lib/components/LoadingSpinner.svelte";
+  import StatusBadge from "$lib/components/StatusBadge.svelte";
 
   interface PromptData {
     system_prompt: string;
@@ -11,17 +14,17 @@
     model: string;
   }
 
+  type BadgeColor = "green" | "amber" | "red" | "gray";
+  const STATUS_COLOR: Record<string, BadgeColor> = {
+    verified: "green",
+    false: "red",
+    uncertain: "amber",
+    unverifiable: "gray"
+  };
+
   let data = $state<PromptData | null>(null);
   let error = $state("");
   let copied = $state<string | null>(null);
-
-  // Tailwind classes per status for the schema chips (mirrors the rgba tints).
-  const STATUS_CHIP: Record<string, string> = {
-    verified: "border-green-500/30 bg-green-500/12 text-green-400",
-    false: "border-red-500/30 bg-red-500/12 text-red-400",
-    uncertain: "border-amber-500/30 bg-amber-500/12 text-amber-400",
-    unverifiable: "border-gray-500/30 bg-gray-500/15 text-gray-400"
-  };
 
   async function load() {
     try {
@@ -52,102 +55,51 @@
 </svelte:head>
 
 <header>
-  <h1 class="mt-0 mb-[0.3rem] text-[1.4rem]">📋 Prompt & Outil Claude</h1>
-  <p class="mt-0 mb-6 text-[0.88rem] text-fg-muted">
+  <h1 class="mt-0 mb-1 text-2xl">📋 Prompt & Outil Claude</h1>
+  <p class="mt-0 mb-6 text-sm text-fg-muted">
     Configuration exacte envoyée à l'API Anthropic à chaque appel de fact-checking.
   </p>
 </header>
 
 {#if error}
-  <p
-    class="rounded-lg border border-red-500/35 bg-red-500/10 px-[0.9rem] py-[0.7rem] text-[0.85rem] text-red-300"
-    role="alert">
-    {error}
-  </p>
+  <AlertBanner message={error} />
 {:else if !data}
-  <div class="flex items-center gap-[0.7rem] text-[0.9rem] text-fg-muted">
-    <span
-      class="spinner inline-block h-4 w-4 rounded-full border-2 border-edge-hi border-t-accent-light"
-    ></span> Chargement…
-  </div>
+  <LoadingSpinner />
 {:else}
-  <div
-    class="mb-6 rounded-lg border border-surface-selected bg-surface-alt px-4 py-[0.6rem] text-[0.85rem] text-[#9a9ab8]">
-    Modèle actif : <strong class="text-[#c8c8ff]">{data.model}</strong>
-    &nbsp;·&nbsp; min. <strong class="text-[#c8c8ff]">{data.min_words}</strong> mots pour déclencher une
-    analyse
+  <div class="mb-6 rounded-lg border border-surface-selected bg-surface-alt px-4 py-2.5 text-sm text-fg-muted">
+    Modèle actif : <strong class="text-slate-200">{data.model}</strong>
+    &nbsp;·&nbsp; min. <strong class="text-slate-200">{data.min_words}</strong> mots pour déclencher une analyse
   </div>
 
-  <section class="mb-8">
-    <div class="mb-[0.6rem] flex items-center justify-between">
-      <h2 class="m-0 text-base text-slate-200">Prompt système</h2>
+  {#snippet sectionHeader(key: string, label: string, json?: unknown)}
+    <div class="mb-2.5 flex items-center justify-between">
+      <h2 class="m-0 text-base text-slate-200">{@html label}</h2>
       <button
-        class="cursor-pointer rounded-md border border-edge bg-surface px-3 py-[0.3rem] text-[0.78rem] text-[#8888b0] transition-all duration-150 hover:bg-surface-raised hover:text-slate-200"
-        onclick={() => copyToClipboard("prompt", data!.system_prompt)}>
-        {copied === "prompt" ? "✓ Copié" : "Copier"}
+        class="cursor-pointer rounded-md border border-edge bg-surface px-3 py-1 text-xs text-fg-muted transition-all duration-150 hover:bg-surface-raised hover:text-slate-200"
+        onclick={() => copyToClipboard(key, json !== undefined ? JSON.stringify(json, null, 2) : data!.system_prompt)}>
+        {copied === key ? "✓ Copié" : json !== undefined ? "Copier JSON" : "Copier"}
       </button>
     </div>
-    <pre
-      class="m-0 max-h-100 overflow-x-auto overflow-y-auto rounded-[10px] border border-edge bg-[#0e0e1c] px-[1.2rem] py-4 font-mono text-[0.8rem] leading-[1.6] break-words whitespace-pre-wrap text-slate-200">{data.system_prompt}</pre>
+  {/snippet}
+
+  <section class="mb-8">
+    {@render sectionHeader("prompt", "Prompt système")}
+    <pre class="m-0 max-h-100 overflow-x-auto overflow-y-auto rounded-xl border border-edge bg-[#0e0e1c] px-5 py-4 font-mono text-xs leading-relaxed wrap-break-word whitespace-pre-wrap text-slate-200">{data.system_prompt}</pre>
   </section>
 
   <section class="mb-8">
-    <div class="mb-[0.6rem] flex items-center justify-between">
-      <h2 class="m-0 text-base text-slate-200">
-        Outil <code class="font-mono text-[0.95em] text-[#a0a0ff]">submit_claims</code>
-      </h2>
-      <button
-        class="cursor-pointer rounded-md border border-edge bg-surface px-3 py-[0.3rem] text-[0.78rem] text-[#8888b0] transition-all duration-150 hover:bg-surface-raised hover:text-slate-200"
-        onclick={() => copyToClipboard("claim", JSON.stringify(data!.claim_tool, null, 2))}>
-        {copied === "claim" ? "✓ Copié" : "Copier JSON"}
-      </button>
-    </div>
-    <div class="mb-[0.6rem] flex flex-wrap items-center gap-[0.4rem] text-[0.8rem] text-fg-faint">
+    {@render sectionHeader("claim", 'Outil <code class="font-mono text-sm text-accent-light">submit_claims</code>', data.claim_tool)}
+    <div class="mb-2.5 flex flex-wrap items-center gap-1.5 text-sm text-fg-faint">
       Statuts valides :
       {#each data.valid_statuses as s}
-        <span
-          class="rounded-full border px-[0.55rem] py-[0.15rem] text-[0.75rem] font-medium {STATUS_CHIP[
-            s
-          ] ?? 'border-transparent'}">{s}</span>
+        <StatusBadge color={STATUS_COLOR[s] ?? "gray"} label={s} />
       {/each}
     </div>
-    <pre
-      class="m-0 max-h-100 overflow-x-auto overflow-y-auto rounded-[10px] border border-edge bg-[#0e0e1c] px-[1.2rem] py-4 font-mono text-[0.8rem] leading-[1.6] break-words whitespace-pre-wrap text-slate-200">{JSON.stringify(
-        data.claim_tool,
-        null,
-        2
-      )}</pre>
+    <pre class="m-0 max-h-100 overflow-x-auto overflow-y-auto rounded-xl border border-edge bg-[#0e0e1c] px-5 py-4 font-mono text-xs leading-relaxed wrap-break-word whitespace-pre-wrap text-slate-200">{JSON.stringify(data.claim_tool, null, 2)}</pre>
   </section>
 
   <section class="mb-8">
-    <div class="mb-[0.6rem] flex items-center justify-between">
-      <h2 class="m-0 text-base text-slate-200">
-        Outil <code class="font-mono text-[0.95em] text-[#a0a0ff]">web_search</code>
-      </h2>
-      <button
-        class="cursor-pointer rounded-md border border-edge bg-surface px-3 py-[0.3rem] text-[0.78rem] text-[#8888b0] transition-all duration-150 hover:bg-surface-raised hover:text-slate-200"
-        onclick={() => copyToClipboard("ws", JSON.stringify(data!.web_search_tool, null, 2))}>
-        {copied === "ws" ? "✓ Copié" : "Copier JSON"}
-      </button>
-    </div>
-    <pre
-      class="m-0 max-h-100 overflow-x-auto overflow-y-auto rounded-[10px] border border-edge bg-[#0e0e1c] px-[1.2rem] py-4 font-mono text-[0.8rem] leading-[1.6] break-words whitespace-pre-wrap text-slate-200">{JSON.stringify(
-        data.web_search_tool,
-        null,
-        2
-      )}</pre>
+    {@render sectionHeader("ws", 'Outil <code class="font-mono text-sm text-accent-light">web_search</code>', data.web_search_tool)}
+    <pre class="m-0 max-h-100 overflow-x-auto overflow-y-auto rounded-xl border border-edge bg-[#0e0e1c] px-5 py-4 font-mono text-xs leading-relaxed wrap-break-word whitespace-pre-wrap text-slate-200">{JSON.stringify(data.web_search_tool, null, 2)}</pre>
   </section>
 {/if}
-
-<style>
-  /* Loading spinner rotation — keyframes can't be expressed as utilities. */
-  .spinner {
-    animation: spin 0.7s linear infinite;
-  }
-
-  @keyframes spin {
-    to {
-      transform: rotate(360deg);
-    }
-  }
-</style>

@@ -25,7 +25,7 @@
 
 <div class="flex h-[calc(100vh-160px)] min-h-125 flex-col">
   <div
-    class="flex items-center rounded-t-[10px] border border-b-0 border-surface-selected bg-surface-alt px-4 py-3 text-[0.85rem] text-zinc-500">
+    class="flex items-center rounded-t-[10px] border border-b-0 border-surface-selected bg-surface-alt px-4 py-3 text-sm text-zinc-500">
     <div class="flex flex-1 items-center gap-2">
       <div class="flex h-8 w-8 items-center justify-center rounded-full bg-surface-selected text-base">
         🎙
@@ -44,7 +44,7 @@
   <div
     class="flex flex-1 flex-col gap-3 overflow-y-auto rounded-b-[10px] border border-t-0 border-surface-selected bg-[#0f0f1e] p-4">
     {#if feed.length === 0}
-      <div class="flex flex-1 items-center justify-center text-[0.9rem] text-zinc-700">
+      <div class="flex flex-1 items-center justify-center text-sm text-zinc-700">
         <p>La conversation commencera quand vous parlerez...</p>
       </div>
     {:else}
@@ -53,13 +53,13 @@
           <!-- Left bubble: speaker -->
           <div class="flex max-w-[70%] items-end gap-2 self-start">
             <div
-              class="flex h-7 w-7 shrink-0 items-center justify-center self-end rounded-full bg-surface-raised text-[0.9rem]">
+              class="flex h-7 w-7 shrink-0 items-center justify-center self-end rounded-full bg-surface-raised text-sm">
               🎙
             </div>
             <div
-              class="relative max-w-full rounded-2xl rounded-tl-sm bg-[#252540] px-[0.9rem] py-[0.6rem]">
-              <p class="mt-0 mb-1 text-[0.9rem] leading-normal text-fg">{item.text}</p>
-              <span class="block text-right text-[0.72rem] tabular-nums text-zinc-600"
+              class="relative max-w-full rounded-2xl rounded-tl-sm bg-[#252540] px-3.5 py-2.5">
+              <p class="mt-0 mb-1 text-sm leading-normal text-fg">{item.text}</p>
+              <span class="block text-right text-2xs tabular-nums text-zinc-600"
                 >{new Date(item.timestamp).toLocaleTimeString()}</span>
             </div>
           </div>
@@ -67,29 +67,29 @@
           <!-- Right bubble: fact-checker -->
           <div class="flex max-w-[70%] flex-row items-end gap-2 self-end">
             <div
-              class="fc-bubble relative max-w-full rounded-2xl rounded-tr-sm px-[0.9rem] py-[0.6rem]"
+              class="fc-bubble relative max-w-full rounded-2xl rounded-tr-sm px-3.5 py-2.5"
               style="--color: {STATUS_COLOR[item.status]}">
-              <div class="mb-[0.3rem] flex items-center gap-[0.4rem]">
-                <span class="text-[0.85rem]">{STATUS_ICON[item.status]}</span>
+              <div class="mb-1.5 flex items-center gap-1.5">
+                <span class="text-sm">{STATUS_ICON[item.status]}</span>
                 <span
-                  class="text-[0.8rem] font-semibold tracking-wider uppercase"
+                  class="text-sm font-semibold tracking-wider uppercase"
                   style="color: {STATUS_COLOR[item.status]}">
                   {STATUS_LABEL[item.status]}
                 </span>
               </div>
-              <p class="mt-0 mb-1 text-[0.9rem] leading-normal text-fg italic">
+              <p class="mt-0 mb-1 text-sm leading-normal text-fg italic">
                 « {item.text} »
               </p>
               {#if item.explanation && item.status !== "pending"}
-                <p class="mt-1 mb-[0.1rem] text-[0.82rem] leading-[1.4] text-zinc-400">
+                <p class="mt-1 mb-0.5 text-sm leading-snug text-zinc-400">
                   {item.explanation}
                 </p>
               {/if}
-              <span class="block text-right text-[0.72rem] tabular-nums text-zinc-600"
+              <span class="block text-right text-2xs tabular-nums text-zinc-600"
                 >{new Date(item.timestamp).toLocaleTimeString()}</span>
             </div>
             <div
-              class="flex h-7 w-7 shrink-0 items-center justify-center self-end rounded-full bg-surface-raised text-[0.9rem]">
+              class="flex h-7 w-7 shrink-0 items-center justify-center self-end rounded-full bg-surface-raised text-sm">
               🤖
             </div>
           </div>

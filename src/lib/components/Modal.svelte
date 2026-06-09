@@ -39,11 +39,11 @@
   <div
     class="anim-fade fixed inset-0 z-9500 flex items-center justify-center bg-[rgba(10,10,18,0.6)] backdrop-blur-[3px]">
     <button
-      class="absolute inset-0 m-0 h-full w-full cursor-default border-none bg-transparent p-0"
+      class="absolute inset-0 m-0 h-full w-full cursor-default bg-transparent p-0"
       aria-label="Fermer"
       onclick={closeOnBackdrop ? close : undefined}></button>
     <div
-      class="anim-pop relative m-6 w-full rounded-[14px] border border-edge bg-surface-alt p-[1.4rem] shadow-[0_24px_60px_rgba(0,0,0,0.55)]"
+      class="anim-pop relative m-6 w-full rounded-[14px] border border-edge bg-surface-alt p-6 shadow-[0_24px_60px_rgba(0,0,0,0.55)]"
       role="dialog"
       aria-modal="true"
       aria-label={title || "Fenêtre modale"}
@@ -53,7 +53,7 @@
         <div class="mb-4 flex items-center justify-between">
           <h2 class="m-0 text-base">{title}</h2>
           <button
-            class="cursor-pointer border-none bg-none px-[0.2rem] py-0 text-[1.4rem] leading-none text-[#777] transition-colors duration-150 hover:text-white"
+            class="cursor-pointer px-1 py-0 text-2xl leading-none text-zinc-500 transition-colors duration-150 hover:text-white"
             onclick={close}
             aria-label="Fermer">×</button>
         </div>

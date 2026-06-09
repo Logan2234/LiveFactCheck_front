@@ -29,7 +29,7 @@
 <div class="flex items-center gap-3 px-4 py-3">
   <button
     class={[
-      "flex cursor-pointer items-center gap-2 rounded-full px-5 py-[0.65rem] text-[0.95rem] text-white transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-50",
+      "flex cursor-pointer items-center gap-2 rounded-full px-5 py-2.5 text-base text-white transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-50",
       isRecording ? "bg-red-600" : "bg-surface-raised enabled:hover:bg-[#3d3d4d]"
     ]}
     onclick={toggle}
@@ -58,7 +58,7 @@
     </button>
   {/if}
 
-  <span class="text-[0.82rem] text-zinc-500">
+  <span class="text-sm text-zinc-500">
     {status === "connected"
       ? "🟢 Connecté"
       : status === "connecting"

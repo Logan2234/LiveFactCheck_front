@@ -56,7 +56,7 @@
   <header class="mb-6 flex flex-wrap items-center justify-between gap-4">
     <div>
       <h1 class="m-0 text-2xl">🔍 LiveFactChecker</h1>
-      <p class="mt-[0.1rem] mb-0 text-[0.85rem] text-zinc-500">
+      <p class="mt-0.5 mb-0 text-sm text-zinc-500">
         Vérification de faits en temps réel
       </p>
     </div>
@@ -65,7 +65,7 @@
         {#each layouts as l}
           <button
             class={[
-              "cursor-pointer rounded-md border px-[0.65rem] py-[0.3rem] text-xs transition-all duration-150",
+              "cursor-pointer rounded-md border px-2.5 py-1.5 text-xs transition-all duration-150",
               $activeLayout === l.key
                 ? "border-accent-dim bg-surface-selected text-white"
                 : "border-edge bg-surface text-zinc-500 hover:border-zinc-600 hover:text-zinc-200"

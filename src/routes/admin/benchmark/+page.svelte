@@ -1,5 +1,7 @@
-﻿<script lang="ts">
+<script lang="ts">
   import ClaimCard from "$lib/components/ClaimCard.svelte";
+  import AlertBanner from "$lib/components/AlertBanner.svelte";
+  import LoadingSpinner from "$lib/components/LoadingSpinner.svelte";
   import { authFetch, clearToken } from "$lib/stores/auth";
   import type { Claim } from "$lib/stores/claims";
 
@@ -95,8 +97,8 @@
 </svelte:head>
 
 <header>
-  <h1 class="mt-0 mb-[0.3rem] text-[1.4rem]">⚡ Benchmark</h1>
-  <p class="mt-0 mb-6 text-[0.88rem] text-fg-muted">
+  <h1 class="mt-0 mb-1 text-2xl">⚡ Benchmark</h1>
+  <p class="mt-0 mb-6 text-sm text-fg-muted">
     Compare le même texte avec et sans recherche web en parallèle.
   </p>
 </header>
@@ -107,21 +109,20 @@
     rows="5"
     placeholder="Colle un texte à analyser…"
     disabled={loading}
-    class="box-border w-full resize-y rounded-[10px] border border-edge bg-surface-alt px-4 py-[0.9rem] font-[inherit] text-[0.95rem] leading-normal text-slate-100 transition-[border-color] duration-150 focus:border-accent focus:outline-none disabled:opacity-50"
+    class="box-border w-full resize-y rounded-xl border border-edge bg-surface-alt px-4 py-3.5 font-[inherit] text-base leading-normal text-slate-100 transition-[border-color] duration-150 focus:border-accent focus:outline-none disabled:opacity-50"
   ></textarea>
   <div class="mt-3 flex items-center gap-2">
     <button
       type="button"
-      class="cursor-pointer rounded-lg border border-edge bg-surface px-[1.1rem] py-[0.6rem] text-[0.88rem] font-medium text-slate-300 transition-[opacity,background] duration-150 enabled:hover:bg-surface-raised disabled:cursor-not-allowed disabled:opacity-40"
+      class="cursor-pointer rounded-lg border border-edge bg-surface px-4 py-2 text-sm font-medium text-slate-300 transition-all duration-150 enabled:hover:bg-surface-raised disabled:cursor-not-allowed disabled:opacity-40"
       onclick={() => (text = "")}
       disabled={!text || loading}>
       Vider
     </button>
-    <span class="flex-1"></span>
     <button
       type="submit"
       disabled={loading || !text.trim()}
-      class="cursor-pointer rounded-lg border-none bg-[linear-gradient(135deg,#5a5ad0,#7a4ad0)] px-[1.1rem] py-[0.6rem] text-[0.88rem] font-semibold text-white transition-[opacity,background] duration-150 enabled:hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40">
+      class="ml-auto cursor-pointer rounded-lg bg-[linear-gradient(135deg,#5a5ad0,#7a4ad0)] px-4 py-2 text-sm font-semibold text-white transition-all duration-150 enabled:hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40">
       {loading ? "Analyse en cours…" : "Comparer"}
     </button>
   </div>
@@ -131,50 +132,39 @@
   <div class="grid grid-cols-2 gap-5">
     {#each ["🌐 Avec web search", "🧠 Sans web search"] as label}
       <div class="flex min-w-0 flex-col gap-3">
-        <div
-          class="flex flex-wrap items-center gap-2 border-b border-edge pb-2 text-[0.9rem] font-semibold text-slate-200">
+        <div class="flex flex-wrap items-center gap-2 border-b border-edge pb-2 text-sm font-semibold text-slate-200">
           {label}
         </div>
-        <div
-          class="flex items-center gap-[0.7rem] rounded-[10px] border border-dashed border-edge bg-surface-alt p-6 text-[0.9rem] text-fg-muted">
-          <span
-            class="spinner h-4 w-4 shrink-0 rounded-full border-2 border-edge-hi border-t-accent-light"
-          ></span> Analyse…
+        <div class="rounded-xl border border-dashed border-edge bg-surface-alt p-6">
+          <LoadingSpinner message="Analyse…" />
         </div>
       </div>
     {/each}
   </div>
 {:else if ran}
   {#if delta()}
-    <div
-      class="mb-4 rounded-lg border border-surface-selected bg-[#1a1a30] px-4 py-[0.45rem] text-center text-[0.82rem] text-fg-muted">
+    <div class="mb-4 rounded-lg border border-surface-selected bg-[#1a1a30] px-4 py-2 text-center text-sm text-fg-muted">
       {delta()}
     </div>
   {/if}
   <div class="grid grid-cols-2 gap-5">
     {#each [{ label: "🌐 Avec web search", side: withWeb }, { label: "🧠 Sans web search", side: withoutWeb }] as { label, side }}
       <div class="flex min-w-0 flex-col gap-3">
-        <div
-          class="flex flex-wrap items-center gap-2 border-b border-edge pb-2 text-[0.9rem] font-semibold text-slate-200">
+        <div class="flex flex-wrap items-center gap-2 border-b border-edge pb-2 text-sm font-semibold text-slate-200">
           {label}
-          <span
-            class="rounded-full border border-edge-hi bg-surface-raised px-[0.55rem] py-[0.15rem] text-[0.75rem] font-normal tabular-nums text-[#8888b0]"
-            >{(side.elapsed / 1000).toFixed(1)} s</span>
+          <span class="rounded-full border border-edge-hi bg-surface-raised px-2 py-0.5 text-xs font-normal tabular-nums text-fg-muted">
+            {(side.elapsed / 1000).toFixed(1)} s
+          </span>
           {#if side.claims !== null}
-            <span
-              class="rounded-full border border-edge-hi bg-surface-raised px-[0.55rem] py-[0.15rem] text-[0.75rem] font-normal tabular-nums text-[#8888b0]"
-              >{side.claims.length} claim{side.claims.length !== 1 ? "s" : ""}</span>
+            <span class="rounded-full border border-edge-hi bg-surface-raised px-2 py-0.5 text-xs font-normal tabular-nums text-fg-muted">
+              {side.claims.length} claim{side.claims.length !== 1 ? "s" : ""}
+            </span>
           {/if}
         </div>
         {#if side.error}
-          <p
-            class="m-0 rounded-lg border border-red-500/35 bg-red-500/10 px-[0.9rem] py-[0.7rem] text-[0.85rem] text-red-300"
-            role="alert">
-            {side.error}
-          </p>
+          <AlertBanner message={side.error} />
         {:else if side.claims !== null && side.claims.length === 0}
-          <p
-            class="m-0 rounded-[10px] border border-dashed border-edge bg-surface-alt p-[1.2rem] text-center text-[0.9rem] text-fg-muted">
+          <p class="m-0 rounded-xl border border-dashed border-edge bg-surface-alt p-5 text-center text-sm text-fg-muted">
             Aucun fait vérifiable trouvé.
           </p>
         {:else if side.claims !== null}
@@ -188,16 +178,3 @@
     {/each}
   </div>
 {/if}
-
-<style>
-  /* Loading spinner rotation — keyframes can't be expressed as utilities. */
-  .spinner {
-    animation: spin 0.7s linear infinite;
-  }
-
-  @keyframes spin {
-    to {
-      transform: rotate(360deg);
-    }
-  }
-</style>

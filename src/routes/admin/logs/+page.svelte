@@ -1,6 +1,7 @@
-﻿<script lang="ts">
+<script lang="ts">
   import { authFetch, clearToken } from "$lib/stores/auth";
   import { onDestroy, onMount, tick } from "svelte";
+  import AlertBanner from "$lib/components/AlertBanner.svelte";
 
   interface LogEntry {
     id: number;
@@ -86,97 +87,74 @@
 
 <header>
   <div>
-    <h1 class="mt-0 mb-[0.3rem] text-[1.4rem]">📜 Logs</h1>
-    <p class="mt-0 mb-[1.2rem] text-[0.88rem] text-fg-muted">
-      Flux en direct du logger <code class="font-mono text-[0.85em] text-fg-muted">app.*</code> — rafraîchissement
+    <h1 class="mt-0 mb-1 text-2xl">📜 Logs</h1>
+    <p class="mt-0 mb-5 text-sm text-fg-muted">
+      Flux en direct du logger <code class="font-mono text-fg-muted">app.*</code> — rafraîchissement
       toutes les 1,5 s.
     </p>
   </div>
 </header>
 
 <div class="mb-3 flex flex-wrap items-center justify-between gap-3">
-  <div class="flex items-center gap-[0.6rem]">
+  <div class="flex items-center gap-2.5">
     <label for="filter" class="sr-only">Filtrer par niveau</label>
     <select
       id="filter"
       bind:value={filterLevel}
-      class="cursor-pointer rounded-[7px] border border-surface-selected bg-surface-alt px-[0.65rem] py-[0.35rem] text-[0.82rem] text-slate-200 focus:border-accent focus:outline-none">
+      class="cursor-pointer rounded-lg border border-surface-selected bg-surface-alt px-2.5 py-1.5 text-sm text-slate-200 focus:border-accent focus:outline-none">
       {#each LEVELS as l}
         <option value={l}>{l}</option>
       {/each}
     </select>
-    <span class="text-[0.78rem] tabular-nums text-fg-faint"
+    <span class="text-xs tabular-nums text-fg-faint"
       >{visible.length} entrée{visible.length !== 1 ? "s" : ""}</span>
   </div>
-  <div class="flex items-center gap-[0.6rem]">
-    <label
-      class="flex cursor-pointer items-center gap-[0.35rem] text-[0.8rem] text-[#8888a8] select-none">
+  <div class="flex items-center gap-2.5">
+    <label class="flex cursor-pointer items-center gap-1.5 text-sm text-fg-muted select-none">
       <input type="checkbox" bind:checked={autoScroll} class="cursor-pointer accent-accent-light" />
       Auto-scroll
     </label>
     <button
-      class="cursor-pointer rounded-[7px] border border-edge bg-surface px-3 py-[0.35rem] text-[0.8rem] text-slate-300 transition-[background] duration-150 enabled:hover:bg-surface-raised disabled:cursor-not-allowed disabled:opacity-40"
+      class="cursor-pointer rounded-lg border border-edge bg-surface px-3 py-1.5 text-sm text-slate-300 transition-[background] duration-150 enabled:hover:bg-surface-raised disabled:cursor-not-allowed disabled:opacity-40"
       onclick={clearLogs}
       disabled={entries.length === 0}>Vider</button>
   </div>
 </div>
 
 {#if error}
-  <p
-    class="mb-3 rounded-lg border border-red-500/35 bg-red-500/10 px-[0.9rem] py-[0.6rem] text-[0.82rem] text-red-300"
-    role="alert">
-    {error}
-  </p>
+  <div class="mb-3">
+    <AlertBanner message={error} />
+  </div>
 {/if}
 
 <div
-  class="h-[calc(100vh-260px)] min-h-75 overflow-y-auto rounded-[10px] border border-surface bg-[#080810] px-4 py-3 font-mono text-[0.78rem] leading-[1.55]"
+  class="h-[calc(100vh-260px)] min-h-75 overflow-y-auto rounded-xl border border-surface bg-[#080810] px-4 py-3 font-mono text-xs leading-relaxed"
   bind:this={logBox}>
   {#if visible.length === 0}
-    <div class="py-4 text-center text-[0.82rem] text-edge-hi">
+    <div class="py-4 text-center text-sm text-edge-hi">
       Aucun log — les messages apparaîtront dès que le backend émet quelque chose.
     </div>
   {:else}
     {#each visible as entry (entry.id)}
       <div
-        class="line level-{entry.level.toLowerCase()} grid grid-cols-[7ch_8ch_22ch_1fr] gap-3 rounded-[3px] py-[0.1rem] hover:bg-white/3">
+        class="line level-{entry.level.toLowerCase()} grid grid-cols-[7ch_8ch_22ch_1fr] gap-3 rounded py-0.5 hover:bg-white/3">
         <span class="ts whitespace-nowrap text-edge-hi">{formatTime(entry.t)}</span>
         <span class="lvl font-bold whitespace-nowrap">{entry.level}</span>
-        <span class="logger overflow-hidden text-ellipsis whitespace-nowrap text-[#5a5a88]"
-          >{entry.logger}</span>
-        <span class="msg break-all whitespace-pre-wrap text-[#c0c0d8]">{entry.msg}</span>
+        <span class="logger overflow-hidden text-ellipsis whitespace-nowrap text-fg-faint">{entry.logger}</span>
+        <span class="msg break-all whitespace-pre-wrap text-fg-muted">{entry.msg}</span>
       </div>
     {/each}
   {/if}
 </div>
 
 <style>
-  /* Per-level colors are selected by the dynamic `level-*` class on .line and
-     style two children (.lvl, .msg). Kept in CSS: the dynamic compound
-     selectors are awkward as utilities, and as unlayered scoped rules they
-     correctly override the layered Tailwind base colors on those spans. */
-  .level-debug .lvl {
-    color: #5a5a88;
-  }
-  .level-info .lvl {
-    color: #4a9eff;
-  }
-  .level-warning .lvl {
-    color: #f59e0b;
-  }
-  .level-warning .msg {
-    color: #d4a850;
-  }
-  .level-error .lvl {
-    color: #ef4444;
-  }
-  .level-error .msg {
-    color: #fca5a5;
-  }
-  .level-critical .lvl {
-    color: #ff2020;
-  }
-  .level-critical .msg {
-    color: #ff8080;
-  }
+  /* Per-level colors use dynamic compound selectors — can't be expressed as utilities. */
+  .level-debug .lvl { color: #5a5a88; }
+  .level-info .lvl { color: #4a9eff; }
+  .level-warning .lvl { color: #f59e0b; }
+  .level-warning .msg { color: #d4a850; }
+  .level-error .lvl { color: #ef4444; }
+  .level-error .msg { color: #fca5a5; }
+  .level-critical .lvl { color: #ff2020; }
+  .level-critical .msg { color: #ff8080; }
 </style>

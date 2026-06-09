@@ -23,11 +23,11 @@
 
 <div class="flex flex-col gap-3">
   <div class="flex flex-wrap items-center justify-between gap-3">
-    <div class="flex flex-wrap gap-[0.4rem]">
+    <div class="flex flex-wrap gap-1.5">
       {#each filters as f}
         <button
           class={[
-            "cursor-pointer rounded-[20px] border px-3 py-[0.3rem] text-[0.8rem] transition-all duration-150",
+            "cursor-pointer rounded-[20px] border px-3 py-1.5 text-sm transition-all duration-150",
             $claimFilter === f.key
               ? "border-accent-dim bg-surface-selected text-white"
               : "border-edge bg-surface text-zinc-400 hover:border-zinc-600 hover:text-zinc-200"
@@ -38,7 +38,7 @@
         </button>
       {/each}
     </div>
-    <span class="text-[0.85rem] whitespace-nowrap text-zinc-600"
+    <span class="text-sm whitespace-nowrap text-zinc-600"
       >{$filteredClaims.length} fait{$filteredClaims.length !== 1 ? "s" : ""}</span>
   </div>
 
@@ -47,16 +47,16 @@
       <thead class="sticky top-0 z-1">
         <tr>
           <th
-            class="w-20 border-b border-edge bg-surface px-[0.9rem] py-[0.6rem] text-left text-xs font-semibold tracking-wider text-zinc-600 uppercase"
+            class="w-20 border-b border-edge bg-surface px-3.5 py-2.5 text-left text-xs font-semibold tracking-wider text-zinc-600 uppercase"
             >Heure</th>
           <th
-            class="w-32.5 border-b border-edge bg-surface px-[0.9rem] py-[0.6rem] text-left text-xs font-semibold tracking-wider text-zinc-600 uppercase"
+            class="w-32.5 border-b border-edge bg-surface px-3.5 py-2.5 text-left text-xs font-semibold tracking-wider text-zinc-600 uppercase"
             >Statut</th>
           <th
-            class="min-w-50 border-b border-edge bg-surface px-[0.9rem] py-[0.6rem] text-left text-xs font-semibold tracking-wider text-zinc-600 uppercase"
+            class="min-w-50 border-b border-edge bg-surface px-3.5 py-2.5 text-left text-xs font-semibold tracking-wider text-zinc-600 uppercase"
             >Affirmation</th>
           <th
-            class="min-w-45 border-b border-edge bg-surface px-[0.9rem] py-[0.6rem] text-left text-xs font-semibold tracking-wider text-zinc-600 uppercase"
+            class="min-w-45 border-b border-edge bg-surface px-3.5 py-2.5 text-left text-xs font-semibold tracking-wider text-zinc-600 uppercase"
             >Explication</th>
         </tr>
       </thead>
@@ -75,34 +75,34 @@
               style="--sc: {cfg.color}"
               onclick={() => (expandedId = expandedId === claim.id ? null : claim.id)}>
               <td
-                class="w-20 px-[0.9rem] py-[0.65rem] align-top text-[0.78rem] whitespace-nowrap tabular-nums text-zinc-600"
+                class="w-20 px-3.5 py-2.5 align-top text-xs whitespace-nowrap tabular-nums text-zinc-600"
                 >{new Date(claim.timestamp).toLocaleTimeString()}</td>
-              <td class="w-32.5 px-[0.9rem] py-[0.65rem] align-top whitespace-nowrap">
-                <span class="text-[0.8rem] font-medium" style="color: {cfg.color}">
+              <td class="w-32.5 px-3.5 py-2.5 align-top whitespace-nowrap">
+                <span class="text-sm font-medium" style="color: {cfg.color}">
                   {cfg.icon}
                   {cfg.label}
                 </span>
               </td>
-              <td class="min-w-50 px-[0.9rem] py-[0.65rem] align-top">
+              <td class="min-w-50 px-3.5 py-2.5 align-top">
                 <span
                   class={[
-                    "leading-[1.4] text-zinc-300 italic",
+                    "leading-snug text-zinc-300 italic",
                     expandedId !== claim.id && "line-clamp-2"
                   ]}>
                   {claim.text}
                 </span>
               </td>
-              <td class="min-w-45 px-[0.9rem] py-[0.65rem] align-top">
+              <td class="min-w-45 px-3.5 py-2.5 align-top">
                 {#if claim.explanation}
                   <span
                     class={[
-                      "text-[0.82rem] leading-[1.4] text-[#777]",
+                      "text-sm leading-snug text-zinc-500",
                       expandedId !== claim.id && "line-clamp-2"
                     ]}>
                     {claim.explanation}
                   </span>
                 {:else if claim.status === "pending"}
-                  <span class="text-[0.78rem] text-zinc-700 italic">analyse...</span>
+                  <span class="text-xs text-zinc-700 italic">analyse...</span>
                 {/if}
               </td>
             </tr>

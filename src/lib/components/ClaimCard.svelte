@@ -46,22 +46,22 @@
 </script>
 
 <div
-  class="mb-3 rounded-lg border-l-4 bg-surface px-4 py-[0.85rem]"
+  class="mb-3 rounded-lg border-l-4 bg-surface px-4 py-3.5"
   style="border-left-color: {config.color}">
-  <div class="mb-2 flex flex-wrap items-center gap-[0.4rem]">
+  <div class="mb-2 flex flex-wrap items-center gap-1.5">
     <span>{config.icon}</span>
-    <span class="text-[0.85rem] font-semibold" style="color: {config.color}">{config.label}</span>
+    <span class="text-sm font-semibold" style="color: {config.color}">{config.label}</span>
 
     {#if claim.category && claim.status !== "pending"}
       <span
-        class="rounded-full px-[0.55rem] py-[0.1rem] text-[0.72rem] font-medium tracking-[0.02em]"
+        class="rounded-full px-2 py-0.5 text-2xs font-medium tracking-wide"
         style="background: color-mix(in srgb, {catColor} 20%, transparent); border: 1px solid color-mix(in srgb, {catColor} 50%, transparent); color: {catColor}"
         >{claim.category}</span>
     {/if}
 
     {#if claim.status !== "pending"}
       <span
-        class="cursor-help text-[0.78rem] leading-none opacity-[0.85]"
+        class="cursor-help text-xs leading-none opacity-85"
         title={claim.web_search_used
           ? "Vérifié avec une recherche web"
           : "Vérifié sans recherche web (connaissances internes)"}>
@@ -70,19 +70,19 @@
     {/if}
 
     {#if claim.confidence > 0 && claim.status !== "pending"}
-      <span class="ml-[0.1rem] flex items-center gap-[0.3rem]" title="Score de confiance">
+      <span class="ml-0.5 flex items-center gap-1.5" title="Score de confiance">
         <span
           class="inline-block h-1 max-w-12 min-w-1 rounded-xs opacity-80"
           style="width: {claim.confidence * 10}%; background: {config.color}"></span>
-        <span class="text-[0.72rem] tabular-nums text-zinc-600">{claim.confidence}/10</span>
+        <span class="text-2xs tabular-nums text-zinc-600">{claim.confidence}/10</span>
       </span>
     {/if}
 
-    <span class="ml-auto text-[0.78rem] whitespace-nowrap tabular-nums text-zinc-500"
+    <span class="ml-auto text-xs whitespace-nowrap tabular-nums text-zinc-500"
       >{new Date(claim.timestamp).toLocaleTimeString()}</span>
 
     <button
-      class="shrink-0 rounded-sm border border-transparent bg-transparent px-[0.35rem] py-[0.1rem] text-[0.85rem] leading-none text-zinc-600 transition-all duration-150 hover:border-edge-hi hover:text-zinc-400"
+      class="shrink-0 rounded-sm border border-transparent bg-transparent px-1.5 py-0.5 text-sm leading-none text-zinc-600 transition-all duration-150 hover:border-edge-hi hover:text-zinc-400"
       onclick={copy}
       title="Copier ce claim"
       aria-label="Copier">
@@ -90,22 +90,22 @@
     </button>
   </div>
 
-  <p class="my-[0.2rem] text-[0.92rem] leading-normal text-fg italic">« {claim.text} »</p>
+  <p class="my-1 text-sm leading-normal text-fg italic">« {claim.text} »</p>
 
   {#if claim.explanation}
-    <p class="mt-[0.45rem] text-sm leading-normal text-zinc-400">{claim.explanation}</p>
+    <p class="mt-2 text-sm leading-normal text-zinc-400">{claim.explanation}</p>
   {/if}
 
   {#if claim.counter_claim}
     <div
-      class="mt-2 rounded-r-md border-l-[3px] border-emerald-500 bg-emerald-500/12 px-[0.65rem] py-[0.4rem] text-sm">
-      <span class="mr-[0.35rem] font-semibold text-emerald-500">✔ Réalité :</span>
+      class="mt-2 rounded-r-md border-l-[3px] border-emerald-500 bg-emerald-500/12 px-2.5 py-1.5 text-sm">
+      <span class="mr-1.5 font-semibold text-emerald-500">✔ Réalité :</span>
       <span class="text-zinc-300">{claim.counter_claim}</span>
     </div>
   {/if}
 
   {#if claim.sources.length > 0}
-    <div class="mt-2 flex flex-col gap-[0.15rem] text-[0.8rem]">
+    <div class="mt-2 flex flex-col gap-0.5 text-sm">
       <span class="text-zinc-600">Sources :</span>
       {#each claim.sources as source}
         <a

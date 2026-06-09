@@ -20,7 +20,7 @@
   --color-surface-selected: #2e2e4e; /* active / selected state */
 
   /* ── Borders ── */
-  --color-edge: #2e2e3e;   /* standard border */
+  --color-edge: #2e2e3e;    /* standard border */
   --color-edge-hi: #3a3a4e; /* stronger border, focus rings */
 
   /* ── Accent (indigo / violet) ── */
@@ -32,10 +32,23 @@
   --color-fg: #e0e0e0;       /* body text */
   --color-fg-muted: #9a9ac0; /* secondary labels */
   --color-fg-faint: #6a6a88; /* tertiary / hints */
+
+  /* ── Extra text size step (below xs) ── */
+  --text-2xs: 0.72rem;
 }
 
 @layer base {
   html {
     font-family: ui-sans-serif, system-ui, sans-serif;
+  }
+
+  .spinner {
+    animation: spin 0.7s linear infinite;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
   }
 }

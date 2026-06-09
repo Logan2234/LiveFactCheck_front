@@ -1,5 +1,8 @@
-﻿<script lang="ts">
+<script lang="ts">
   import { authFetch, clearToken } from "$lib/stores/auth";
+  import AlertBanner from "$lib/components/AlertBanner.svelte";
+  import LoadingSpinner from "$lib/components/LoadingSpinner.svelte";
+  import StatusBadge from "$lib/components/StatusBadge.svelte";
 
   interface Segment {
     start: number;
@@ -37,13 +40,11 @@
     if (f) file = f;
   }
 
-  // cls holds the Tailwind classes for the confidence badge (green/amber/red tints).
-  function formatConfidence(logprob: number): { label: string; cls: string } {
-    if (logprob > -0.3)
-      return { label: "élevée", cls: "border-green-500/25 bg-green-500/12 text-green-400" };
-    if (logprob > -0.8)
-      return { label: "moyenne", cls: "border-amber-500/25 bg-amber-500/12 text-amber-400" };
-    return { label: "faible", cls: "border-red-500/25 bg-red-500/12 text-red-400" };
+  type BadgeColor = "green" | "amber" | "red";
+  function formatConfidence(logprob: number): { label: string; color: BadgeColor } {
+    if (logprob > -0.3) return { label: "élevée", color: "green" };
+    if (logprob > -0.8) return { label: "moyenne", color: "amber" };
+    return { label: "faible", color: "red" };
   }
 
   async function submit() {
@@ -78,8 +79,8 @@
 </svelte:head>
 
 <header>
-  <h1 class="mt-0 mb-[0.3rem] text-[1.4rem]">🎙️ Test Whisper</h1>
-  <p class="mt-0 mb-6 text-[0.88rem] text-fg-muted">
+  <h1 class="mt-0 mb-1 text-2xl">🎙️ Test Whisper</h1>
+  <p class="mt-0 mb-6 text-sm text-fg-muted">
     Transcris un fichier audio et inspecte les segments, la langue détectée et les scores de
     confiance.
   </p>
@@ -88,11 +89,11 @@
 <!-- Drop zone -->
 <div
   class={[
-    "flex cursor-pointer flex-col items-center gap-[0.4rem] rounded-xl border-2 border-dashed bg-[#0e0e1c] p-8 text-center transition-[border-color,background] duration-150",
+    "flex cursor-pointer flex-col items-center gap-1.5 rounded-xl border-2 border-dashed bg-[#0e0e1c] p-8 text-center transition-[border-color,background] duration-150",
     dragging
       ? "border-accent bg-[#12122a]"
       : file
-        ? "border-solid border-[#3a3a6a]"
+        ? "border-solid border-edge-hi"
         : "border-surface-selected hover:border-accent hover:bg-[#12122a]"
   ]}
   role="button"
@@ -112,28 +113,26 @@
     onchange={onFileInput}
     style="display:none" />
   {#if file}
-    <span class="text-[0.9rem] font-medium text-slate-200">🎵 {file.name}</span>
-    <span class="text-[0.75rem] text-fg-faint">{(file.size / 1024).toFixed(0)} Ko</span>
+    <span class="text-sm font-medium text-slate-200">🎵 {file.name}</span>
+    <span class="text-xs text-fg-faint">{(file.size / 1024).toFixed(0)} Ko</span>
   {:else}
-    <span class="text-[0.88rem] text-fg-faint"
-      >Glisser un fichier audio ici ou cliquer pour choisir</span>
-    <span class="text-[0.75rem] text-[#3a3a58]">WebM · MP3 · WAV · OGG · M4A · FLAC</span>
+    <span class="text-sm text-fg-faint">Glisser un fichier audio ici ou cliquer pour choisir</span>
+    <span class="text-xs text-fg-faint/50">WebM · MP3 · WAV · OGG · M4A · FLAC</span>
   {/if}
 </div>
 
 <div class="mt-3 mb-5 flex items-center gap-2">
   {#if file}
     <button
-      class="cursor-pointer rounded-lg border border-edge bg-surface px-[1.1rem] py-[0.55rem] text-[0.86rem] font-semibold text-slate-300 transition-all duration-150 enabled:hover:bg-surface-raised disabled:cursor-not-allowed disabled:opacity-40"
+      class="cursor-pointer rounded-lg border border-edge bg-surface px-4 py-2 text-sm font-semibold text-slate-300 transition-all duration-150 enabled:hover:bg-surface-raised disabled:cursor-not-allowed disabled:opacity-40"
       onclick={() => {
         file = null;
         result = null;
         error = "";
       }}>Retirer</button>
   {/if}
-  <span class="flex-1"></span>
   <button
-    class="cursor-pointer rounded-lg border-none bg-[linear-gradient(135deg,#5a5ad0,#7a4ad0)] px-[1.1rem] py-[0.55rem] text-[0.86rem] font-semibold text-white transition-all duration-150 enabled:hover:opacity-88 disabled:cursor-not-allowed disabled:opacity-40"
+    class="ml-auto cursor-pointer rounded-lg bg-[linear-gradient(135deg,#5a5ad0,#7a4ad0)] px-4 py-2 text-sm font-semibold text-white transition-all duration-150 enabled:hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
     onclick={submit}
     disabled={!file || loading}>
     {loading ? "Transcription…" : "Transcrire"}
@@ -141,119 +140,72 @@
 </div>
 
 {#if loading}
-  <div class="mb-4 flex items-center gap-[0.7rem] text-[0.9rem] text-fg-muted">
-    <span
-      class="spinner inline-block h-4 w-4 shrink-0 rounded-full border-2 border-edge-hi border-t-accent-light"
-    ></span> En cours — peut prendre quelques secondes…
+  <div class="mb-4">
+    <LoadingSpinner message="En cours — peut prendre quelques secondes…" />
   </div>
 {/if}
 
 {#if error}
-  <p
-    class="mb-4 rounded-lg border border-red-500/35 bg-red-500/10 px-[0.9rem] py-[0.7rem] text-[0.85rem] text-red-300"
-    role="alert">
-    {error}
-  </p>
+  <AlertBanner message={error} />
 {/if}
 
 {#if result && !error}
   <!-- Métriques globales -->
   <div class="mb-4 flex flex-wrap gap-3">
-    <div
-      class="flex min-w-27.5 flex-col gap-[0.2rem] rounded-[10px] border border-edge bg-surface-alt px-4 py-[0.6rem]">
-      <span class="text-[0.72rem] text-fg-faint">Langue</span>
-      <span class="text-[0.92rem] font-semibold text-slate-100"
-        >{result.language.toUpperCase()}
-        <span class="text-[0.75rem] font-normal text-[#8888a8]"
-          >{(result.language_probability * 100).toFixed(0)} %</span
-        ></span>
-    </div>
-    {#if result.duration_s !== null}
-      <div
-        class="flex min-w-27.5 flex-col gap-[0.2rem] rounded-[10px] border border-edge bg-surface-alt px-4 py-[0.6rem]">
-        <span class="text-[0.72rem] text-fg-faint">Durée audio</span>
-        <span class="text-[0.92rem] font-semibold text-slate-100">{result.duration_s} s</span>
+    {#each [
+      { label: "Langue", value: `${result.language.toUpperCase()} (${(result.language_probability * 100).toFixed(0)} %)` },
+      ...(result.duration_s !== null ? [{ label: "Durée audio", value: `${result.duration_s} s` }] : []),
+      { label: "Temps transcription", value: `${result.elapsed_ms} ms` },
+      { label: "Segments", value: String(result.segments.length) },
+    ] as stat}
+      <div class="flex min-w-27.5 flex-col gap-1 rounded-xl border border-edge bg-surface-alt px-4 py-2.5">
+        <span class="text-2xs text-fg-faint">{stat.label}</span>
+        <span class="text-sm font-semibold text-slate-100">{stat.value}</span>
       </div>
-    {/if}
-    <div
-      class="flex min-w-27.5 flex-col gap-[0.2rem] rounded-[10px] border border-edge bg-surface-alt px-4 py-[0.6rem]">
-      <span class="text-[0.72rem] text-fg-faint">Temps transcription</span>
-      <span class="text-[0.92rem] font-semibold text-slate-100">{result.elapsed_ms} ms</span>
-    </div>
-    <div
-      class="flex min-w-27.5 flex-col gap-[0.2rem] rounded-[10px] border border-edge bg-surface-alt px-4 py-[0.6rem]">
-      <span class="text-[0.72rem] text-fg-faint">Segments</span>
-      <span class="text-[0.92rem] font-semibold text-slate-100">{result.segments.length}</span>
-    </div>
+    {/each}
   </div>
 
   <!-- Texte complet -->
   {#if result.text}
-    <section class="mb-4 rounded-xl border border-edge bg-surface-alt px-[1.2rem] py-[1.1rem]">
-      <div
-        class="mb-[0.8rem] border-b border-surface-raised pb-[0.6rem] text-[0.85rem] font-semibold text-slate-200">
+    <section class="mb-4 rounded-xl border border-edge bg-surface-alt px-5 py-4">
+      <div class="mb-3 border-b border-surface-raised pb-2.5 text-sm font-semibold text-slate-200">
         Transcription complète
       </div>
-      <p class="m-0 text-[0.9rem] leading-[1.65] whitespace-pre-wrap text-[#d0d0e8]">
-        {result.text}
-      </p>
+      <p class="m-0 text-sm leading-relaxed whitespace-pre-wrap text-fg">{result.text}</p>
     </section>
   {:else}
-    <p
-      class="rounded-[10px] border border-dashed border-edge bg-[#0e0e1c] p-6 text-center text-[0.88rem] text-fg-faint">
+    <p class="rounded-xl border border-dashed border-edge bg-[#0e0e1c] p-6 text-center text-sm text-fg-faint">
       Aucun contenu vocal détecté (VAD filtre les silences).
     </p>
   {/if}
 
   <!-- Segments -->
   {#if result.segments.length > 0}
-    <section class="mb-4 rounded-xl border border-edge bg-surface-alt px-[1.2rem] py-[1.1rem]">
-      <div
-        class="mb-[0.8rem] border-b border-surface-raised pb-[0.6rem] text-[0.85rem] font-semibold text-slate-200">
+    <section class="mb-4 rounded-xl border border-edge bg-surface-alt px-5 py-4">
+      <div class="mb-3 border-b border-surface-raised pb-2.5 text-sm font-semibold text-slate-200">
         Segments ({result.segments.length})
       </div>
-      <table class="w-full border-collapse text-[0.8rem]">
+      <table class="w-full border-collapse text-sm">
         <thead>
           <tr>
-            <th
-              class="border-b border-surface-raised px-2 pt-0 pb-2 text-left text-[0.74rem] font-medium text-[#5a5a7a]"
-              >Début</th>
-            <th
-              class="border-b border-surface-raised px-2 pt-0 pb-2 text-left text-[0.74rem] font-medium text-[#5a5a7a]"
-              >Fin</th>
-            <th
-              class="border-b border-surface-raised px-2 pt-0 pb-2 text-left text-[0.74rem] font-medium text-[#5a5a7a]"
-              >Texte</th>
-            <th
-              class="border-b border-surface-raised px-2 pt-0 pb-2 text-left text-[0.74rem] font-medium text-[#5a5a7a]"
-              >Confiance</th>
-            <th
-              class="border-b border-surface-raised px-2 pt-0 pb-2 text-left text-[0.74rem] font-medium text-[#5a5a7a]"
-              >No-speech</th>
+            {#each ["Début", "Fin", "Texte", "Confiance", "No-speech"] as col}
+              <th class="border-b border-surface-raised px-2 pt-0 pb-2 text-left text-2xs font-medium text-fg-faint">{col}</th>
+            {/each}
           </tr>
         </thead>
         <tbody>
           {#each result.segments as seg}
             {@const conf = formatConfidence(seg.avg_logprob)}
             <tr>
-              <td
-                class="border-b border-surface-alt px-2 py-[0.4rem] align-top font-mono text-[0.76rem] text-[#8888a8]"
-                >{seg.start}s</td>
-              <td
-                class="border-b border-surface-alt px-2 py-[0.4rem] align-top font-mono text-[0.76rem] text-[#8888a8]"
-                >{seg.end}s</td>
-              <td class="border-b border-surface-alt px-2 py-[0.4rem] align-top text-slate-300"
-                >{seg.text}</td>
-              <td class="border-b border-surface-alt px-2 py-[0.4rem] align-top text-slate-300"
-                ><span
-                  class="rounded-full border px-2 py-[0.12rem] text-[0.72rem] font-medium whitespace-nowrap {conf.cls}"
-                  >{conf.label}</span
-                ></td>
-              <td
-                class={[
-                  "border-b border-surface-alt px-2 py-[0.4rem] align-top font-mono text-[0.76rem]",
-                  seg.no_speech_prob > 0.5 ? "text-amber-500" : "text-[#8888a8]"
-                ]}>{(seg.no_speech_prob * 100).toFixed(0)} %</td>
+              <td class="border-b border-surface-alt px-2 py-1.5 align-top font-mono text-xs text-fg-faint">{seg.start}s</td>
+              <td class="border-b border-surface-alt px-2 py-1.5 align-top font-mono text-xs text-fg-faint">{seg.end}s</td>
+              <td class="border-b border-surface-alt px-2 py-1.5 align-top text-slate-300">{seg.text}</td>
+              <td class="border-b border-surface-alt px-2 py-1.5 align-top">
+                <StatusBadge color={conf.color} label={conf.label} />
+              </td>
+              <td class={["border-b border-surface-alt px-2 py-1.5 align-top font-mono text-xs", seg.no_speech_prob > 0.5 ? "text-amber-500" : "text-fg-faint"]}>
+                {(seg.no_speech_prob * 100).toFixed(0)} %
+              </td>
             </tr>
           {/each}
         </tbody>
@@ -263,18 +215,6 @@
 {/if}
 
 <style>
-  /* Loading spinner rotation, plus table-row interactions that depend on the
-     parent <tr> state — neither maps cleanly to utilities. */
-  .spinner {
-    animation: spin 0.7s linear infinite;
-  }
-
-  @keyframes spin {
-    to {
-      transform: rotate(360deg);
-    }
-  }
-
   tr:last-child td {
     border-bottom: none;
   }

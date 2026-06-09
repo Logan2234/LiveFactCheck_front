@@ -41,12 +41,12 @@
     <aside
       aria-label="Navigation principale"
       role="navigation"
-      class="flex w-60 shrink-0 flex-col gap-6 border-r border-surface-raised bg-surface-alt px-[0.9rem] py-5">
-      <div class="flex items-center gap-[0.6rem] px-[0.4rem]">
-        <span class="text-[1.4rem]">🔍</span>
+      class="flex w-60 shrink-0 flex-col gap-6 border-r border-surface-raised bg-surface-alt px-3.5 py-5">
+      <div class="flex items-center gap-2.5 px-1.5">
+        <span class="text-2xl">🔍</span>
         <div class="flex flex-col leading-[1.2]">
-          <strong class="text-[0.92rem]">LiveFactChecker</strong>
-          <span class="text-[0.68rem] tracking-wider text-[#7a7ac0] uppercase">Admin</span>
+          <strong class="text-sm">LiveFactChecker</strong>
+          <span class="text-2xs tracking-wider text-accent-light uppercase">Admin</span>
         </div>
       </div>
       <nav class="flex flex-col gap-1">
@@ -54,10 +54,10 @@
           <a
             href={item.href}
             class={[
-              "flex items-center gap-[0.6rem] rounded-lg px-[0.7rem] py-[0.6rem] text-[0.88rem] no-underline transition-[background,color] duration-150",
+              "flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-sm no-underline transition-[background,color] duration-150",
               page.url.pathname === item.href
-                ? "bg-[#26264a] text-white"
-                : "text-[#9a9ab0] hover:bg-surface hover:text-fg"
+                ? "bg-surface-selected text-white"
+                : "text-fg-muted hover:bg-surface hover:text-fg"
             ]}>
             <span>{item.icon}</span>
             {item.label}
@@ -66,11 +66,11 @@
       </nav>
       <div class="mt-auto flex flex-col gap-2">
         <a
-          class="px-[0.7rem] py-[0.3rem] text-[0.8rem] text-fg-faint no-underline hover:text-fg-muted"
+          class="px-3 py-1.5 text-sm text-fg-faint no-underline hover:text-fg-muted"
           href="/">↩ Application live</a>
         <button
           onclick={logout}
-          class="cursor-pointer rounded-lg border border-[#3a2a3a] bg-transparent p-2 text-[0.82rem] text-[#d08a8a] transition-all duration-150 hover:border-red-900 hover:bg-[rgba(220,80,80,0.12)]"
+          class="cursor-pointer rounded-lg border border-red-900/40 bg-transparent p-2 text-sm text-red-300 transition-all duration-150 hover:border-red-900 hover:bg-red-500/12"
           >Déconnexion</button>
       </div>
     </aside>

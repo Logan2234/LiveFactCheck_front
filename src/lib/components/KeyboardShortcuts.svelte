@@ -57,7 +57,7 @@
 {/if}
 
 <button
-  class="fixed right-5 bottom-5 z-9000 flex h-9.5 w-9.5 cursor-pointer items-center justify-center rounded-full border border-edge-hi bg-surface text-base font-semibold text-[#9a9ab0] shadow-[0_4px_14px_rgba(0,0,0,0.4)] transition-all duration-150 hover:-translate-y-px hover:border-accent-dim hover:bg-[#2a2a44] hover:text-white"
+  class="fixed right-5 bottom-5 z-9000 flex h-9.5 w-9.5 cursor-pointer items-center justify-center rounded-full border border-edge-hi bg-surface text-base font-semibold text-fg-muted shadow-[0_4px_14px_rgba(0,0,0,0.4)] transition-all duration-150 hover:-translate-y-px hover:border-accent-dim hover:bg-[#2a2a44] hover:text-white"
   onclick={() => (helpOpen = true)}
   title="Raccourcis clavier (?)"
   aria-label="Afficher les raccourcis clavier">
@@ -65,17 +65,17 @@
 </button>
 
 <Modal bind:open={helpOpen} title="Raccourcis clavier">
-  <ul class="m-0 flex list-none flex-col gap-[0.65rem] p-0">
+  <ul class="m-0 flex list-none flex-col gap-2.5 p-0">
     {#each shortcuts as s}
-      <li class="flex items-center gap-[0.9rem]">
-        <span class="flex min-w-17.5 shrink-0 gap-[0.3rem]">
+      <li class="flex items-center gap-3.5">
+        <span class="flex min-w-17.5 shrink-0 gap-1.5">
           {#each s.keys as k}
             <kbd
-              class="min-w-[1.2rem] rounded-md border border-b-2 border-edge-hi bg-background px-[0.55rem] py-[0.2rem] text-center font-[inherit] text-[0.78rem] text-[#d0d0e0]"
+              class="min-w-5 rounded-md border border-b-2 border-edge-hi bg-background px-2 py-1 text-center font-[inherit] text-xs text-fg"
               >{k}</kbd>
           {/each}
         </span>
-        <span class="text-[0.88rem] text-[#b8b8c8]">{s.label}</span>
+        <span class="text-sm text-fg-muted">{s.label}</span>
       </li>
     {/each}
   </ul>
