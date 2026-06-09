@@ -5,7 +5,7 @@
     class: extraClass
   }: {
     message: string;
-    type: "error" | "warning" | "info";
+    type?: "error" | "warning" | "info";
     class?: string;
   } = $props();
 

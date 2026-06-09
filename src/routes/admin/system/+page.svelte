@@ -1,8 +1,6 @@
 <script lang="ts">
-  import Button from "$lib/components/Button.svelte";
-  import { authFetch, clearToken } from "$lib/stores/auth";
-  import { onDestroy, onMount } from "svelte";
   import Alert from "$lib/components/Alert.svelte";
+  import Button from "$lib/components/Button.svelte";
   import Field from "$lib/components/Field.svelte";
   import LoadingSpinner from "$lib/components/LoadingSpinner.svelte";
   import StatCard from "$lib/components/StatCard.svelte";
@@ -92,13 +90,25 @@
     return String(f.value);
   }
 
-  // Green/red for blocks carrying secrets, green/amber for Whisper (runtime loaded state).
-  function blockDot(block: ConfigBlock): "green" | "amber" | "red" | "none" {
-    if (block.id === "whisper") return health?.whisper_loaded ? "green" : "amber";
-    const secrets = block.fields.filter((f) => f.kind === "secret_status");
-    if (secrets.length === 0) return "none";
-    return secrets.every((f) => f.configured) ? "green" : "red";
-  }
+  // Per-block visual identity (masonry cards): a leading glyph + a coloured left accent.
+  // Unknown ids fall back to a neutral accent so a new backend block still renders cleanly.
+  const blockIcon: Record<string, string> = {
+    anthropic: "🔑",
+    whisper: "🎙️",
+    audio: "🔊",
+    auth: "🔒",
+    cors: "🌐",
+    logs: "📋"
+  };
+
+  const blockAccent: Record<string, string> = {
+    anthropic: "border-l-2 border-l-violet-500/60",
+    whisper: "border-l-2 border-l-cyan-500/60",
+    audio: "border-l-2 border-l-sky-500/60",
+    auth: "border-l-2 border-l-amber-500/60",
+    cors: "border-l-2 border-l-emerald-500/60",
+    logs: "border-l-2 border-l-slate-500/60"
+  };
 
   function initDrafts(cfg: ConfigData) {
     const next: Record<string, DraftValue> = {};
@@ -267,86 +277,93 @@
     Configuration
   </div>
 
-  <div class="grid grid-cols-[repeat(auto-fit,minmax(260px,1fr))] items-start gap-3.5">
+  <!-- Masonry (CSS columns): cards keep their natural height, no patchwork of gaps. -->
+  <div class="columns-1 gap-x-3.5 sm:columns-2 lg:columns-3">
     {#each config.blocks as block (block.id)}
-      <StatCard title={block.title} dot={blockDot(block)}>
-        <div class="flex flex-col gap-3">
-          {#each block.fields as f (f.key)}
-            {#if f.kind === "editable"}
-              <div class="flex flex-col gap-1">
-                <label for={f.key} class="text-xs font-medium text-fg-muted">{f.label}</label>
-                {#if f.options}
-                  <select
-                    id={f.key}
-                    value={drafts[f.key] as string}
-                    onchange={(e) => setDraft(f.key, e.currentTarget.value)}
-                    class={selectClass}>
-                    {#each f.options as opt}
-                      <option value={opt}>{opt}</option>
-                    {/each}
-                  </select>
-                {:else if f.value_type === "bool"}
-                  <label
-                    class="inline-flex cursor-pointer items-center gap-2 text-sm text-slate-300">
+      <div class="mb-3.5 break-inside-avoid">
+        <StatCard
+          title={block.title}
+          icon={blockIcon[block.id] ?? ""}
+          accent={blockAccent[block.id] ?? ""}>
+          <div class="flex flex-col gap-3">
+            {#each block.fields as f (f.key)}
+              {#if f.kind === "editable"}
+                <div class="flex flex-col gap-1">
+                  <label for={f.key} class="text-xs font-medium text-fg-muted">{f.label}</label>
+                  {#if f.options}
+                    <select
+                      id={f.key}
+                      value={drafts[f.key] as string}
+                      onchange={(e) => setDraft(f.key, e.currentTarget.value)}
+                      class={selectClass}>
+                      {#each f.options as opt}
+                        <option value={opt}>{opt}</option>
+                      {/each}
+                    </select>
+                  {:else if f.value_type === "bool"}
+                    <label
+                      class="inline-flex cursor-pointer items-center gap-2 text-sm text-slate-300">
+                      <input
+                        type="checkbox"
+                        checked={drafts[f.key] as boolean}
+                        onchange={(e) => setDraft(f.key, e.currentTarget.checked)} />
+                      {drafts[f.key] ? "Activé" : "Désactivé"}
+                    </label>
+                  {:else if f.value_type === "int"}
                     <input
-                      type="checkbox"
-                      checked={drafts[f.key] as boolean}
-                      onchange={(e) => setDraft(f.key, e.currentTarget.checked)} />
-                    {drafts[f.key] ? "Activé" : "Désactivé"}
-                  </label>
-                {:else if f.value_type === "int"}
-                  <input
-                    id={f.key}
-                    type="number"
-                    value={drafts[f.key] as number}
-                    oninput={(e) => setDraft(f.key, e.currentTarget.valueAsNumber)}
-                    class={controlClass} />
-                {:else}
-                  <input
-                    id={f.key}
-                    type="text"
-                    value={drafts[f.key] as string}
-                    oninput={(e) => setDraft(f.key, e.currentTarget.value)}
-                    class={controlClass} />
-                {/if}
-              </div>
-            {:else}
-              <Field label={f.label}>
-                {#if f.kind === "secret_status"}
-                  {#if f.configured}
-                    <StatusBadge color="green" label="Configuré" />
+                      id={f.key}
+                      type="number"
+                      value={drafts[f.key] as number}
+                      oninput={(e) => setDraft(f.key, e.currentTarget.valueAsNumber)}
+                      class={controlClass} />
                   {:else}
-                    <StatusBadge color="red" label="Manquant" />
+                    <input
+                      id={f.key}
+                      type="text"
+                      value={drafts[f.key] as string}
+                      oninput={(e) => setDraft(f.key, e.currentTarget.value)}
+                      class={controlClass} />
                   {/if}
-                {:else}
-                  {formatValue(f)}
-                {/if}
+                </div>
+              {:else}
+                <Field label={f.label}>
+                  {#if f.kind === "secret_status"}
+                    {#if f.configured}
+                      <StatusBadge color="green" label="Configuré" />
+                    {:else}
+                      <StatusBadge color="red" label="Manquant" />
+                    {/if}
+                  {:else if f.value_type === "bool"}
+                    <StatusBadge
+                      color={f.value ? "green" : "red"}
+                      label={f.value ? "Oui" : "Non"} />
+                  {:else}
+                    {formatValue(f)}
+                  {/if}
+                </Field>
+              {/if}
+            {/each}
+
+            {#if block.id === "whisper"}
+              <Field label="Chargé">
+                <StatusBadge
+                  color={health?.whisper_loaded ? "green" : "red"}
+                  label={health?.whisper_loaded ? "Oui" : "Non"} />
               </Field>
             {/if}
-          {/each}
-
-          {#if block.id === "whisper"}
-            <Field label="Chargé">
-              <StatusBadge
-                color={health?.whisper_loaded ? "green" : "amber"}
-                label={health?.whisper_loaded ? "Oui" : "Non"} />
-            </Field>
-          {/if}
-        </div>
-      </StatCard>
+          </div>
+        </StatCard>
+      </div>
     {/each}
   </div>
 
   <!-- ── Barre d'action (les éditions peuvent couvrir plusieurs blocs) ── -->
   {#if saveError}
-    <div class="mt-4"><AlertBanner message={saveError} /></div>
+    <Alert message={saveError} type="error" class="mt-4" />
   {/if}
 
   <div class="mt-4 flex flex-wrap items-center justify-between gap-3">
-    <p
-      class="m-0 rounded-md border border-amber-500/18 bg-amber-500/7 px-3 py-2 text-xs text-amber-700/80">
-      ⚠ {config.note}
-    </p>
+    <Alert type="warning" message={`⚠ ${config.note}`} />
     <div class="flex gap-2">
       <Button variant="secondary" onclick={reset} disabled={!dirty || saving}>Annuler</Button>
       <Button onclick={save} disabled={!dirty || saving}>
