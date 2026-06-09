@@ -64,7 +64,9 @@
       ? "🟢 Connecté"
       : status === "connecting"
         ? "🟡 Connexion..."
-        : "🔴 Déconnecté"}
+        : status === "error"
+          ? "⛔ Backend injoignable"
+          : "🔴 Déconnecté"}
   </span>
 
   {#if $audioError}
