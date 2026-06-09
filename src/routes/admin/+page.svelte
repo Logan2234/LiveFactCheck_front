@@ -1,4 +1,5 @@
 ﻿<script lang="ts">
+  import Button from "$lib/components/Button.svelte";
   import ClaimCard from "$lib/components/ClaimCard.svelte";
   import { authFetch, clearToken } from "$lib/stores/auth";
   import type { Claim } from "$lib/stores/claims";
@@ -146,12 +147,8 @@
 
   <div class="mt-3 flex items-center gap-2">
     <div class="relative">
-      <button
-        type="button"
-        class="cursor-pointer rounded-lg border border-edge bg-surface px-4 py-2.5 text-sm font-medium text-slate-300 transition-[opacity,background] duration-150 enabled:hover:bg-surface-raised disabled:cursor-not-allowed disabled:opacity-40"
-        onclick={() => (menuOpen = !menuOpen)}>
-        Exemples ▾
-      </button>
+      <Button variant="secondary" type="button" onclick={() => (menuOpen = !menuOpen)}
+        >Exemples ▾</Button>
       {#if menuOpen}
         <button
           type="button"
@@ -174,24 +171,17 @@
         </ul>
       {/if}
     </div>
-    <button
-      type="button"
-      class="cursor-pointer rounded-lg border border-edge bg-surface px-4 py-2.5 text-sm font-medium text-slate-300 transition-[opacity,background] duration-150 enabled:hover:bg-surface-raised disabled:cursor-not-allowed disabled:opacity-40"
-      onclick={() => (text = "")}
-      disabled={!text}>
+    <Button variant="secondary" type="button" onclick={() => (text = "")} disabled={!text}>
       Vider
-    </button>
+    </Button>
     <label class="switch ml-auto" title="Activer / désactiver la recherche web pour cette analyse">
       <input type="checkbox" bind:checked={webSearch} />
       <span class="track"><span class="thumb"></span></span>
       <span class="switch-label">{webSearch ? "🌐 Web" : "🧠 Sans web"}</span>
     </label>
-    <button
-      type="submit"
-      disabled={loading || text.trim().length === 0}
-      class="cursor-pointer rounded-lg bg-[linear-gradient(135deg,#5a5ad0,#7a4ad0)] px-4 py-2.5 text-sm font-semibold text-white transition-[opacity,background] duration-150 enabled:hover:opacity-92 disabled:cursor-not-allowed disabled:opacity-40">
+    <Button type="submit" disabled={loading || text.trim().length === 0}>
       {loading ? "Analyse en cours…" : "Analyser"}
-    </button>
+    </Button>
   </div>
 </form>
 
@@ -206,7 +196,8 @@
 {#if loading}
   <div
     class="flex items-center gap-3 rounded-xl border border-dashed border-edge bg-surface-alt p-6 text-sm text-fg-muted">
-    <span class="spinner h-4 w-4 shrink-0 rounded-full border-2 border-edge-hi border-t-accent-light"
+    <span
+      class="spinner h-4 w-4 shrink-0 rounded-full border-2 border-edge-hi border-t-accent-light"
     ></span>
     Extraction et vérification… (le web search peut prendre quelques secondes)
   </div>
@@ -337,5 +328,4 @@
     color: #9a9ab0;
     min-width: 76px;
   }
-
 </style>

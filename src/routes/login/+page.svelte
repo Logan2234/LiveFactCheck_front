@@ -1,5 +1,6 @@
 ﻿<script lang="ts">
   import { goto } from "$app/navigation";
+  import Button from "$lib/components/Button.svelte";
   import { login } from "$lib/stores/auth";
 
   let password = $state("");
@@ -57,12 +58,9 @@
       </p>
     {/if}
 
-    <button
-      type="submit"
-      disabled={loading || password.length === 0}
-      class="cursor-pointer rounded-lg bg-[linear-gradient(135deg,#5a5ad0,#7a4ad0)] p-3 text-base font-semibold text-white transition-[opacity,transform] duration-150 enabled:hover:opacity-92 enabled:active:translate-y-px disabled:cursor-not-allowed disabled:opacity-45">
+    <Button type="submit" disabled={loading || password.length === 0}>
       {loading ? "Connexion…" : "Se connecter"}
-    </button>
+    </Button>
 
     <a class="text-center text-sm text-fg-faint no-underline hover:text-fg-muted" href="/"
       >← Retour à l'application</a>

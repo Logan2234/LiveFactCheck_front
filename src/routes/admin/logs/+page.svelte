@@ -1,7 +1,8 @@
 <script lang="ts">
+  import Alert from "$lib/components/Alert.svelte";
+  import Button from "$lib/components/Button.svelte";
   import { authFetch, clearToken } from "$lib/stores/auth";
   import { onDestroy, onMount, tick } from "svelte";
-  import AlertBanner from "$lib/components/AlertBanner.svelte";
 
   interface LogEntry {
     id: number;
@@ -89,8 +90,8 @@
   <div>
     <h1 class="mt-0 mb-1 text-2xl">📜 Logs</h1>
     <p class="mt-0 mb-5 text-sm text-fg-muted">
-      Flux en direct du logger <code class="font-mono text-fg-muted">app.*</code> — rafraîchissement
-      toutes les 1,5 s.
+      Flux en direct du logger <code class="font-mono text-fg-muted">app.*</code> — rafraîchissement toutes
+      les 1,5 s.
     </p>
   </div>
 </header>
@@ -114,16 +115,15 @@
       <input type="checkbox" bind:checked={autoScroll} class="cursor-pointer accent-accent-light" />
       Auto-scroll
     </label>
-    <button
-      class="cursor-pointer rounded-lg border border-edge bg-surface px-3 py-1.5 text-sm text-slate-300 transition-[background] duration-150 enabled:hover:bg-surface-raised disabled:cursor-not-allowed disabled:opacity-40"
-      onclick={clearLogs}
-      disabled={entries.length === 0}>Vider</button>
+    <Button variant="secondary" size="sm" onclick={clearLogs} disabled={entries.length === 0}>
+      Vider
+    </Button>
   </div>
 </div>
 
 {#if error}
   <div class="mb-3">
-    <AlertBanner message={error} />
+    <Alert type="error" message={error} />
   </div>
 {/if}
 
@@ -140,7 +140,8 @@
         class="line level-{entry.level.toLowerCase()} grid grid-cols-[7ch_8ch_22ch_1fr] gap-3 rounded py-0.5 hover:bg-white/3">
         <span class="ts whitespace-nowrap text-edge-hi">{formatTime(entry.t)}</span>
         <span class="lvl font-bold whitespace-nowrap">{entry.level}</span>
-        <span class="logger overflow-hidden text-ellipsis whitespace-nowrap text-fg-faint">{entry.logger}</span>
+        <span class="logger overflow-hidden text-ellipsis whitespace-nowrap text-fg-faint"
+          >{entry.logger}</span>
         <span class="msg break-all whitespace-pre-wrap text-fg-muted">{entry.msg}</span>
       </div>
     {/each}
@@ -149,12 +150,28 @@
 
 <style>
   /* Per-level colors use dynamic compound selectors — can't be expressed as utilities. */
-  .level-debug .lvl { color: #5a5a88; }
-  .level-info .lvl { color: #4a9eff; }
-  .level-warning .lvl { color: #f59e0b; }
-  .level-warning .msg { color: #d4a850; }
-  .level-error .lvl { color: #ef4444; }
-  .level-error .msg { color: #fca5a5; }
-  .level-critical .lvl { color: #ff2020; }
-  .level-critical .msg { color: #ff8080; }
+  .level-debug .lvl {
+    color: #5a5a88;
+  }
+  .level-info .lvl {
+    color: #4a9eff;
+  }
+  .level-warning .lvl {
+    color: #f59e0b;
+  }
+  .level-warning .msg {
+    color: #d4a850;
+  }
+  .level-error .lvl {
+    color: #ef4444;
+  }
+  .level-error .msg {
+    color: #fca5a5;
+  }
+  .level-critical .lvl {
+    color: #ff2020;
+  }
+  .level-critical .msg {
+    color: #ff8080;
+  }
 </style>

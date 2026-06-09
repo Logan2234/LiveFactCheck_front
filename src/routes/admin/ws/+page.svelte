@@ -1,8 +1,8 @@
 <script lang="ts">
+  import Alert from "$lib/components/Alert.svelte";
+  import Field from "$lib/components/Field.svelte";
   import { authFetch, clearToken } from "$lib/stores/auth";
   import { onDestroy, onMount } from "svelte";
-  import AlertBanner from "$lib/components/AlertBanner.svelte";
-  import Field from "$lib/components/Field.svelte";
 
   interface Session {
     id: string;
@@ -85,27 +85,34 @@
 </header>
 
 {#if error}
-  <AlertBanner message={error} />
+  <Alert type="error" message={error} />
 {/if}
 
 {#if data}
   <!-- Métriques globales -->
   <div class="mb-5 flex flex-wrap gap-3">
-    <div class="flex min-w-32.5 flex-col gap-1 rounded-xl border border-edge bg-surface-alt px-4 py-2.5">
+    <div
+      class="flex min-w-32.5 flex-col gap-1 rounded-xl border border-edge bg-surface-alt px-4 py-2.5">
       <span class="text-2xs text-fg-faint">Connexions actives</span>
-      <span class={["flex items-center gap-1.5 text-base font-semibold", data.active.length > 0 ? "text-green-400" : "text-slate-100"]}>
+      <span
+        class={[
+          "flex items-center gap-1.5 text-base font-semibold",
+          data.active.length > 0 ? "text-green-400" : "text-slate-100"
+        ]}>
         {#if data.active.length > 0}
           <span class="pulse h-2 w-2 shrink-0 rounded-full bg-green-500"></span>
         {/if}
         {data.active.length}
       </span>
     </div>
-    <div class="flex min-w-32.5 flex-col gap-1 rounded-xl border border-edge bg-surface-alt px-4 py-2.5">
+    <div
+      class="flex min-w-32.5 flex-col gap-1 rounded-xl border border-edge bg-surface-alt px-4 py-2.5">
       <span class="text-2xs text-fg-faint">Total depuis démarrage</span>
       <span class="text-base font-semibold text-slate-100">{data.total_since_start}</span>
     </div>
     {#if data.active.length > 0}
-      <div class="flex min-w-32.5 flex-col gap-1 rounded-xl border border-edge bg-surface-alt px-4 py-2.5">
+      <div
+        class="flex min-w-32.5 flex-col gap-1 rounded-xl border border-edge bg-surface-alt px-4 py-2.5">
         <span class="text-2xs text-fg-faint">Tasks Claude en cours</span>
         <span class="text-base font-semibold text-slate-100">
           {data.active.reduce((acc, s) => acc + s.active_tasks, 0)}
@@ -116,7 +123,8 @@
 
   <!-- Sessions actives -->
   {#if data.active.length === 0}
-    <div class="flex flex-col items-center gap-2.5 rounded-xl border border-dashed border-edge bg-[#0e0e1c] px-4 py-12 text-center text-sm text-fg-faint">
+    <div
+      class="flex flex-col items-center gap-2.5 rounded-xl border border-dashed border-edge bg-[#0e0e1c] px-4 py-12 text-center text-sm text-fg-faint">
       <span class="text-3xl">🔇</span>
       <span>Aucune connexion active — l'application live n'est pas ouverte.</span>
     </div>
@@ -126,21 +134,26 @@
         <div class="flex flex-col gap-3 rounded-xl border border-edge bg-surface-alt px-5 py-4">
           <div class="flex items-center justify-between gap-2 border-b border-surface-raised pb-3">
             <div class="flex items-center gap-2">
-              <span class="h-2 w-2 shrink-0 rounded-full bg-green-500 shadow-[0_0_6px_rgba(34,197,94,0.5)]"></span>
+              <span
+                class="h-2 w-2 shrink-0 rounded-full bg-green-500 shadow-[0_0_6px_rgba(34,197,94,0.5)]"
+              ></span>
               <code class="font-mono text-sm text-accent-light">{session.id.slice(0, 8)}</code>
             </div>
-            <span class="text-xs text-fg-faint">connecté depuis {formatDuration(session.connected_at)}</span>
+            <span class="text-xs text-fg-faint"
+              >connecté depuis {formatDuration(session.connected_at)}</span>
           </div>
 
           <dl class="m-0 flex flex-col gap-1.5">
             <Field label="Client IP"><span class="font-mono text-xs">{session.client}</span></Field>
-            <Field label="Connecté à"><span class="font-mono text-xs">{formatTime(session.connected_at)}</span></Field>
+            <Field label="Connecté à"
+              ><span class="font-mono text-xs">{formatTime(session.connected_at)}</span></Field>
             <Field label="Chunks audio reçus">{session.chunks_received}</Field>
             <Field label="Transcriptions">{session.transcripts}</Field>
             <Field label="Claims lancés">{session.claims_spawned}</Field>
             <Field label="Tasks Claude actives">
               {#if session.active_tasks > 0}
-                <span class="rounded-full border border-blue-400/25 bg-blue-400/12 px-2 py-0.5 text-2xs font-medium whitespace-nowrap text-blue-400">
+                <span
+                  class="rounded-full border border-blue-400/25 bg-blue-400/12 px-2 py-0.5 text-2xs font-medium whitespace-nowrap text-blue-400">
                   {session.active_tasks} en cours
                 </span>
               {:else}
@@ -153,7 +166,8 @@
           </dl>
 
           {#if session.last_transcript}
-            <div class="flex flex-col gap-1 rounded-lg border border-surface bg-[#0e0e1c] px-3 py-2">
+            <div
+              class="flex flex-col gap-1 rounded-lg border border-surface bg-[#0e0e1c] px-3 py-2">
               <span class="text-2xs tracking-wide text-fg-faint uppercase">Dernier transcript</span>
               <span class="text-xs leading-snug text-fg-muted italic">
                 {session.last_transcript}{session.last_transcript.length >= 120 ? "…" : ""}
@@ -174,8 +188,14 @@
   }
 
   @keyframes pulse {
-    0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.6); }
-    70% { box-shadow: 0 0 0 8px rgba(34, 197, 94, 0); }
-    100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+    0% {
+      box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.6);
+    }
+    70% {
+      box-shadow: 0 0 0 8px rgba(34, 197, 94, 0);
+    }
+    100% {
+      box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
+    }
   }
 </style>
