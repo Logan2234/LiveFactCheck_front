@@ -1,6 +1,7 @@
 <script lang="ts">
+  import Alert from "$lib/components/Alert.svelte";
+  import Button from "$lib/components/Button.svelte";
   import ClaimCard from "$lib/components/ClaimCard.svelte";
-  import AlertBanner from "$lib/components/AlertBanner.svelte";
   import LoadingSpinner from "$lib/components/LoadingSpinner.svelte";
   import { authFetch, clearToken } from "$lib/stores/auth";
   import type { Claim } from "$lib/stores/claims";
@@ -112,19 +113,12 @@
     class="box-border w-full resize-y rounded-xl border border-edge bg-surface-alt px-4 py-3.5 font-[inherit] text-base leading-normal text-slate-100 transition-[border-color] duration-150 focus:border-accent focus:outline-none disabled:opacity-50"
   ></textarea>
   <div class="mt-3 flex items-center gap-2">
-    <button
-      type="button"
-      class="cursor-pointer rounded-lg border border-edge bg-surface px-4 py-2 text-sm font-medium text-slate-300 transition-all duration-150 enabled:hover:bg-surface-raised disabled:cursor-not-allowed disabled:opacity-40"
-      onclick={() => (text = "")}
-      disabled={!text || loading}>
+    <Button variant="secondary" onclick={() => (text = "")} disabled={!text || loading}>
       Vider
-    </button>
-    <button
-      type="submit"
-      disabled={loading || !text.trim()}
-      class="ml-auto cursor-pointer rounded-lg bg-[linear-gradient(135deg,#5a5ad0,#7a4ad0)] px-4 py-2 text-sm font-semibold text-white transition-all duration-150 enabled:hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40">
+    </Button>
+    <Button type="submit" class="ml-auto" disabled={loading || !text.trim()}>
       {loading ? "Analyse en cours…" : "Comparer"}
-    </button>
+    </Button>
   </div>
 </form>
 
@@ -132,7 +126,8 @@
   <div class="grid grid-cols-2 gap-5">
     {#each ["🌐 Avec web search", "🧠 Sans web search"] as label}
       <div class="flex min-w-0 flex-col gap-3">
-        <div class="flex flex-wrap items-center gap-2 border-b border-edge pb-2 text-sm font-semibold text-slate-200">
+        <div
+          class="flex flex-wrap items-center gap-2 border-b border-edge pb-2 text-sm font-semibold text-slate-200">
           {label}
         </div>
         <div class="rounded-xl border border-dashed border-edge bg-surface-alt p-6">
@@ -143,28 +138,33 @@
   </div>
 {:else if ran}
   {#if delta()}
-    <div class="mb-4 rounded-lg border border-surface-selected bg-[#1a1a30] px-4 py-2 text-center text-sm text-fg-muted">
+    <div
+      class="mb-4 rounded-lg border border-surface-selected bg-[#1a1a30] px-4 py-2 text-center text-sm text-fg-muted">
       {delta()}
     </div>
   {/if}
   <div class="grid grid-cols-2 gap-5">
     {#each [{ label: "🌐 Avec web search", side: withWeb }, { label: "🧠 Sans web search", side: withoutWeb }] as { label, side }}
       <div class="flex min-w-0 flex-col gap-3">
-        <div class="flex flex-wrap items-center gap-2 border-b border-edge pb-2 text-sm font-semibold text-slate-200">
+        <div
+          class="flex flex-wrap items-center gap-2 border-b border-edge pb-2 text-sm font-semibold text-slate-200">
           {label}
-          <span class="rounded-full border border-edge-hi bg-surface-raised px-2 py-0.5 text-xs font-normal tabular-nums text-fg-muted">
+          <span
+            class="rounded-full border border-edge-hi bg-surface-raised px-2 py-0.5 text-xs font-normal tabular-nums text-fg-muted">
             {(side.elapsed / 1000).toFixed(1)} s
           </span>
           {#if side.claims !== null}
-            <span class="rounded-full border border-edge-hi bg-surface-raised px-2 py-0.5 text-xs font-normal tabular-nums text-fg-muted">
+            <span
+              class="rounded-full border border-edge-hi bg-surface-raised px-2 py-0.5 text-xs font-normal tabular-nums text-fg-muted">
               {side.claims.length} claim{side.claims.length !== 1 ? "s" : ""}
             </span>
           {/if}
         </div>
         {#if side.error}
-          <AlertBanner message={side.error} />
+          <Alert type="error" message={side.error} />
         {:else if side.claims !== null && side.claims.length === 0}
-          <p class="m-0 rounded-xl border border-dashed border-edge bg-surface-alt p-5 text-center text-sm text-fg-muted">
+          <p
+            class="m-0 rounded-xl border border-dashed border-edge bg-surface-alt p-5 text-center text-sm text-fg-muted">
             Aucun fait vérifiable trouvé.
           </p>
         {:else if side.claims !== null}

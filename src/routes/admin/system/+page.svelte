@@ -1,6 +1,8 @@
 <script lang="ts">
-  import AlertBanner from "$lib/components/AlertBanner.svelte";
   import Button from "$lib/components/Button.svelte";
+  import { authFetch, clearToken } from "$lib/stores/auth";
+  import { onDestroy, onMount } from "svelte";
+  import Alert from "$lib/components/Alert.svelte";
   import Field from "$lib/components/Field.svelte";
   import LoadingSpinner from "$lib/components/LoadingSpinner.svelte";
   import StatCard from "$lib/components/StatCard.svelte";
@@ -230,7 +232,7 @@
 </header>
 
 {#if loadError}
-  <AlertBanner message={loadError} />
+  <Alert type="error" message={loadError} />
 {/if}
 
 {#if !health && !loadError}
@@ -264,6 +266,7 @@
   <div class="mt-7 mb-2.5 text-2xs font-semibold tracking-wider text-fg-faint uppercase">
     Configuration
   </div>
+
   <div class="grid grid-cols-[repeat(auto-fit,minmax(260px,1fr))] items-start gap-3.5">
     {#each config.blocks as block (block.id)}
       <StatCard title={block.title} dot={blockDot(block)}>

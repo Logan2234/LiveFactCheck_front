@@ -1,6 +1,7 @@
 ﻿<script lang="ts">
   import { goto } from "$app/navigation";
   import { page } from "$app/state";
+  import Button from "$lib/components/Button.svelte";
   import { clearToken, getToken, token } from "$lib/stores/auth";
   import { onMount } from "svelte";
 
@@ -65,13 +66,9 @@
         {/each}
       </nav>
       <div class="mt-auto flex flex-col gap-2">
-        <a
-          class="px-3 py-1.5 text-sm text-fg-faint no-underline hover:text-fg-muted"
-          href="/">↩ Application live</a>
-        <button
-          onclick={logout}
-          class="cursor-pointer rounded-lg border border-red-900/40 bg-transparent p-2 text-sm text-red-300 transition-all duration-150 hover:border-red-900 hover:bg-red-500/12"
-          >Déconnexion</button>
+        <a class="px-3 py-1.5 text-sm text-fg-faint no-underline hover:text-fg-muted" href="/"
+          >↩ Application live</a>
+        <Button onclick={logout} variant="danger" size="xs">Déconnexion</Button>
       </div>
     </aside>
     <main class="flex-1 overflow-y-auto p-8">

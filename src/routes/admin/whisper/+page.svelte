@@ -1,8 +1,9 @@
 <script lang="ts">
-  import { authFetch, clearToken } from "$lib/stores/auth";
-  import AlertBanner from "$lib/components/AlertBanner.svelte";
+  import Alert from "$lib/components/Alert.svelte";
+  import Button from "$lib/components/Button.svelte";
   import LoadingSpinner from "$lib/components/LoadingSpinner.svelte";
   import StatusBadge from "$lib/components/StatusBadge.svelte";
+  import { authFetch, clearToken } from "$lib/stores/auth";
 
   interface Segment {
     start: number;
@@ -123,20 +124,17 @@
 
 <div class="mt-3 mb-5 flex items-center gap-2">
   {#if file}
-    <button
-      class="cursor-pointer rounded-lg border border-edge bg-surface px-4 py-2 text-sm font-semibold text-slate-300 transition-all duration-150 enabled:hover:bg-surface-raised disabled:cursor-not-allowed disabled:opacity-40"
+    <Button
+      variant="secondary"
       onclick={() => {
         file = null;
         result = null;
         error = "";
-      }}>Retirer</button>
+      }}>Retirer</Button>
   {/if}
-  <button
-    class="ml-auto cursor-pointer rounded-lg bg-[linear-gradient(135deg,#5a5ad0,#7a4ad0)] px-4 py-2 text-sm font-semibold text-white transition-all duration-150 enabled:hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
-    onclick={submit}
-    disabled={!file || loading}>
+  <Button class="ml-auto" onclick={submit} disabled={!file || loading}>
     {loading ? "Transcription…" : "Transcrire"}
-  </button>
+  </Button>
 </div>
 
 {#if loading}
@@ -146,19 +144,15 @@
 {/if}
 
 {#if error}
-  <AlertBanner message={error} />
+  <Alert type="error" message={error} />
 {/if}
 
 {#if result && !error}
   <!-- Métriques globales -->
   <div class="mb-4 flex flex-wrap gap-3">
-    {#each [
-      { label: "Langue", value: `${result.language.toUpperCase()} (${(result.language_probability * 100).toFixed(0)} %)` },
-      ...(result.duration_s !== null ? [{ label: "Durée audio", value: `${result.duration_s} s` }] : []),
-      { label: "Temps transcription", value: `${result.elapsed_ms} ms` },
-      { label: "Segments", value: String(result.segments.length) },
-    ] as stat}
-      <div class="flex min-w-27.5 flex-col gap-1 rounded-xl border border-edge bg-surface-alt px-4 py-2.5">
+    {#each [{ label: "Langue", value: `${result.language.toUpperCase()} (${(result.language_probability * 100).toFixed(0)} %)` }, ...(result.duration_s !== null ? [{ label: "Durée audio", value: `${result.duration_s} s` }] : []), { label: "Temps transcription", value: `${result.elapsed_ms} ms` }, { label: "Segments", value: String(result.segments.length) }] as stat}
+      <div
+        class="flex min-w-27.5 flex-col gap-1 rounded-xl border border-edge bg-surface-alt px-4 py-2.5">
         <span class="text-2xs text-fg-faint">{stat.label}</span>
         <span class="text-sm font-semibold text-slate-100">{stat.value}</span>
       </div>
@@ -174,7 +168,8 @@
       <p class="m-0 text-sm leading-relaxed whitespace-pre-wrap text-fg">{result.text}</p>
     </section>
   {:else}
-    <p class="rounded-xl border border-dashed border-edge bg-[#0e0e1c] p-6 text-center text-sm text-fg-faint">
+    <p
+      class="rounded-xl border border-dashed border-edge bg-[#0e0e1c] p-6 text-center text-sm text-fg-faint">
       Aucun contenu vocal détecté (VAD filtre les silences).
     </p>
   {/if}
@@ -189,7 +184,9 @@
         <thead>
           <tr>
             {#each ["Début", "Fin", "Texte", "Confiance", "No-speech"] as col}
-              <th class="border-b border-surface-raised px-2 pt-0 pb-2 text-left text-2xs font-medium text-fg-faint">{col}</th>
+              <th
+                class="border-b border-surface-raised px-2 pt-0 pb-2 text-left text-2xs font-medium text-fg-faint"
+                >{col}</th>
             {/each}
           </tr>
         </thead>
@@ -197,13 +194,22 @@
           {#each result.segments as seg}
             {@const conf = formatConfidence(seg.avg_logprob)}
             <tr>
-              <td class="border-b border-surface-alt px-2 py-1.5 align-top font-mono text-xs text-fg-faint">{seg.start}s</td>
-              <td class="border-b border-surface-alt px-2 py-1.5 align-top font-mono text-xs text-fg-faint">{seg.end}s</td>
-              <td class="border-b border-surface-alt px-2 py-1.5 align-top text-slate-300">{seg.text}</td>
+              <td
+                class="border-b border-surface-alt px-2 py-1.5 align-top font-mono text-xs text-fg-faint"
+                >{seg.start}s</td>
+              <td
+                class="border-b border-surface-alt px-2 py-1.5 align-top font-mono text-xs text-fg-faint"
+                >{seg.end}s</td>
+              <td class="border-b border-surface-alt px-2 py-1.5 align-top text-slate-300"
+                >{seg.text}</td>
               <td class="border-b border-surface-alt px-2 py-1.5 align-top">
                 <StatusBadge color={conf.color} label={conf.label} />
               </td>
-              <td class={["border-b border-surface-alt px-2 py-1.5 align-top font-mono text-xs", seg.no_speech_prob > 0.5 ? "text-amber-500" : "text-fg-faint"]}>
+              <td
+                class={[
+                  "border-b border-surface-alt px-2 py-1.5 align-top font-mono text-xs",
+                  seg.no_speech_prob > 0.5 ? "text-amber-500" : "text-fg-faint"
+                ]}>
                 {(seg.no_speech_prob * 100).toFixed(0)} %
               </td>
             </tr>
