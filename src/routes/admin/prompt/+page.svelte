@@ -76,6 +76,7 @@
 
   {#snippet sectionHeader(key: string, label: string, json?: unknown)}
     <div class="mb-2.5 flex items-center justify-between">
+      <!-- eslint-disable-next-line svelte/no-at-html-tags -- label is a hardcoded literal, never user input -->
       <h2 class="m-0 text-base text-fg">{@html label}</h2>
       <button
         class="cursor-pointer rounded-md border border-edge bg-surface px-3 py-1 text-xs text-fg-muted transition-all duration-150 hover:bg-surface-raised hover:text-fg"
