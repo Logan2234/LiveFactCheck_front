@@ -1,7 +1,7 @@
 ﻿<script lang="ts">
+  import ClaimCard from "$lib/components/features/claims/ClaimCard.svelte";
   import Alert from "$lib/components/ui/Alert.svelte";
   import Button from "$lib/components/ui/Button.svelte";
-  import ClaimCard from "$lib/components/features/claims/ClaimCard.svelte";
   import LoadingSpinner from "$lib/components/ui/LoadingSpinner.svelte";
   import { authFetch, clearToken } from "$lib/stores/auth";
   import type { Claim } from "$lib/stores/claims";
@@ -94,7 +94,7 @@
     if (!ran || withWeb.claims === null || withoutWeb.claims === null)
       return "";
     const diff = withWeb.claims.length - withoutWeb.claims.length;
-    if (diff === 0) return "MÃªme nombre de claims";
+    if (diff === 0) return "Même nombre de claims";
     return diff > 0
       ? `+${diff} claim${diff > 1 ? "s" : ""} avec le web`
       : `${diff} claim${Math.abs(diff) > 1 ? "s" : ""} avec le web`;
@@ -106,9 +106,9 @@
 </svelte:head>
 
 <header>
-  <h1 class="mt-0 mb-1 text-2xl">âš¡ Benchmark</h1>
+  <h1 class="mt-0 mb-1 text-2xl">⚡ Benchmark</h1>
   <p class="mt-0 mb-6 text-sm text-fg-muted">
-    Compare le mÃªme texte avec et sans recherche web en parallèle.
+    Compare le même texte avec et sans recherche web en parallèle.
   </p>
 </header>
 
@@ -116,7 +116,7 @@
   <textarea
     bind:value={text}
     rows="5"
-    placeholder="Colle un texte à analyserâ€¦"
+    placeholder="Colle un texte à analyser…"
     disabled={loading}
     class="box-border w-full resize-y rounded-xl border border-edge bg-surface-alt px-4 py-3.5 font-[inherit] text-base leading-normal text-fg transition-[border-color] duration-150 focus:border-accent focus:outline-none disabled:opacity-50"
   ></textarea>
@@ -128,14 +128,14 @@
       Vider
     </Button>
     <Button type="submit" class="ml-auto" disabled={loading || !text.trim()}>
-      {loading ? "Analyse en coursâ€¦" : "Comparer"}
+      {loading ? "Analyse en cours…" : "Comparer"}
     </Button>
   </div>
 </form>
 
 {#if loading}
   <div class="grid grid-cols-2 gap-5">
-    {#each ["ðŸŒ Avec web search", "ðŸ§  Sans web search"] as label (label)}
+    - {#each ["🌐 Avec web search", "🧠 Sans web search"] as label (label)}
       <div class="flex min-w-0 flex-col gap-3">
         <div
           class="flex flex-wrap items-center gap-2 border-b border-edge pb-2 text-sm font-semibold text-fg">
@@ -143,7 +143,7 @@
         </div>
         <div
           class="rounded-xl border border-dashed border-edge bg-surface-alt p-6">
-          <LoadingSpinner message="Analyseâ€¦" />
+          <LoadingSpinner message="Analyse…" />
         </div>
       </div>
     {/each}
@@ -156,7 +156,7 @@
     </div>
   {/if}
   <div class="grid grid-cols-2 gap-5">
-    {#each [{ label: "ðŸŒ Avec web search", side: withWeb }, { label: "ðŸ§  Sans web search", side: withoutWeb }] as { label, side } (label)}
+    {#each [{ label: "⚡ Avec web search", side: withWeb }, { label: "📝 Sans web search", side: withoutWeb }] as { label, side } (label)}
       <div class="flex min-w-0 flex-col gap-3">
         <div
           class="flex flex-wrap items-center gap-2 border-b border-edge pb-2 text-sm font-semibold text-fg">

@@ -91,12 +91,12 @@
   // Per-block visual identity (masonry cards): a leading glyph + a coloured left accent.
   // Unknown ids fall back to a neutral accent so a new backend block still renders cleanly.
   const blockIcon: Record<string, string> = {
-    anthropic: "ðŸ”‘",
-    whisper: "ðŸŽ™ï¸",
-    audio: "ðŸ”Š",
-    auth: "ðŸ”’",
-    cors: "ðŸŒ",
-    logs: "ðŸ“‹"
+    anthropic: "🔑",
+    whisper: "🎙️",
+    audio: "🔊",
+    auth: "🔒",
+    cors: "🌐",
+    logs: "📋"
   };
 
   const blockAccent: Record<string, string> = {
@@ -225,7 +225,7 @@
 
 <header class="mb-6 flex flex-wrap items-start justify-between gap-4">
   <div>
-    <h1 class="mt-0 mb-1 text-2xl">ðŸ–¥ï¸ Système</h1>
+    <h1 class="mt-0 mb-1 text-2xl">🖥️ Système</h1>
     <p class="m-0 text-sm text-fg-muted">
       État du serveur et configuration — rafraîchissement automatique toutes les
       30 s.
@@ -241,7 +241,7 @@
       size="sm"
       onclick={refreshHealth}
       disabled={refreshing}>
-      {refreshing ? "â€¦" : "â†º Rafraîchir"}
+      {refreshing ? "…" : "â†º Rafraîchir"}
     </Button>
   </div>
 </header>
@@ -379,7 +379,7 @@
       <Button variant="secondary" onclick={reset} disabled={!dirty || saving}
         >Annuler</Button>
       <Button onclick={save} disabled={!dirty || saving}>
-        {#if saving}Enregistrementâ€¦{:else if saved}âœ“ Enregistré{:else}Enregistrer{/if}
+        {#if saving}Enregistrement…{:else if saved}âœ“ Enregistré{:else}Enregistrer{/if}
       </Button>
     </div>
   </div>

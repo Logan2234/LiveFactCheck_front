@@ -19,10 +19,8 @@
   "semi": true,
   "singleQuote": false,
   "svelteAllowShorthand": true,
-  "svelteBracketNewLine": false,
   "svelteIndentScriptAndStyle": true,
   "svelteSortOrder": "options-scripts-markup-styles",
-  "svelteStrictMode": false,
   "tabWidth": 2,
   "trailingComma": "none",
   "useTabs": false

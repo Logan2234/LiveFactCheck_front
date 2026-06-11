@@ -60,7 +60,7 @@
         logBox?.scrollTo({ top: logBox.scrollHeight, behavior: "smooth" });
       }
     } catch {
-      error = "Connexion perdue — nouvelle tentativeâ€¦";
+      error = "Connexion perdue — nouvelle tentative…";
     }
   }
 
@@ -83,7 +83,7 @@
 
 <header>
   <div>
-    <h1 class="mt-0 mb-1 text-2xl">ðŸ“œ Logs</h1>
+    <h1 class="mt-0 mb-1 text-2xl">📜 Logs</h1>
     <p class="mt-0 mb-5 text-sm text-fg-muted">
       Flux en direct du logger <code class="font-mono text-fg-muted"
         >app.*</code> — rafraîchissement toutes les 1,5 s.

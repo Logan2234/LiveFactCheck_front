@@ -86,7 +86,7 @@
 </svelte:head>
 
 <header>
-  <h1 class="mt-0 mb-1 text-2xl">ðŸŽ™ï¸ Test Whisper</h1>
+  <h1 class="mt-0 mb-1 text-2xl">🎙️ Test Whisper</h1>
   <p class="mt-0 mb-6 text-sm text-fg-muted">
     Transcris un fichier audio et inspecte les segments, la langue détectée et
     les scores de confiance.
@@ -121,14 +121,14 @@
     onchange={onFileInput}
     style="display:none" />
   {#if file}
-    <span class="text-sm font-medium text-fg">ðŸŽµ {file.name}</span>
+    <span class="text-sm font-medium text-fg">🎵 {file.name}</span>
     <span class="text-xs text-fg-faint"
       >{(file.size / 1024).toFixed(0)} Ko</span>
   {:else}
     <span class="text-sm text-fg-faint"
       >Glisser un fichier audio ici ou cliquer pour choisir</span>
     <span class="text-xs text-fg-faint/50"
-      >WebM Â· MP3 Â· WAV Â· OGG Â· M4A Â· FLAC</span>
+      >WebM · MP3 · WAV · OGG · M4A · FLAC</span>
   {/if}
 </div>
 
@@ -143,13 +143,13 @@
       }}>Retirer</Button>
   {/if}
   <Button class="ml-auto" onclick={submit} disabled={!file || loading}>
-    {loading ? "Transcriptionâ€¦" : "Transcrire"}
+    {loading ? "Transcription…" : "Transcrire"}
   </Button>
 </div>
 
 {#if loading}
   <div class="mb-4">
-    <LoadingSpinner message="En cours — peut prendre quelques secondesâ€¦" />
+    <LoadingSpinner message="En cours — peut prendre quelques secondes…" />
   </div>
 {/if}
 

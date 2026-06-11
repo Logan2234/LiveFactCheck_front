@@ -55,7 +55,7 @@
 </svelte:head>
 
 <header>
-  <h1 class="mt-0 mb-1 text-2xl">ðŸ“‹ Prompt & Outil Claude</h1>
+  <h1 class="mt-0 mb-1 text-2xl">📋 Prompt & Outil Claude</h1>
   <p class="mt-0 mb-6 text-sm text-fg-muted">
     Configuration exacte envoyée à l'API Anthropic à chaque appel de
     fact-checking.
