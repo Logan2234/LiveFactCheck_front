@@ -40,12 +40,9 @@ Aucun test aujourd'hui (pas de script de test dans `package.json`, cf. CLAUDE.md
 
 ## Robustesse du contrat WS
 
-- [ ] `ws.onmessage` fait `JSON.parse` puis dispatche sur `data.type` sans valider
+- [x] `ws.onmessage` fait `JSON.parse` puis dispatche sur `data.type` sans valider
       la forme du payload (cf. règle svelte.md « parse and validate before trusting »).
       Valider que `claim` a bien la forme `Claim` avant d'appeler le callback.
-- [ ] Centraliser le type des messages : `WSMessage` (websocket.ts) et `Claim`
-      (stores/claims.ts) doivent rester le miroir exact des schémas Pydantic back.
-      Documenter/figer ce couplage (toute évolution = changement deux-repos).
 
 ## Config & DRY
 

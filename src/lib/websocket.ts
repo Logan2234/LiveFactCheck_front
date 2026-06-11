@@ -1,11 +1,60 @@
 import { writable } from "svelte/store";
-import type { Claim } from "./stores/claims";
+import type { Claim, VerificationStatus } from "./stores/claims";
 import { WS_URL } from "./config";
 
 export type WSMessage =
   | { type: "transcript"; text: string }
   | { type: "claim"; claim: Claim }
   | { type: "remove_claim"; id: string };
+
+const VERIFICATION_STATUSES: readonly VerificationStatus[] = [
+  "pending",
+  "verified",
+  "false",
+  "uncertain",
+  "unverifiable"
+];
+
+function isStringArray(value: unknown): value is string[] {
+  return Array.isArray(value) && value.every((item) => typeof item === "string");
+}
+
+// Validate the wire payload before trusting it (parse-and-validate, svelte.md).
+// Mirrors the Pydantic Claim in backend/app/schemas/claim.py — keep in sync.
+function isClaim(value: unknown): value is Claim {
+  if (typeof value !== "object" || value === null) return false;
+  const c = value as Record<string, unknown>;
+  return (
+    typeof c.id === "string" &&
+    typeof c.text === "string" &&
+    typeof c.status === "string" &&
+    VERIFICATION_STATUSES.includes(c.status as VerificationStatus) &&
+    typeof c.explanation === "string" &&
+    isStringArray(c.sources) &&
+    typeof c.timestamp === "number" &&
+    Number.isFinite(c.timestamp) &&
+    typeof c.category === "string" &&
+    typeof c.confidence === "number" &&
+    Number.isFinite(c.confidence) &&
+    typeof c.counter_claim === "string" &&
+    typeof c.web_search_used === "boolean"
+  );
+}
+
+function parseWSMessage(raw: unknown): WSMessage | null {
+  if (typeof raw !== "object" || raw === null) return null;
+  const msg = raw as Record<string, unknown>;
+  switch (msg.type) {
+    case "transcript":
+      return typeof msg.text === "string" ? { type: "transcript", text: msg.text } : null;
+    case "claim":
+      return isClaim(msg.claim) ? { type: "claim", claim: msg.claim } : null;
+    case "remove_claim":
+      return typeof msg.id === "string" ? { type: "remove_claim", id: msg.id } : null;
+    default:
+      return null;
+  }
+}
 
 export type WSStatus = "disconnected" | "connecting" | "connected" | "error";
 
@@ -57,17 +106,28 @@ export function connect(resetRetries = true) {
   };
 
   ws.onmessage = (event) => {
+    let raw: unknown;
     try {
-      const data = JSON.parse(event.data);
-      if (data.type === "transcript" && onTranscriptCallback) {
-        onTranscriptCallback(data.text);
-      } else if (data.type === "claim" && onClaimCallback) {
-        onClaimCallback(data.claim);
-      } else if (data.type === "remove_claim" && onRemoveClaimCallback) {
-        onRemoveClaimCallback(data.id);
-      }
+      raw = JSON.parse(event.data);
     } catch (e) {
       console.error("Failed to parse WS message:", e);
+      return;
+    }
+    const message = parseWSMessage(raw);
+    if (message === null) {
+      console.warn("Discarding malformed WS message:", raw);
+      return;
+    }
+    switch (message.type) {
+      case "transcript":
+        onTranscriptCallback?.(message.text);
+        break;
+      case "claim":
+        onClaimCallback?.(message.claim);
+        break;
+      case "remove_claim":
+        onRemoveClaimCallback?.(message.id);
+        break;
     }
   };
 
