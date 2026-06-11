@@ -31,16 +31,21 @@ export async function login(password: string): Promise<void> {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ password })
   });
+
   if (!res.ok) {
     const detail = await res.json().catch(() => null);
     throw new Error(detail?.detail ?? "Échec de la connexion");
   }
+
   const data = await res.json();
   setToken(data.token);
 }
 
 /** fetch wrapper that attaches the admin bearer token. */
-export async function authFetch(path: string, init: RequestInit = {}): Promise<Response> {
+export async function authFetch(
+  path: string,
+  init: RequestInit = {}
+): Promise<Response> {
   const t = getToken();
   return fetch(`${BACKEND_URL}${path}`, {
     ...init,

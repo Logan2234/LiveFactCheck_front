@@ -1,10 +1,10 @@
-<script lang="ts">
-  import Alert from "$lib/components/Alert.svelte";
-  import Button from "$lib/components/Button.svelte";
-  import Field from "$lib/components/Field.svelte";
-  import LoadingSpinner from "$lib/components/LoadingSpinner.svelte";
-  import StatCard from "$lib/components/StatCard.svelte";
-  import StatusBadge from "$lib/components/StatusBadge.svelte";
+﻿<script lang="ts">
+  import Alert from "$lib/components/ui/Alert.svelte";
+  import Button from "$lib/components/ui/Button.svelte";
+  import Field from "$lib/components/ui/Field.svelte";
+  import LoadingSpinner from "$lib/components/ui/LoadingSpinner.svelte";
+  import StatCard from "$lib/components/ui/StatCard.svelte";
+  import StatusBadge from "$lib/components/ui/StatusBadge.svelte";
   import { authFetch, clearToken } from "$lib/stores/auth";
   import { formatTime } from "$lib/utils/format";
   import { onDestroy, onMount } from "svelte";
@@ -82,7 +82,8 @@
   }
 
   function formatValue(f: ConfigFieldValue): string {
-    if (Array.isArray(f.value)) return f.value.length ? f.value.join(", ") : "—";
+    if (Array.isArray(f.value))
+      return f.value.length ? f.value.join(", ") : "â€”";
     if (f.value_type === "bool") return f.value ? "Oui" : "Non";
     return String(f.value);
   }
@@ -90,12 +91,12 @@
   // Per-block visual identity (masonry cards): a leading glyph + a coloured left accent.
   // Unknown ids fall back to a neutral accent so a new backend block still renders cleanly.
   const blockIcon: Record<string, string> = {
-    anthropic: "🔑",
-    whisper: "🎙️",
-    audio: "🔊",
-    auth: "🔒",
-    cors: "🌐",
-    logs: "📋"
+    anthropic: "ðŸ”‘",
+    whisper: "ðŸŽ™ï¸",
+    audio: "ðŸ”Š",
+    auth: "ðŸ”’",
+    cors: "ðŸŒ",
+    logs: "ðŸ“‹"
   };
 
   const blockAccent: Record<string, string> = {
@@ -134,7 +135,7 @@
       lastRefresh = new Date();
       loadError = "";
     } catch (e) {
-      loadError = e instanceof Error ? e.message : "Erreur réseau";
+      loadError = e instanceof Error ? e.message : "Erreur rÃ©seau";
     } finally {
       refreshing = false;
     }
@@ -157,7 +158,7 @@
       if (config) initDrafts(config);
       lastRefresh = new Date();
     } catch (e) {
-      loadError = e instanceof Error ? e.message : "Erreur réseau";
+      loadError = e instanceof Error ? e.message : "Erreur rÃ©seau";
     }
   }
 
@@ -169,7 +170,8 @@
       const updates: Record<string, DraftValue> = {};
       for (const block of config.blocks) {
         for (const f of block.fields) {
-          if (f.kind === "editable" && drafts[f.key] !== f.value) updates[f.key] = drafts[f.key];
+          if (f.kind === "editable" && drafts[f.key] !== f.value)
+            updates[f.key] = drafts[f.key];
         }
       }
 
@@ -199,7 +201,7 @@
       saved = true;
       setTimeout(() => (saved = false), 2000);
     } catch (e) {
-      saveError = e instanceof Error ? e.message : "Erreur réseau";
+      saveError = e instanceof Error ? e.message : "Erreur rÃ©seau";
     } finally {
       saving = false;
     }
@@ -210,30 +212,36 @@
   }
 
   onMount(() => {
-    loadAll();
-    interval = setInterval(refreshHealth, 30_000);
+    void loadAll();
+    interval = setInterval(() => void refreshHealth(), 30_000);
   });
 
   onDestroy(() => clearInterval(interval));
 </script>
 
 <svelte:head>
-  <title>Système — Admin</title>
+  <title>SystÃ¨me â€” Admin</title>
 </svelte:head>
 
 <header class="mb-6 flex flex-wrap items-start justify-between gap-4">
   <div>
-    <h1 class="mt-0 mb-1 text-2xl">🖥️ Système</h1>
+    <h1 class="mt-0 mb-1 text-2xl">ðŸ–¥ï¸ SystÃ¨me</h1>
     <p class="m-0 text-sm text-fg-muted">
-      État du serveur et configuration — rafraîchissement automatique toutes les 30 s.
+      Ã‰tat du serveur et configuration â€” rafraÃ®chissement automatique toutes
+      les 30 s.
     </p>
   </div>
   <div class="flex shrink-0 items-center gap-3">
     {#if lastRefresh}
-      <span class="text-xs tabular-nums text-fg-faint">Mis à jour à {formatTime(lastRefresh)}</span>
+      <span class="text-xs tabular-nums text-fg-faint"
+        >Mis Ã  jour Ã  {formatTime(lastRefresh)}</span>
     {/if}
-    <Button variant="secondary" size="sm" onclick={refreshHealth} disabled={refreshing}>
-      {refreshing ? "…" : "↺ Rafraîchir"}
+    <Button
+      variant="secondary"
+      size="sm"
+      onclick={refreshHealth}
+      disabled={refreshing}>
+      {refreshing ? "â€¦" : "â†º RafraÃ®chir"}
     </Button>
   </div>
 </header>
@@ -247,17 +255,21 @@
 {/if}
 
 {#if health}
-  <div class="mb-2.5 text-2xs font-semibold tracking-wider text-fg-faint uppercase">État</div>
+  <div
+    class="mb-2.5 text-2xs font-semibold tracking-wider text-fg-faint uppercase">
+    Ã‰tat
+  </div>
   <div class="grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-3.5">
     <StatCard title="Serveur" dot="green">
       <dl class="m-0 flex flex-col gap-2">
-        <Field label="Uptime" strong>{formatUptime(health.uptime_seconds)}</Field>
+        <Field label="Uptime" strong
+          >{formatUptime(health.uptime_seconds)}</Field>
         <Field label="Python">{health.python_version}</Field>
       </dl>
     </StatCard>
 
     {#if health.memory}
-      <StatCard title="Mémoire (processus)" dot="green">
+      <StatCard title="MÃ©moire (processus)" dot="green">
         <dl class="m-0 flex flex-col gap-2">
           <Field label="RSS" strong>{health.memory.rss_mb} Mo</Field>
           <Field label="VMS">{health.memory.vms_mb} Mo</Field>
@@ -268,7 +280,8 @@
 {/if}
 
 {#if config}
-  <div class="mt-7 mb-2.5 text-2xs font-semibold tracking-wider text-fg-faint uppercase">
+  <div
+    class="mt-7 mb-2.5 text-2xs font-semibold tracking-wider text-fg-faint uppercase">
     Configuration
   </div>
 
@@ -284,7 +297,8 @@
             {#each block.fields as f (f.key)}
               {#if f.kind === "editable"}
                 <div class="flex flex-col gap-1">
-                  <label for={f.key} class="text-xs font-medium text-fg-muted">{f.label}</label>
+                  <label for={f.key} class="text-xs font-medium text-fg-muted"
+                    >{f.label}</label>
                   {#if f.options}
                     <select
                       id={f.key}
@@ -301,15 +315,17 @@
                       <input
                         type="checkbox"
                         checked={drafts[f.key] as boolean}
-                        onchange={(e) => setDraft(f.key, e.currentTarget.checked)} />
-                      {drafts[f.key] ? "Activé" : "Désactivé"}
+                        onchange={(e) =>
+                          setDraft(f.key, e.currentTarget.checked)} />
+                      {drafts[f.key] ? "ActivÃ©" : "DÃ©sactivÃ©"}
                     </label>
                   {:else if f.value_type === "int"}
                     <input
                       id={f.key}
                       type="number"
                       value={drafts[f.key] as number}
-                      oninput={(e) => setDraft(f.key, e.currentTarget.valueAsNumber)}
+                      oninput={(e) =>
+                        setDraft(f.key, e.currentTarget.valueAsNumber)}
                       class={controlClass} />
                   {:else}
                     <input
@@ -324,7 +340,7 @@
                 <Field label={f.label}>
                   {#if f.kind === "secret_status"}
                     {#if f.configured}
-                      <StatusBadge color="green" label="Configuré" />
+                      <StatusBadge color="green" label="ConfigurÃ©" />
                     {:else}
                       <StatusBadge color="red" label="Manquant" />
                     {/if}
@@ -340,7 +356,7 @@
             {/each}
 
             {#if block.id === "whisper"}
-              <Field label="Chargé">
+              <Field label="ChargÃ©">
                 <StatusBadge
                   color={health?.whisper_loaded ? "green" : "red"}
                   label={health?.whisper_loaded ? "Oui" : "Non"} />
@@ -352,17 +368,18 @@
     {/each}
   </div>
 
-  <!-- ── Barre d'action (les éditions peuvent couvrir plusieurs blocs) ── -->
+  <!-- â”€â”€ Barre d'action (les Ã©ditions peuvent couvrir plusieurs blocs) â”€â”€ -->
   {#if saveError}
     <Alert message={saveError} type="error" class="mt-4" />
   {/if}
 
   <div class="mt-4 flex flex-wrap items-center justify-between gap-3">
-    <Alert type="warning" message={`⚠ ${config.note}`} />
+    <Alert type="warning" message={`âš  ${config.note}`} />
     <div class="flex gap-2">
-      <Button variant="secondary" onclick={reset} disabled={!dirty || saving}>Annuler</Button>
+      <Button variant="secondary" onclick={reset} disabled={!dirty || saving}
+        >Annuler</Button>
       <Button onclick={save} disabled={!dirty || saving}>
-        {#if saving}Enregistrement…{:else if saved}✓ Enregistré{:else}Enregistrer{/if}
+        {#if saving}Enregistrementâ€¦{:else if saved}âœ“ EnregistrÃ©{:else}Enregistrer{/if}
       </Button>
     </div>
   </div>

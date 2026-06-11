@@ -22,7 +22,8 @@
 @theme {
   /* ── Monospace stacks (code/log/terminal views) ── */
   --font-mono: "SF Mono", "Fira Code", monospace;
-  --font-term: "Cascadia Code", "Fira Code", "Consolas", "Courier New", monospace;
+  --font-term:
+    "Cascadia Code", "Fira Code", "Consolas", "Courier New", monospace;
 
   /* ── LIGHT palette (default) ── */
 

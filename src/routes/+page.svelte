@@ -1,7 +1,7 @@
 ﻿<script lang="ts">
-  import AudioControls from "$lib/components/AudioControls.svelte";
-  import KeyboardShortcuts from "$lib/components/KeyboardShortcuts.svelte";
-  import ThemeToggle from "$lib/components/ThemeToggle.svelte";
+  import AudioControls from "$lib/components/features/audio/AudioControls.svelte";
+  import KeyboardShortcuts from "$lib/components/features/KeyboardShortcuts.svelte";
+  import ThemeToggle from "$lib/components/features/ThemeToggle.svelte";
   import LayoutChat from "$lib/layouts/LayoutChat.svelte";
   import LayoutClassic from "$lib/layouts/LayoutClassic.svelte";
   import LayoutDashboard from "$lib/layouts/LayoutDashboard.svelte";
@@ -57,7 +57,9 @@
   <header class="mb-6 flex flex-wrap items-start justify-between gap-4">
     <div>
       <h1 class="m-0 text-2xl">🔍 LiveFactChecker</h1>
-      <p class="mt-0.5 mb-0 text-sm text-fg-muted">Vérification de faits en temps réel</p>
+      <p class="mt-0.5 mb-0 text-sm text-fg-muted">
+        Vérification de faits en temps réel
+      </p>
     </div>
     <div class="flex items-start gap-3">
       <div class="flex flex-col items-end gap-2">

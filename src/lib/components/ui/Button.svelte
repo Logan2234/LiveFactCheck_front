@@ -30,7 +30,8 @@
     "cursor-pointer rounded-lg font-semibold transition-all duration-150 disabled:cursor-not-allowed disabled:opacity-40";
 
   const variantClass: Record<Variant, string> = {
-    primary: "bg-[linear-gradient(135deg,#5a5ad0,#7a4ad0)] text-white enabled:hover:opacity-90",
+    primary:
+      "bg-[linear-gradient(135deg,#5a5ad0,#7a4ad0)] text-white enabled:hover:opacity-90",
     secondary:
       "border border-edge bg-surface text-fg-muted enabled:hover:bg-surface-raised enabled:hover:text-fg",
     danger:

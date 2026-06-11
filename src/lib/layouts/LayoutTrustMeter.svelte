@@ -1,5 +1,9 @@
 ﻿<script lang="ts">
-  import { STATUS_COLOR, STATUS_LABEL, STATUS_ORDER } from "$lib/constants/status";
+  import {
+    STATUS_COLOR,
+    STATUS_LABEL,
+    STATUS_ORDER
+  } from "$lib/constants/status";
   import { claimStats, sortedClaims } from "$lib/stores/claims";
 
   const R = 80;
@@ -9,13 +13,18 @@
 
   // Only count finalized claims for the trust %
   let finalized = $derived(
-    $claimStats.verified + $claimStats.false + $claimStats.uncertain + $claimStats.unverifiable
+    $claimStats.verified +
+      $claimStats.false +
+      $claimStats.uncertain +
+      $claimStats.unverifiable
   );
   let trustPct = $derived(
     finalized === 0 ? 0 : Math.round(($claimStats.verified / finalized) * 100)
   );
 
-  let gaugeColor = $derived(trustPct >= 70 ? "#10b981" : trustPct >= 40 ? "#f59e0b" : "#ef4444");
+  let gaugeColor = $derived(
+    trustPct >= 70 ? "#10b981" : trustPct >= 40 ? "#f59e0b" : "#ef4444"
+  );
 
   // Donut segments for all statuses (excluding pending)
   type Segment = {
@@ -31,11 +40,27 @@
       const total = $claimStats.total;
       if (total === 0) return [];
       const items = [
-        { key: "verified", count: $claimStats.verified, color: STATUS_COLOR.verified },
+        {
+          key: "verified",
+          count: $claimStats.verified,
+          color: STATUS_COLOR.verified
+        },
         { key: "false", count: $claimStats.false, color: STATUS_COLOR.false },
-        { key: "uncertain", count: $claimStats.uncertain, color: STATUS_COLOR.uncertain },
-        { key: "unverifiable", count: $claimStats.unverifiable, color: STATUS_COLOR.unverifiable },
-        { key: "pending", count: $claimStats.pending, color: STATUS_COLOR.pending }
+        {
+          key: "uncertain",
+          count: $claimStats.uncertain,
+          color: STATUS_COLOR.uncertain
+        },
+        {
+          key: "unverifiable",
+          count: $claimStats.unverifiable,
+          color: STATUS_COLOR.unverifiable
+        },
+        {
+          key: "pending",
+          count: $claimStats.pending,
+          color: STATUS_COLOR.pending
+        }
       ].filter((s) => s.count > 0);
 
       let offset = 0;
@@ -53,14 +78,21 @@
   );
 </script>
 
-<div class="grid grid-cols-[300px_1fr] items-start gap-8 max-[800px]:grid-cols-1">
+<div
+  class="grid grid-cols-[300px_1fr] items-start gap-8 max-[800px]:grid-cols-1">
   <div class="sticky top-4 rounded-xl bg-surface-alt p-6 max-[800px]:static">
     <h2 class="mt-0 mb-4 text-lg">🎯 Trust Meter</h2>
 
     <div class="mb-5 flex justify-center">
       <svg viewBox="0 0 200 200" class="h-45 w-45">
         <!-- Track -->
-        <circle cx={CX} cy={CY} r={R} fill="none" stroke="var(--color-edge)" stroke-width="20" />
+        <circle
+          cx={CX}
+          cy={CY}
+          r={R}
+          fill="none"
+          stroke="var(--color-edge)"
+          stroke-width="20" />
 
         {#if segments.length > 0}
           <!-- Segments (rotate -90° so we start at 12 o'clock) -->
@@ -88,10 +120,20 @@
           fill={gaugeColor}>
           {trustPct}%
         </text>
-        <text x="100" y="112" text-anchor="middle" class="text-sm" fill="var(--color-fg-muted)">
+        <text
+          x="100"
+          y="112"
+          text-anchor="middle"
+          class="text-sm"
+          fill="var(--color-fg-muted)">
           vérifié
         </text>
-        <text x="100" y="130" text-anchor="middle" class="text-xs" fill="var(--color-fg-faint)">
+        <text
+          x="100"
+          y="130"
+          text-anchor="middle"
+          class="text-xs"
+          fill="var(--color-fg-faint)">
           {finalized} claim{finalized !== 1 ? "s" : ""}
         </text>
       </svg>
@@ -101,11 +143,13 @@
     <div class="mb-4 flex flex-col gap-2">
       {#each STATUS_ORDER.filter((s) => s !== "pending") as key (key)}
         <div class="flex items-center gap-2 text-sm">
-          <span class="h-2.5 w-2.5 shrink-0 rounded-full" style="background: {STATUS_COLOR[key]}"
-          ></span>
+          <span
+            class="h-2.5 w-2.5 shrink-0 rounded-full"
+            style="background: {STATUS_COLOR[key]}"></span>
           <span class="flex-1 text-fg-muted">{STATUS_LABEL[key]}</span>
-          <span class="font-semibold tabular-nums" style="color: {STATUS_COLOR[key]}"
-            >{$claimStats[key]}</span>
+          <span
+            class="font-semibold tabular-nums"
+            style="color: {STATUS_COLOR[key]}">{$claimStats[key]}</span>
         </div>
       {/each}
     </div>
@@ -131,14 +175,19 @@
           class="rounded-lg border-l-4 bg-surface px-4 py-3 border-l-(--color)"
           style="--color: {STATUS_COLOR[c.status]}">
           <div class="mb-1.5 flex items-center gap-2">
-            <span class="h-2 w-2 rounded-full" style="background: {STATUS_COLOR[c.status]}"></span>
+            <span
+              class="h-2 w-2 rounded-full"
+              style="background: {STATUS_COLOR[c.status]}"></span>
             <span
               class="text-sm font-semibold tracking-wide uppercase"
-              style="color: {STATUS_COLOR[c.status]}">{STATUS_LABEL[c.status]}</span>
+              style="color: {STATUS_COLOR[c.status]}"
+              >{STATUS_LABEL[c.status]}</span>
           </div>
           <p class="mt-0 mb-1 text-sm text-fg italic">« {c.text} »</p>
           {#if c.explanation}
-            <p class="m-0 text-sm leading-snug text-fg-muted">{c.explanation}</p>
+            <p class="m-0 text-sm leading-snug text-fg-muted">
+              {c.explanation}
+            </p>
           {/if}
         </div>
       {:else}

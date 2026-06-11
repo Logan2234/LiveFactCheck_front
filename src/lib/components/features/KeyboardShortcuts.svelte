@@ -1,6 +1,10 @@
 ﻿<script lang="ts">
-  import Modal from "$lib/components/Modal.svelte";
-  import { recordingState, startRecording, stopRecording } from "$lib/stores/audio";
+  import Modal from "$lib/components/ui/Modal.svelte";
+  import {
+    recordingState,
+    startRecording,
+    stopRecording
+  } from "$lib/stores/audio";
   import { claims } from "$lib/stores/claims";
   import { falseFlash } from "$lib/stores/ui";
   import { onDestroy, onMount } from "svelte";
@@ -41,7 +45,7 @@
     if (e.code === "Space") {
       e.preventDefault();
       if ($recordingState === "recording") stopRecording();
-      else startRecording();
+      else void startRecording();
     }
   }
 

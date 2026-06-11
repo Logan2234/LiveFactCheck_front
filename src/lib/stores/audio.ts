@@ -12,7 +12,9 @@ export const transcriptEntries = writable<TranscriptEntry[]>([]);
 
 // Newest-first view of the transcript, mirroring sortedClaims. Layouts render
 // most-recent-on-top from here instead of each reversing the list themselves.
-export const reversedTranscript = derived(transcriptEntries, ($entries) => [...$entries].reverse());
+export const reversedTranscript = derived(transcriptEntries, ($entries) =>
+  [...$entries].reverse()
+);
 export const isMuted = writable(false);
 // User-facing error when recording can't start (mic permission / no device).
 // null when there's nothing to show.
@@ -46,6 +48,7 @@ function recordOneChunk() {
     if (chunks.length > 0 && onChunkCallback) {
       onChunkCallback(new Blob(chunks, { type: "audio/webm;codecs=opus" }));
     }
+
     if (isRecording) recordOneChunk();
   };
 
@@ -57,6 +60,7 @@ function recordOneChunk() {
 
 export async function startRecording() {
   audioError.set(null);
+
   try {
     activeStream = await navigator.mediaDevices.getUserMedia({ audio: true });
     isRecording = true;
@@ -74,27 +78,37 @@ function micErrorMessage(error: unknown): string {
     if (error.name === "NotAllowedError" || error.name === "SecurityError") {
       return "Accès au micro refusé. Autorisez le micro dans votre navigateur, puis réessayez.";
     }
-    if (error.name === "NotFoundError" || error.name === "DevicesNotFoundError") {
+
+    if (
+      error.name === "NotFoundError" ||
+      error.name === "DevicesNotFoundError"
+    ) {
       return "Aucun micro détecté. Branchez un micro, puis réessayez.";
     }
   }
+
   return "Impossible de démarrer l'enregistrement du micro.";
 }
 
 export function stopRecording() {
   isRecording = false;
+
   if (chunkTimer !== null) {
     clearTimeout(chunkTimer);
     chunkTimer = null;
   }
+
   if (activeRecorder && activeRecorder.state !== "inactive") {
     activeRecorder.stop();
   }
+
   activeRecorder = null;
+
   if (activeStream) {
     activeStream.getTracks().forEach((track) => track.stop());
     activeStream = null;
   }
+
   recordingState.set("idle");
 }
 
@@ -112,5 +126,8 @@ export function onAudioChunk(callback: (chunk: Blob) => void) {
 }
 
 export function appendTranscript(text: string) {
-  transcriptEntries.update((entries) => [...entries, { text, timestamp: Date.now() }]);
+  transcriptEntries.update((entries) => [
+    ...entries,
+    { text, timestamp: Date.now() }
+  ]);
 }

@@ -1,6 +1,11 @@
 import { derived, writable } from "svelte/store";
 
-export type VerificationStatus = "pending" | "verified" | "false" | "uncertain" | "unverifiable";
+export type VerificationStatus =
+  | "pending"
+  | "verified"
+  | "false"
+  | "uncertain"
+  | "unverifiable";
 export type ClaimFilter = "all" | VerificationStatus;
 
 export interface Claim {
@@ -26,21 +31,28 @@ export function removeClaim(id: string) {
 export function addOrUpdateClaim(claim: Claim) {
   claims.update((current) => {
     const index = current.findIndex((c) => c.id === claim.id);
+
     if (index >= 0) {
       const updated = [...current];
       updated[index] = claim;
       return updated;
     }
+
     return [...current, claim];
   });
 }
 
-export const sortedClaims = derived(claims, ($claims) => [...$claims].reverse());
+export const sortedClaims = derived(claims, ($claims) =>
+  [...$claims].reverse()
+);
 
-export const filteredClaims = derived([sortedClaims, claimFilter], ([$sortedClaims, $filter]) => {
-  if ($filter === "all") return $sortedClaims;
-  return $sortedClaims.filter((c) => c.status === $filter);
-});
+export const filteredClaims = derived(
+  [sortedClaims, claimFilter],
+  ([$sortedClaims, $filter]) => {
+    if ($filter === "all") return $sortedClaims;
+    return $sortedClaims.filter((c) => c.status === $filter);
+  }
+);
 
 export const claimStats = derived(claims, ($claims) => ({
   total: $claims.length,

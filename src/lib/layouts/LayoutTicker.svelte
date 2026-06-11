@@ -8,21 +8,27 @@
   let tickerItems = $derived($claims.filter((c) => c.status !== "pending"));
 
   // Duplicate items so the ticker loops smoothly
-  let tickerContent = $derived(tickerItems.length > 0 ? [...tickerItems, ...tickerItems] : []);
+  let tickerContent = $derived(
+    tickerItems.length > 0 ? [...tickerItems, ...tickerItems] : []
+  );
 </script>
 
 <div class="flex h-[calc(100vh-160px)] min-h-125 flex-col gap-0">
   <!-- Main transcript area -->
   <div
     class="flex flex-1 flex-col overflow-hidden rounded-t-[10px] border border-b-0 border-edge bg-surface">
-    <div class="flex items-center gap-3 border-b border-surface-selected bg-surface-alt px-5 py-3">
+    <div
+      class="flex items-center gap-3 border-b border-surface-selected bg-surface-alt px-5 py-3">
       <h2 class="m-0 text-xl">📡 LiveFactChecker — En direct</h2>
       <div class="live-dot ml-auto h-2.5 w-2.5 rounded-full bg-red-500"></div>
     </div>
 
-    <div class="flex flex-1 flex-col gap-3 overflow-y-auto px-6 py-4 text-lg leading-[1.7]">
+    <div
+      class="flex flex-1 flex-col gap-3 overflow-y-auto px-6 py-4 text-lg leading-[1.7]">
       {#if $reversedTranscript.length === 0}
-        <p class="m-auto text-center text-fg-faint">En attente de la transcription...</p>
+        <p class="m-auto text-center text-fg-faint">
+          En attente de la transcription...
+        </p>
       {:else}
         {#each $reversedTranscript as entry (entry.timestamp)}
           <div class="flex items-baseline gap-3">
@@ -35,7 +41,8 @@
     </div>
 
     <!-- Stats bar -->
-    <div class="flex gap-6 border-t border-edge bg-surface-alt px-5 py-2 text-sm">
+    <div
+      class="flex gap-6 border-t border-edge bg-surface-alt px-5 py-2 text-sm">
       <span class="tabular-nums text-emerald-500"
         >✅ {$claims.filter((c) => c.status === "verified").length} vérifiés</span>
       <span class="tabular-nums text-red-500"
@@ -65,7 +72,8 @@
               class="inline-flex items-center gap-1.5 px-2 text-(--color)"
               style="--color: {STATUS_COLOR[c.status]}">
               <span class="text-sm">{STATUS_ICON[c.status]}</span>
-              <span class="max-w-87.5 overflow-hidden text-sm text-ellipsis text-zinc-200"
+              <span
+                class="max-w-87.5 overflow-hidden text-sm text-ellipsis text-zinc-200"
                 >{c.text}</span>
             </span>
             <span class="px-2 text-2.5 text-red-700">◆</span>

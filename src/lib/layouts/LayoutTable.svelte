@@ -1,5 +1,10 @@
 ﻿<script lang="ts">
-  import { CLAIM_FILTERS, STATUS_COLOR, STATUS_ICON, STATUS_LABEL } from "$lib/constants/status";
+  import {
+    CLAIM_FILTERS,
+    STATUS_COLOR,
+    STATUS_ICON,
+    STATUS_LABEL
+  } from "$lib/constants/status";
   import { claimFilter, filteredClaims } from "$lib/stores/claims";
   import { formatTime } from "$lib/utils/format";
 
@@ -24,10 +29,13 @@
       {/each}
     </div>
     <span class="text-sm whitespace-nowrap text-fg-faint"
-      >{$filteredClaims.length} fait{$filteredClaims.length !== 1 ? "s" : ""}</span>
+      >{$filteredClaims.length} fait{$filteredClaims.length !== 1
+        ? "s"
+        : ""}</span>
   </div>
 
-  <div class="max-h-[calc(100vh-240px)] overflow-auto rounded-lg border border-surface">
+  <div
+    class="max-h-[calc(100vh-240px)] overflow-auto rounded-lg border border-surface">
     <table class="w-full border-collapse text-sm">
       <thead class="sticky top-0 z-1">
         <tr>
@@ -57,12 +65,15 @@
               class="claim-row cursor-pointer border-b border-surface-alt"
               class:expanded={expandedId === claim.id}
               style="--sc: {STATUS_COLOR[claim.status]}"
-              onclick={() => (expandedId = expandedId === claim.id ? null : claim.id)}>
+              onclick={() =>
+                (expandedId = expandedId === claim.id ? null : claim.id)}>
               <td
                 class="w-20 px-3.5 py-2.5 align-top text-xs whitespace-nowrap tabular-nums text-fg-faint"
                 >{formatTime(claim.timestamp)}</td>
               <td class="w-32.5 px-3.5 py-2.5 align-top whitespace-nowrap">
-                <span class="text-sm font-medium" style="color: {STATUS_COLOR[claim.status]}">
+                <span
+                  class="text-sm font-medium"
+                  style="color: {STATUS_COLOR[claim.status]}">
                   {STATUS_ICON[claim.status]}
                   {STATUS_LABEL[claim.status]}
                 </span>

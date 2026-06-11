@@ -1,6 +1,6 @@
 ﻿<script lang="ts">
-  import Button from "$lib/components/Button.svelte";
-  import ClaimCard from "$lib/components/ClaimCard.svelte";
+  import Button from "$lib/components/ui/Button.svelte";
+  import ClaimCard from "$lib/components/features/claims/ClaimCard.svelte";
   import { authFetch, clearToken } from "$lib/stores/auth";
   import type { Claim } from "$lib/stores/claims";
 
@@ -109,7 +109,9 @@
         turns: data.turns,
         usage: data.usage,
         model: data.model,
-        web_search_called: (data.claims ?? []).some((c: any) => c.web_search_used)
+        web_search_called: (data.claims ?? []).some(
+          (c: any) => c.web_search_used
+        )
       };
     } catch (err) {
       error = err instanceof Error ? err.message : "Erreur inconnue";
@@ -133,7 +135,8 @@
 <header>
   <h1 class="mt-0 mb-1.5 text-2xl">🧪 Test de la pipeline</h1>
   <p class="mt-0 mb-6 text-sm text-fg-muted">
-    Envoie un texte directement à l'extraction + vérification de claims (POST /fact-check).
+    Envoie un texte directement à l'extraction + vérification de claims (POST
+    /fact-check).
   </p>
 </header>
 
@@ -147,8 +150,10 @@
 
   <div class="mt-3 flex items-center gap-2">
     <div class="relative">
-      <Button variant="secondary" type="button" onclick={() => (menuOpen = !menuOpen)}
-        >Exemples ▾</Button>
+      <Button
+        variant="secondary"
+        type="button"
+        onclick={() => (menuOpen = !menuOpen)}>Exemples ▾</Button>
       {#if menuOpen}
         <button
           type="button"
@@ -164,17 +169,24 @@
                 class="flex w-full cursor-pointer flex-col gap-0.5 rounded-lg bg-transparent px-2.5 py-2 text-left transition-[background] duration-120 hover:bg-surface-raised"
                 onclick={() => loadExample(ex.text)}>
                 <span class="text-sm font-medium text-fg">{ex.label}</span>
-                <span class="text-2xs font-normal text-fg-faint">{ex.hint}</span>
+                <span class="text-2xs font-normal text-fg-faint"
+                  >{ex.hint}</span>
               </button>
             </li>
           {/each}
         </ul>
       {/if}
     </div>
-    <Button variant="secondary" type="button" onclick={() => (text = "")} disabled={!text}>
+    <Button
+      variant="secondary"
+      type="button"
+      onclick={() => (text = "")}
+      disabled={!text}>
       Vider
     </Button>
-    <label class="switch ml-auto" title="Activer / désactiver la recherche web pour cette analyse">
+    <label
+      class="switch ml-auto"
+      title="Activer / désactiver la recherche web pour cette analyse">
       <input type="checkbox" bind:checked={webSearch} />
       <span class="track"><span class="thumb"></span></span>
       <span class="switch-label">{webSearch ? "🌐 Web" : "🧠 Sans web"}</span>
@@ -206,7 +218,8 @@
     <h2 class="m-0 text-lg">
       {claims.length} claim{claims.length > 1 ? "s" : ""}
     </h2>
-    <span class="text-sm tabular-nums text-fg-faint">{(elapsed / 1000).toFixed(1)} s</span>
+    <span class="text-sm tabular-nums text-fg-faint"
+      >{(elapsed / 1000).toFixed(1)} s</span>
   </div>
 
   {#if debug}
@@ -223,7 +236,8 @@
           class="rounded-full border px-2 py-0.5 text-2xs font-medium whitespace-nowrap {debug.turns ===
           2
             ? 'border-amber-500/20 bg-amber-500/10 text-amber-400'
-            : 'border-green-500/20 bg-green-500/10 text-green-400'}">{debug.turns}</span>
+            : 'border-green-500/20 bg-green-500/10 text-green-400'}"
+          >{debug.turns}</span>
       </span>
       <span class="text-surface-selected">·</span>
       <span class="flex items-center gap-1.5">
@@ -238,13 +252,17 @@
       <span class="text-surface-selected">·</span>
       <span class="flex items-center gap-1.5">
         <span class="text-fg-faint">Tokens</span>
-        <span>{(debug.usage.input_tokens + debug.usage.output_tokens).toLocaleString()}</span>
+        <span
+          >{(
+            debug.usage.input_tokens + debug.usage.output_tokens
+          ).toLocaleString()}</span>
       </span>
       {#if debug.usage.cache_read > 0}
         <span class="text-surface-selected">·</span>
         <span class="flex items-center gap-1.5">
           <span class="text-fg-faint">Cache hit</span>
-          <span class="font-medium text-green-400">{cacheRatio(debug.usage)}</span>
+          <span class="font-medium text-green-400"
+            >{cacheRatio(debug.usage)}</span>
         </span>
       {/if}
     </div>

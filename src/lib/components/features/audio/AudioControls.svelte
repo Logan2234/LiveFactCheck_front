@@ -1,13 +1,16 @@
 ﻿<script lang="ts">
+  import LanguageSelector from "$lib/components/features/LanguageSelector.svelte";
+  import { languageName } from "$lib/languages";
   import {
+    audioError,
+    isMuted,
     recordingState,
     startRecording,
     stopRecording,
-    isMuted,
-    toggleMute,
-    audioError
+    toggleMute
   } from "$lib/stores/audio";
-  import { wsStatus } from "$lib/websocket";
+  import { transcriptionLanguage } from "$lib/stores/transcription";
+  import { detectedLanguage, wsStatus } from "$lib/websocket";
 
   let isRecording = $derived($recordingState === "recording");
   let status = $derived($wsStatus);
@@ -16,7 +19,7 @@
     if (isRecording) {
       stopRecording();
     } else {
-      startRecording();
+      void startRecording();
     }
   }
 
@@ -59,6 +62,20 @@
       aria-label={$isMuted ? "Réactiver le micro" : "Couper le micro"}>
       {$isMuted ? "🔇" : "🎙"}
     </button>
+  {/if}
+
+  <LanguageSelector />
+
+  {#if $transcriptionLanguage === "auto" && $detectedLanguage}
+    <span
+      class="flex items-center gap-1 rounded-full border border-edge bg-surface px-2.5 py-1 text-2xs text-fg-muted"
+      title="Langue détectée automatiquement">
+      <span aria-hidden="true">🌐</span>
+      <span class="font-medium text-fg"
+        >{languageName($detectedLanguage.code)}</span>
+      <span class="text-fg-faint"
+        >{Math.round($detectedLanguage.probability * 100)} %</span>
+    </span>
   {/if}
 
   <span class="text-sm text-fg-muted">
