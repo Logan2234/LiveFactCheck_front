@@ -46,7 +46,7 @@
     label: string;
     color: BadgeColor;
   } {
-    if (logprob > -0.3) return { label: "Ã©levÃ©e", color: "green" };
+    if (logprob > -0.3) return { label: "élevée", color: "green" };
     if (logprob > -0.8) return { label: "moyenne", color: "amber" };
     return { label: "faible", color: "red" };
   }
@@ -74,7 +74,7 @@
       result = await res.json();
       if (result?.error) error = result.error;
     } catch (e) {
-      error = e instanceof Error ? e.message : "Erreur rÃ©seau";
+      error = e instanceof Error ? e.message : "Erreur réseau";
     } finally {
       loading = false;
     }
@@ -82,13 +82,13 @@
 </script>
 
 <svelte:head>
-  <title>Test Whisper â€” Admin</title>
+  <title>Test Whisper — Admin</title>
 </svelte:head>
 
 <header>
   <h1 class="mt-0 mb-1 text-2xl">ðŸŽ™ï¸ Test Whisper</h1>
   <p class="mt-0 mb-6 text-sm text-fg-muted">
-    Transcris un fichier audio et inspecte les segments, la langue dÃ©tectÃ©e et
+    Transcris un fichier audio et inspecte les segments, la langue détectée et
     les scores de confiance.
   </p>
 </header>
@@ -149,7 +149,7 @@
 
 {#if loading}
   <div class="mb-4">
-    <LoadingSpinner message="En cours â€” peut prendre quelques secondesâ€¦" />
+    <LoadingSpinner message="En cours — peut prendre quelques secondesâ€¦" />
   </div>
 {/if}
 
@@ -158,9 +158,9 @@
 {/if}
 
 {#if result && !error}
-  <!-- MÃ©triques globales -->
+  <!-- Métriques globales -->
   <div class="mb-4 flex flex-wrap gap-3">
-    {#each [{ label: "Langue", value: `${result.language.toUpperCase()} (${(result.language_probability * 100).toFixed(0)} %)` }, ...(result.duration_s !== null ? [{ label: "DurÃ©e audio", value: `${result.duration_s} s` }] : []), { label: "Temps transcription", value: `${result.elapsed_ms} ms` }, { label: "Segments", value: String(result.segments.length) }] as stat (stat.label)}
+    {#each [{ label: "Langue", value: `${result.language.toUpperCase()} (${(result.language_probability * 100).toFixed(0)} %)` }, ...(result.duration_s !== null ? [{ label: "Durée audio", value: `${result.duration_s} s` }] : []), { label: "Temps transcription", value: `${result.elapsed_ms} ms` }, { label: "Segments", value: String(result.segments.length) }] as stat (stat.label)}
       <div
         class="flex min-w-27.5 flex-col gap-1 rounded-xl border border-edge bg-surface-alt px-4 py-2.5">
         <span class="text-2xs text-fg-faint">{stat.label}</span>
@@ -175,7 +175,7 @@
       class="mb-4 rounded-xl border border-edge bg-surface-alt px-5 py-4">
       <div
         class="mb-3 border-b border-surface-raised pb-2.5 text-sm font-semibold text-fg">
-        Transcription complÃ¨te
+        Transcription complète
       </div>
       <p class="m-0 text-sm leading-relaxed whitespace-pre-wrap text-fg">
         {result.text}
@@ -184,7 +184,7 @@
   {:else}
     <p
       class="rounded-xl border border-dashed border-edge bg-surface-term p-6 text-center text-sm text-fg-faint">
-      Aucun contenu vocal dÃ©tectÃ© (VAD filtre les silences).
+      Aucun contenu vocal détecté (VAD filtre les silences).
     </p>
   {/if}
 
@@ -199,7 +199,7 @@
       <table class="w-full border-collapse text-sm">
         <thead>
           <tr>
-            {#each ["DÃ©but", "Fin", "Texte", "Confiance", "No-speech"] as col (col)}
+            {#each ["Début", "Fin", "Texte", "Confiance", "No-speech"] as col (col)}
               <th
                 class="border-b border-surface-raised px-2 pt-0 pb-2 text-left text-2xs font-medium text-fg-faint"
                 >{col}</th>

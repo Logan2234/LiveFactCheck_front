@@ -66,7 +66,7 @@
     menuOpen = false;
   }
 
-  function toClaim(raw: any, i: number): Claim {
+  function toClaim(raw: Partial<Claim>, i: number): Claim {
     return {
       id: `test-${i}`,
       text: raw.text ?? "",
@@ -110,7 +110,7 @@
         usage: data.usage,
         model: data.model,
         web_search_called: (data.claims ?? []).some(
-          (c: any) => c.web_search_used
+          (c: Partial<Claim>) => c.web_search_used
         )
       };
     } catch (err) {

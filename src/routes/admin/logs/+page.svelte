@@ -60,7 +60,7 @@
         logBox?.scrollTo({ top: logBox.scrollHeight, behavior: "smooth" });
       }
     } catch {
-      error = "Connexion perdue â€” nouvelle tentativeâ€¦";
+      error = "Connexion perdue — nouvelle tentativeâ€¦";
     }
   }
 
@@ -78,7 +78,7 @@
 </script>
 
 <svelte:head>
-  <title>Logs â€” Admin</title>
+  <title>Logs — Admin</title>
 </svelte:head>
 
 <header>
@@ -86,7 +86,7 @@
     <h1 class="mt-0 mb-1 text-2xl">ðŸ“œ Logs</h1>
     <p class="mt-0 mb-5 text-sm text-fg-muted">
       Flux en direct du logger <code class="font-mono text-fg-muted"
-        >app.*</code> â€” rafraÃ®chissement toutes les 1,5 s.
+        >app.*</code> — rafraîchissement toutes les 1,5 s.
     </p>
   </div>
 </header>
@@ -103,7 +103,7 @@
       {/each}
     </select>
     <span class="text-xs tabular-nums text-fg-faint"
-      >{visible.length} entrÃ©e{visible.length !== 1 ? "s" : ""}</span>
+      >{visible.length} entrée{visible.length !== 1 ? "s" : ""}</span>
   </div>
   <div class="flex items-center gap-2.5">
     <label
@@ -135,7 +135,7 @@
   bind:this={logBox}>
   {#if visible.length === 0}
     <div class="py-4 text-center text-sm text-edge-hi">
-      Aucun log â€” les messages apparaÃ®tront dÃ¨s que le backend Ã©met quelque
+      Aucun log — les messages apparaîtront dès que le backend émet quelque
       chose.
     </div>
   {:else}
@@ -156,7 +156,7 @@
 </div>
 
 <style>
-  /* Per-level colors use dynamic compound selectors â€” can't be expressed as utilities. */
+  /* Per-level colors use dynamic compound selectors — can't be expressed as utilities. */
   .level-debug .lvl {
     color: #5a5a88;
   }

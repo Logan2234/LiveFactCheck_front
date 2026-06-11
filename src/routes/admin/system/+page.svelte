@@ -83,7 +83,7 @@
 
   function formatValue(f: ConfigFieldValue): string {
     if (Array.isArray(f.value))
-      return f.value.length ? f.value.join(", ") : "â€”";
+      return f.value.length ? f.value.join(", ") : "—";
     if (f.value_type === "bool") return f.value ? "Oui" : "Non";
     return String(f.value);
   }
@@ -135,7 +135,7 @@
       lastRefresh = new Date();
       loadError = "";
     } catch (e) {
-      loadError = e instanceof Error ? e.message : "Erreur rÃ©seau";
+      loadError = e instanceof Error ? e.message : "Erreur réseau";
     } finally {
       refreshing = false;
     }
@@ -158,7 +158,7 @@
       if (config) initDrafts(config);
       lastRefresh = new Date();
     } catch (e) {
-      loadError = e instanceof Error ? e.message : "Erreur rÃ©seau";
+      loadError = e instanceof Error ? e.message : "Erreur réseau";
     }
   }
 
@@ -201,7 +201,7 @@
       saved = true;
       setTimeout(() => (saved = false), 2000);
     } catch (e) {
-      saveError = e instanceof Error ? e.message : "Erreur rÃ©seau";
+      saveError = e instanceof Error ? e.message : "Erreur réseau";
     } finally {
       saving = false;
     }
@@ -220,28 +220,28 @@
 </script>
 
 <svelte:head>
-  <title>SystÃ¨me â€” Admin</title>
+  <title>Système — Admin</title>
 </svelte:head>
 
 <header class="mb-6 flex flex-wrap items-start justify-between gap-4">
   <div>
-    <h1 class="mt-0 mb-1 text-2xl">ðŸ–¥ï¸ SystÃ¨me</h1>
+    <h1 class="mt-0 mb-1 text-2xl">ðŸ–¥ï¸ Système</h1>
     <p class="m-0 text-sm text-fg-muted">
-      Ã‰tat du serveur et configuration â€” rafraÃ®chissement automatique toutes
-      les 30 s.
+      État du serveur et configuration — rafraîchissement automatique toutes les
+      30 s.
     </p>
   </div>
   <div class="flex shrink-0 items-center gap-3">
     {#if lastRefresh}
       <span class="text-xs tabular-nums text-fg-faint"
-        >Mis Ã  jour Ã  {formatTime(lastRefresh)}</span>
+        >Mis à jour à {formatTime(lastRefresh)}</span>
     {/if}
     <Button
       variant="secondary"
       size="sm"
       onclick={refreshHealth}
       disabled={refreshing}>
-      {refreshing ? "â€¦" : "â†º RafraÃ®chir"}
+      {refreshing ? "â€¦" : "â†º Rafraîchir"}
     </Button>
   </div>
 </header>
@@ -257,7 +257,7 @@
 {#if health}
   <div
     class="mb-2.5 text-2xs font-semibold tracking-wider text-fg-faint uppercase">
-    Ã‰tat
+    État
   </div>
   <div class="grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-3.5">
     <StatCard title="Serveur" dot="green">
@@ -269,7 +269,7 @@
     </StatCard>
 
     {#if health.memory}
-      <StatCard title="MÃ©moire (processus)" dot="green">
+      <StatCard title="Mémoire (processus)" dot="green">
         <dl class="m-0 flex flex-col gap-2">
           <Field label="RSS" strong>{health.memory.rss_mb} Mo</Field>
           <Field label="VMS">{health.memory.vms_mb} Mo</Field>
@@ -317,7 +317,7 @@
                         checked={drafts[f.key] as boolean}
                         onchange={(e) =>
                           setDraft(f.key, e.currentTarget.checked)} />
-                      {drafts[f.key] ? "ActivÃ©" : "DÃ©sactivÃ©"}
+                      {drafts[f.key] ? "Activé" : "Désactivé"}
                     </label>
                   {:else if f.value_type === "int"}
                     <input
@@ -340,7 +340,7 @@
                 <Field label={f.label}>
                   {#if f.kind === "secret_status"}
                     {#if f.configured}
-                      <StatusBadge color="green" label="ConfigurÃ©" />
+                      <StatusBadge color="green" label="Configuré" />
                     {:else}
                       <StatusBadge color="red" label="Manquant" />
                     {/if}
@@ -356,7 +356,7 @@
             {/each}
 
             {#if block.id === "whisper"}
-              <Field label="ChargÃ©">
+              <Field label="Chargé">
                 <StatusBadge
                   color={health?.whisper_loaded ? "green" : "red"}
                   label={health?.whisper_loaded ? "Oui" : "Non"} />
@@ -368,18 +368,18 @@
     {/each}
   </div>
 
-  <!-- â”€â”€ Barre d'action (les Ã©ditions peuvent couvrir plusieurs blocs) â”€â”€ -->
+  <!-- â”€â”€ Barre d'action (les éditions peuvent couvrir plusieurs blocs) â”€â”€ -->
   {#if saveError}
     <Alert message={saveError} type="error" class="mt-4" />
   {/if}
 
   <div class="mt-4 flex flex-wrap items-center justify-between gap-3">
-    <Alert type="warning" message={`âš  ${config.note}`} />
+    <Alert type="warning" message={`âš  ${config.note}`} />
     <div class="flex gap-2">
       <Button variant="secondary" onclick={reset} disabled={!dirty || saving}
         >Annuler</Button>
       <Button onclick={save} disabled={!dirty || saving}>
-        {#if saving}Enregistrementâ€¦{:else if saved}âœ“ EnregistrÃ©{:else}Enregistrer{/if}
+        {#if saving}Enregistrementâ€¦{:else if saved}âœ“ Enregistré{:else}Enregistrer{/if}
       </Button>
     </div>
   </div>

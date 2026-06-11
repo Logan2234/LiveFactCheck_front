@@ -7,8 +7,8 @@
 
   interface PromptData {
     system_prompt: string;
-    claim_tool: any;
-    web_search_tool: any;
+    claim_tool: unknown;
+    web_search_tool: unknown;
     valid_statuses: string[];
     min_words: number;
     model: string;
@@ -36,7 +36,7 @@
       if (!res.ok) throw new Error(`Erreur ${res.status}`);
       data = await res.json();
     } catch (e) {
-      error = e instanceof Error ? e.message : "Erreur rÃ©seau";
+      error = e instanceof Error ? e.message : "Erreur réseau";
     }
   }
 
@@ -51,13 +51,13 @@
 </script>
 
 <svelte:head>
-  <title>Prompt & Outil â€” Admin</title>
+  <title>Prompt & Outil — Admin</title>
 </svelte:head>
 
 <header>
   <h1 class="mt-0 mb-1 text-2xl">ðŸ“‹ Prompt & Outil Claude</h1>
   <p class="mt-0 mb-6 text-sm text-fg-muted">
-    Configuration exacte envoyÃ©e Ã  l'API Anthropic Ã  chaque appel de
+    Configuration exacte envoyée à l'API Anthropic à chaque appel de
     fact-checking.
   </p>
 </header>
@@ -69,9 +69,9 @@
 {:else}
   <div
     class="mb-6 rounded-lg border border-surface-selected bg-surface-alt px-4 py-2.5 text-sm text-fg-muted">
-    ModÃ¨le actif : <strong class="text-fg">{data.model}</strong>
-    &nbsp;Â·&nbsp; min. <strong class="text-fg">{data.min_words}</strong> mots pour
-    dÃ©clencher une analyse
+    Modèle actif : <strong class="text-fg">{data.model}</strong>
+    &nbsp;·&nbsp; min. <strong class="text-fg">{data.min_words}</strong> mots pour
+    déclencher une analyse
   </div>
 
   {#snippet sectionHeader(key: string, label: string, json?: unknown)}
@@ -87,7 +87,7 @@
               : data!.system_prompt
           )}>
         {copied === key
-          ? "âœ“ CopiÃ©"
+          ? "âœ“ Copié"
           : json !== undefined
             ? "Copier JSON"
             : "Copier"}
@@ -96,7 +96,7 @@
   {/snippet}
 
   <section class="mb-8">
-    {@render sectionHeader("prompt", "Prompt systÃ¨me")}
+    {@render sectionHeader("prompt", "Prompt système")}
     <pre
       class="m-0 max-h-100 overflow-x-auto overflow-y-auto rounded-xl border border-edge bg-surface-term px-5 py-4 font-mono text-xs leading-relaxed wrap-break-word whitespace-pre-wrap text-fg">{data.system_prompt}</pre>
   </section>

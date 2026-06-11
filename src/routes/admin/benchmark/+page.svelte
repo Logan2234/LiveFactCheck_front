@@ -19,7 +19,7 @@
   let withWeb = $state<Side>({ claims: null, elapsed: 0, error: "" });
   let withoutWeb = $state<Side>({ claims: null, elapsed: 0, error: "" });
 
-  function toClaim(raw: any, i: number): Claim {
+  function toClaim(raw: Partial<Claim>, i: number): Claim {
     return {
       id: `bench-${i}`,
       text: raw.text ?? "",
@@ -45,7 +45,7 @@
       const elapsed = Math.round(performance.now() - start);
       if (res.status === 401) {
         clearToken();
-        return { claims: null, elapsed, error: "Session expirÃ©e" };
+        return { claims: null, elapsed, error: "Session expirée" };
       }
       if (!res.ok) {
         const detail = await res.json().catch(() => null);
@@ -61,7 +61,7 @@
       return {
         claims: null,
         elapsed: Math.round(performance.now() - start),
-        error: e instanceof Error ? e.message : "Erreur rÃ©seau"
+        error: e instanceof Error ? e.message : "Erreur réseau"
       };
     }
   }
@@ -102,13 +102,13 @@
 </script>
 
 <svelte:head>
-  <title>Benchmark â€” Admin</title>
+  <title>Benchmark — Admin</title>
 </svelte:head>
 
 <header>
   <h1 class="mt-0 mb-1 text-2xl">âš¡ Benchmark</h1>
   <p class="mt-0 mb-6 text-sm text-fg-muted">
-    Compare le mÃªme texte avec et sans recherche web en parallÃ¨le.
+    Compare le mÃªme texte avec et sans recherche web en parallèle.
   </p>
 </header>
 
@@ -116,7 +116,7 @@
   <textarea
     bind:value={text}
     rows="5"
-    placeholder="Colle un texte Ã  analyserâ€¦"
+    placeholder="Colle un texte à analyserâ€¦"
     disabled={loading}
     class="box-border w-full resize-y rounded-xl border border-edge bg-surface-alt px-4 py-3.5 font-[inherit] text-base leading-normal text-fg transition-[border-color] duration-150 focus:border-accent focus:outline-none disabled:opacity-50"
   ></textarea>
@@ -135,7 +135,7 @@
 
 {#if loading}
   <div class="grid grid-cols-2 gap-5">
-    {#each ["ðŸŒ Avec web search", "ðŸ§  Sans web search"] as label (label)}
+    {#each ["ðŸŒ Avec web search", "ðŸ§  Sans web search"] as label (label)}
       <div class="flex min-w-0 flex-col gap-3">
         <div
           class="flex flex-wrap items-center gap-2 border-b border-edge pb-2 text-sm font-semibold text-fg">
@@ -156,7 +156,7 @@
     </div>
   {/if}
   <div class="grid grid-cols-2 gap-5">
-    {#each [{ label: "ðŸŒ Avec web search", side: withWeb }, { label: "ðŸ§  Sans web search", side: withoutWeb }] as { label, side } (label)}
+    {#each [{ label: "ðŸŒ Avec web search", side: withWeb }, { label: "ðŸ§  Sans web search", side: withoutWeb }] as { label, side } (label)}
       <div class="flex min-w-0 flex-col gap-3">
         <div
           class="flex flex-wrap items-center gap-2 border-b border-edge pb-2 text-sm font-semibold text-fg">
@@ -177,7 +177,7 @@
         {:else if side.claims !== null && side.claims.length === 0}
           <p
             class="m-0 rounded-xl border border-dashed border-edge bg-surface-alt p-5 text-center text-sm text-fg-muted">
-            Aucun fait vÃ©rifiable trouvÃ©.
+            Aucun fait vérifiable trouvé.
           </p>
         {:else if side.claims !== null}
           <div class="flex flex-col gap-3">
