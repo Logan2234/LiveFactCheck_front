@@ -3,6 +3,7 @@
   import { page } from "$app/state";
   import type { RouteId } from "$app/types";
   import Button from "$lib/components/Button.svelte";
+  import ThemeToggle from "$lib/components/ThemeToggle.svelte";
   import { clearToken, getToken, token } from "$lib/stores/auth";
   import { navigate } from "$lib/utils/navigation";
   import { onMount } from "svelte";
@@ -59,7 +60,7 @@
             class={[
               "items-center flex gap-2.5 rounded-lg px-3 py-2.5 text-sm no-underline transition-[background,color] duration-150",
               page.url.pathname === item.href
-                ? "bg-surface-selected text-white"
+                ? "bg-surface-selected text-fg"
                 : "text-fg-muted hover:bg-surface hover:text-fg"
             ]}>
             <span>{item.icon}</span>
@@ -68,6 +69,7 @@
         {/each}
       </nav>
       <div class="mt-auto flex flex-col gap-2">
+        <ThemeToggle />
         <a
           class="px-3 py-1.5 text-sm text-fg-faint no-underline hover:text-fg-muted"
           href={resolve("/")}>↩ Application live</a>

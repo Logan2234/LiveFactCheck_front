@@ -27,7 +27,7 @@
 
 <div class="rounded-xl border border-edge bg-surface-alt px-4 py-4 {accent}">
   <div
-    class="mb-3.5 flex items-center gap-2 border-b border-surface-raised pb-2.5 text-sm font-semibold text-slate-200">
+    class="mb-3.5 flex items-center gap-2 border-b border-surface-raised pb-2.5 text-sm font-semibold text-fg">
     {#if icon}
       <span class="text-base leading-none">{icon}</span>
     {:else if dot !== "none"}

@@ -8,4 +8,4 @@ export const CATEGORY_COLORS: Record<string, string> = {
   société: "#ec4899",
   technologie: "#6366f1",
   autre: "#6b7280"
-} ;
+};

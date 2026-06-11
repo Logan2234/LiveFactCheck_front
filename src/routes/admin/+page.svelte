@@ -142,7 +142,7 @@
     bind:value={text}
     rows="6"
     placeholder="Colle ou écris un texte à analyser…"
-    class="box-border w-full resize-y rounded-xl border border-edge bg-surface-alt px-4 py-3.5 font-[inherit] text-base leading-normal text-slate-100 transition-[border-color] duration-150 focus:border-accent focus:outline-none"
+    class="box-border w-full resize-y rounded-xl border border-edge bg-surface-alt px-4 py-3.5 font-[inherit] text-base leading-normal text-fg transition-[border-color] duration-150 focus:border-accent focus:outline-none"
   ></textarea>
 
   <div class="mt-3 flex items-center gap-2">
@@ -163,7 +163,7 @@
                 type="button"
                 class="flex w-full cursor-pointer flex-col gap-0.5 rounded-lg bg-transparent px-2.5 py-2 text-left transition-[background] duration-120 hover:bg-surface-raised"
                 onclick={() => loadExample(ex.text)}>
-                <span class="text-sm font-medium text-slate-100">{ex.label}</span>
+                <span class="text-sm font-medium text-fg">{ex.label}</span>
                 <span class="text-2xs font-normal text-fg-faint">{ex.hint}</span>
               </button>
             </li>
@@ -211,7 +211,7 @@
 
   {#if debug}
     <div
-      class="mb-3.5 flex flex-wrap items-center gap-x-2.5 gap-y-1.5 rounded-lg border border-surface bg-[#0e0e1c] px-3.5 py-2 text-xs text-fg-faint">
+      class="mb-3.5 flex flex-wrap items-center gap-x-2.5 gap-y-1.5 rounded-lg border border-surface bg-surface-term px-3.5 py-2 text-xs text-fg-faint">
       <span class="flex items-center gap-1.5">
         <span class="text-fg-faint">Modèle</span>
         <code class="font-mono text-2xs text-fg-muted">{debug.model}</code>

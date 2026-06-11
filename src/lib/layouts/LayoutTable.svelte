@@ -14,8 +14,8 @@
           class={[
             "cursor-pointer rounded-[20px] border px-3 py-1.5 text-sm transition-all duration-150",
             $claimFilter === key
-              ? "border-accent-dim bg-surface-selected text-white"
-              : "border-edge bg-surface text-zinc-400 hover:border-zinc-600 hover:text-zinc-200"
+              ? "border-accent-dim bg-surface-selected text-fg"
+              : "border-edge bg-surface text-fg-muted hover:border-edge-hi hover:text-fg"
           ]}
           onclick={() => claimFilter.set(key)}>
           {icon}
@@ -23,7 +23,7 @@
         </button>
       {/each}
     </div>
-    <span class="text-sm whitespace-nowrap text-zinc-600"
+    <span class="text-sm whitespace-nowrap text-fg-faint"
       >{$filteredClaims.length} fait{$filteredClaims.length !== 1 ? "s" : ""}</span>
   </div>
 
@@ -32,23 +32,23 @@
       <thead class="sticky top-0 z-1">
         <tr>
           <th
-            class="w-20 border-b border-edge bg-surface px-3.5 py-2.5 text-left text-xs font-semibold tracking-wider text-zinc-600 uppercase"
+            class="w-20 border-b border-edge bg-surface px-3.5 py-2.5 text-left text-xs font-semibold tracking-wider text-fg-faint uppercase"
             >Heure</th>
           <th
-            class="w-32.5 border-b border-edge bg-surface px-3.5 py-2.5 text-left text-xs font-semibold tracking-wider text-zinc-600 uppercase"
+            class="w-32.5 border-b border-edge bg-surface px-3.5 py-2.5 text-left text-xs font-semibold tracking-wider text-fg-faint uppercase"
             >Statut</th>
           <th
-            class="min-w-50 border-b border-edge bg-surface px-3.5 py-2.5 text-left text-xs font-semibold tracking-wider text-zinc-600 uppercase"
+            class="min-w-50 border-b border-edge bg-surface px-3.5 py-2.5 text-left text-xs font-semibold tracking-wider text-fg-faint uppercase"
             >Affirmation</th>
           <th
-            class="min-w-45 border-b border-edge bg-surface px-3.5 py-2.5 text-left text-xs font-semibold tracking-wider text-zinc-600 uppercase"
+            class="min-w-45 border-b border-edge bg-surface px-3.5 py-2.5 text-left text-xs font-semibold tracking-wider text-fg-faint uppercase"
             >Explication</th>
         </tr>
       </thead>
       <tbody>
         {#if $filteredClaims.length === 0}
           <tr>
-            <td colspan="4" class="p-12 text-center text-zinc-700"
+            <td colspan="4" class="p-12 text-center text-fg-faint"
               >Aucun fait détecté pour le moment...</td>
           </tr>
         {:else}
@@ -59,7 +59,7 @@
               style="--sc: {STATUS_COLOR[claim.status]}"
               onclick={() => (expandedId = expandedId === claim.id ? null : claim.id)}>
               <td
-                class="w-20 px-3.5 py-2.5 align-top text-xs whitespace-nowrap tabular-nums text-zinc-600"
+                class="w-20 px-3.5 py-2.5 align-top text-xs whitespace-nowrap tabular-nums text-fg-faint"
                 >{formatTime(claim.timestamp)}</td>
               <td class="w-32.5 px-3.5 py-2.5 align-top whitespace-nowrap">
                 <span class="text-sm font-medium" style="color: {STATUS_COLOR[claim.status]}">
@@ -70,7 +70,7 @@
               <td class="min-w-50 px-3.5 py-2.5 align-top">
                 <span
                   class={[
-                    "leading-snug text-zinc-300 italic",
+                    "leading-snug text-fg italic",
                     expandedId !== claim.id && "line-clamp-2"
                   ]}>
                   {claim.text}
@@ -80,13 +80,13 @@
                 {#if claim.explanation}
                   <span
                     class={[
-                      "text-sm leading-snug text-zinc-500",
+                      "text-sm leading-snug text-fg-muted",
                       expandedId !== claim.id && "line-clamp-2"
                     ]}>
                     {claim.explanation}
                   </span>
                 {:else if claim.status === "pending"}
-                  <span class="text-xs text-zinc-700 italic">analyse...</span>
+                  <span class="text-xs text-fg-faint italic">analyse...</span>
                 {/if}
               </td>
             </tr>
@@ -108,7 +108,7 @@
   }
 
   .claim-row:hover {
-    background: #1c1c2c;
+    background: var(--color-surface-raised);
     border-left-color: var(--sc);
   }
 

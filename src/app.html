@@ -5,6 +5,25 @@
     <title>LiveFactChecker</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="text-scale" content="scale" />
+    <script>
+      // Anti-FOUC: set the concrete theme on <html> before first paint, mirroring
+      // lib/stores/theme.ts. Dark is the default when nothing is stored.
+      (function () {
+        try {
+          var pref = localStorage.getItem("lfc_theme");
+          if (pref !== "light" && pref !== "dark" && pref !== "auto") pref = "dark";
+          var resolved =
+            pref === "auto"
+              ? window.matchMedia("(prefers-color-scheme: dark)").matches
+                ? "dark"
+                : "light"
+              : pref;
+          document.documentElement.setAttribute("data-theme", resolved);
+        } catch (e) {
+          document.documentElement.setAttribute("data-theme", "dark");
+        }
+      })();
+    </script>
     %sveltekit.head%
   </head>
   <body data-sveltekit-preload-data="hover">

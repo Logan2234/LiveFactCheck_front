@@ -69,7 +69,7 @@
   let interval: ReturnType<typeof setInterval>;
 
   const controlClass =
-    "rounded-lg border border-edge-hi bg-[#0e0e1c] px-3 py-2 text-sm text-fg transition-[border-color] duration-150 focus:border-accent focus:outline-none";
+    "rounded-lg border border-edge-hi bg-surface-term px-3 py-2 text-sm text-fg transition-[border-color] duration-150 focus:border-accent focus:outline-none";
   const selectClass = `cursor-pointer appearance-auto ${controlClass}`;
 
   function formatUptime(s: number): string {
@@ -297,7 +297,7 @@
                     </select>
                   {:else if f.value_type === "bool"}
                     <label
-                      class="inline-flex cursor-pointer items-center gap-2 text-sm text-slate-300">
+                      class="inline-flex cursor-pointer items-center gap-2 text-sm text-fg-muted">
                       <input
                         type="checkbox"
                         checked={drafts[f.key] as boolean}

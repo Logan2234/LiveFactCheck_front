@@ -90,7 +90,7 @@
       <span
         class={[
           "flex items-center gap-1.5 text-base font-semibold",
-          data.active.length > 0 ? "text-green-400" : "text-slate-100"
+          data.active.length > 0 ? "text-green-400" : "text-fg"
         ]}>
         {#if data.active.length > 0}
           <span class="pulse h-2 w-2 shrink-0 rounded-full bg-green-500"></span>
@@ -101,13 +101,13 @@
     <div
       class="flex min-w-32.5 flex-col gap-1 rounded-xl border border-edge bg-surface-alt px-4 py-2.5">
       <span class="text-2xs text-fg-faint">Total depuis démarrage</span>
-      <span class="text-base font-semibold text-slate-100">{data.total_since_start}</span>
+      <span class="text-base font-semibold text-fg">{data.total_since_start}</span>
     </div>
     {#if data.active.length > 0}
       <div
         class="flex min-w-32.5 flex-col gap-1 rounded-xl border border-edge bg-surface-alt px-4 py-2.5">
         <span class="text-2xs text-fg-faint">Tasks Claude en cours</span>
-        <span class="text-base font-semibold text-slate-100">
+        <span class="text-base font-semibold text-fg">
           {data.active.reduce((acc, s) => acc + s.active_tasks, 0)}
         </span>
       </div>
@@ -117,7 +117,7 @@
   <!-- Sessions actives -->
   {#if data.active.length === 0}
     <div
-      class="flex flex-col items-center gap-2.5 rounded-xl border border-dashed border-edge bg-[#0e0e1c] px-4 py-12 text-center text-sm text-fg-faint">
+      class="flex flex-col items-center gap-2.5 rounded-xl border border-dashed border-edge bg-surface-term px-4 py-12 text-center text-sm text-fg-faint">
       <span class="text-3xl">🔇</span>
       <span>Aucune connexion active — l'application live n'est pas ouverte.</span>
     </div>
@@ -161,7 +161,7 @@
 
           {#if session.last_transcript}
             <div
-              class="flex flex-col gap-1 rounded-lg border border-surface bg-[#0e0e1c] px-3 py-2">
+              class="flex flex-col gap-1 rounded-lg border border-surface bg-surface-term px-3 py-2">
               <span class="text-2xs tracking-wide text-fg-faint uppercase">Dernier transcript</span>
               <span class="text-xs leading-snug text-fg-muted italic">
                 {session.last_transcript}{session.last_transcript.length >= 120 ? "…" : ""}

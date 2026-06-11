@@ -61,4 +61,6 @@ Aucun test aujourd'hui (pas de script de test dans `package.json`, cf. CLAUDE.md
 
 ## UI
 
-- [ ] Dark mode
+- [x] Light mode — thème clair via tokens (`app.css`), bascule auto/clair/sombre
+      (`stores/theme.ts` + `ThemeToggle.svelte`), dark par défaut. Bandeau Ticker
+      laissé volontairement sombre/rouge (identité « breaking news »).

@@ -110,7 +110,7 @@
     rows="5"
     placeholder="Colle un texte à analyser…"
     disabled={loading}
-    class="box-border w-full resize-y rounded-xl border border-edge bg-surface-alt px-4 py-3.5 font-[inherit] text-base leading-normal text-slate-100 transition-[border-color] duration-150 focus:border-accent focus:outline-none disabled:opacity-50"
+    class="box-border w-full resize-y rounded-xl border border-edge bg-surface-alt px-4 py-3.5 font-[inherit] text-base leading-normal text-fg transition-[border-color] duration-150 focus:border-accent focus:outline-none disabled:opacity-50"
   ></textarea>
   <div class="mt-3 flex items-center gap-2">
     <Button variant="secondary" onclick={() => (text = "")} disabled={!text || loading}>
@@ -127,7 +127,7 @@
     {#each ["🌐 Avec web search", "🧠 Sans web search"] as label (label)}
       <div class="flex min-w-0 flex-col gap-3">
         <div
-          class="flex flex-wrap items-center gap-2 border-b border-edge pb-2 text-sm font-semibold text-slate-200">
+          class="flex flex-wrap items-center gap-2 border-b border-edge pb-2 text-sm font-semibold text-fg">
           {label}
         </div>
         <div class="rounded-xl border border-dashed border-edge bg-surface-alt p-6">
@@ -139,7 +139,7 @@
 {:else if ran}
   {#if delta()}
     <div
-      class="mb-4 rounded-lg border border-surface-selected bg-[#1a1a30] px-4 py-2 text-center text-sm text-fg-muted">
+      class="mb-4 rounded-lg border border-surface-selected bg-surface-raised px-4 py-2 text-center text-sm text-fg-muted">
       {delta()}
     </div>
   {/if}
@@ -147,7 +147,7 @@
     {#each [{ label: "🌐 Avec web search", side: withWeb }, { label: "🧠 Sans web search", side: withoutWeb }] as { label, side } (label)}
       <div class="flex min-w-0 flex-col gap-3">
         <div
-          class="flex flex-wrap items-center gap-2 border-b border-edge pb-2 text-sm font-semibold text-slate-200">
+          class="flex flex-wrap items-center gap-2 border-b border-edge pb-2 text-sm font-semibold text-fg">
           {label}
           <span
             class="rounded-full border border-edge-hi bg-surface-raised px-2 py-0.5 text-xs font-normal tabular-nums text-fg-muted">

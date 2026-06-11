@@ -14,7 +14,7 @@
 <div class="flex h-[calc(100vh-160px)] min-h-125 flex-col gap-0">
   <!-- Main transcript area -->
   <div
-    class="flex flex-1 flex-col overflow-hidden rounded-t-[10px] border border-b-0 border-[#1e1e3e] bg-[#0d0d1a]">
+    class="flex flex-1 flex-col overflow-hidden rounded-t-[10px] border border-b-0 border-edge bg-surface">
     <div class="flex items-center gap-3 border-b border-surface-selected bg-surface-alt px-5 py-3">
       <h2 class="m-0 text-xl">📡 LiveFactChecker — En direct</h2>
       <div class="live-dot ml-auto h-2.5 w-2.5 rounded-full bg-red-500"></div>
@@ -22,11 +22,11 @@
 
     <div class="flex flex-1 flex-col gap-3 overflow-y-auto px-6 py-4 text-lg leading-[1.7]">
       {#if $reversedTranscript.length === 0}
-        <p class="m-auto text-center text-zinc-700">En attente de la transcription...</p>
+        <p class="m-auto text-center text-fg-faint">En attente de la transcription...</p>
       {:else}
         {#each $reversedTranscript as entry (entry.timestamp)}
           <div class="flex items-baseline gap-3">
-            <span class="mt-1 shrink-0 text-xs tabular-nums text-zinc-700"
+            <span class="mt-1 shrink-0 text-xs tabular-nums text-fg-faint"
               >{formatTime(entry.timestamp)}</span>
             <span class="text-fg">{entry.text}</span>
           </div>
@@ -35,14 +35,14 @@
     </div>
 
     <!-- Stats bar -->
-    <div class="flex gap-6 border-t border-[#1e1e3e] bg-[#0d0d1a] px-5 py-2 text-sm">
+    <div class="flex gap-6 border-t border-edge bg-surface-alt px-5 py-2 text-sm">
       <span class="tabular-nums text-emerald-500"
         >✅ {$claims.filter((c) => c.status === "verified").length} vérifiés</span>
       <span class="tabular-nums text-red-500"
         >❌ {$claims.filter((c) => c.status === "false").length} faux</span>
       <span class="tabular-nums text-amber-500"
         >❓ {$claims.filter((c) => c.status === "uncertain").length} incertains</span>
-      <span class="tabular-nums text-zinc-500">Total: {$claims.length}</span>
+      <span class="tabular-nums text-fg-muted">Total: {$claims.length}</span>
     </div>
   </div>
 
@@ -55,7 +55,7 @@
     </div>
     <div class="flex flex-1 items-center overflow-hidden bg-[#1a0000]">
       {#if tickerContent.length === 0}
-        <div class="px-4 text-sm text-zinc-600">En attente des claims...</div>
+        <div class="px-4 text-sm text-zinc-400">En attente des claims...</div>
       {:else}
         <div
           class="ticker-track flex items-center gap-0 whitespace-nowrap will-change-transform"

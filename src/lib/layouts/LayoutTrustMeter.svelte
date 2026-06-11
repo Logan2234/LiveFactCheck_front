@@ -88,8 +88,10 @@
           fill={gaugeColor}>
           {trustPct}%
         </text>
-        <text x="100" y="112" text-anchor="middle" class="text-sm" fill="#888"> vérifié </text>
-        <text x="100" y="130" text-anchor="middle" class="text-xs" fill="#555">
+        <text x="100" y="112" text-anchor="middle" class="text-sm" fill="var(--color-fg-muted)">
+          vérifié
+        </text>
+        <text x="100" y="130" text-anchor="middle" class="text-xs" fill="var(--color-fg-faint)">
           {finalized} claim{finalized !== 1 ? "s" : ""}
         </text>
       </svg>
@@ -101,7 +103,7 @@
         <div class="flex items-center gap-2 text-sm">
           <span class="h-2.5 w-2.5 shrink-0 rounded-full" style="background: {STATUS_COLOR[key]}"
           ></span>
-          <span class="flex-1 text-zinc-400">{STATUS_LABEL[key]}</span>
+          <span class="flex-1 text-fg-muted">{STATUS_LABEL[key]}</span>
           <span class="font-semibold tabular-nums" style="color: {STATUS_COLOR[key]}"
             >{$claimStats[key]}</span>
         </div>
@@ -110,11 +112,11 @@
 
     <!-- Overall totals -->
     <div class="flex flex-col gap-1.5 border-t border-edge pt-3">
-      <div class="flex justify-between text-sm text-zinc-500">
+      <div class="flex justify-between text-sm text-fg-muted">
         <span>Total analysés</span>
-        <strong class="text-zinc-200">{$claimStats.total}</strong>
+        <strong class="text-fg">{$claimStats.total}</strong>
       </div>
-      <div class="flex justify-between text-sm text-zinc-500">
+      <div class="flex justify-between text-sm text-fg-muted">
         <span>En attente</span>
         <strong class="text-amber-500">{$claimStats.pending}</strong>
       </div>
@@ -136,11 +138,11 @@
           </div>
           <p class="mt-0 mb-1 text-sm text-fg italic">« {c.text} »</p>
           {#if c.explanation}
-            <p class="m-0 text-sm leading-snug text-zinc-500">{c.explanation}</p>
+            <p class="m-0 text-sm leading-snug text-fg-muted">{c.explanation}</p>
           {/if}
         </div>
       {:else}
-        <p class="m-0 p-8 text-center text-zinc-600">Aucun claim détecté...</p>
+        <p class="m-0 p-8 text-center text-fg-faint">Aucun claim détecté...</p>
       {/each}
     </div>
   </div>

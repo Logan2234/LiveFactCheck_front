@@ -32,7 +32,7 @@
   <h2 class="m-0 text-lg">⏱ Timeline des claims</h2>
 
   {#if sorted.length === 0}
-    <div class="p-12 text-center text-zinc-600">
+    <div class="p-12 text-center text-fg-faint">
       <p>Aucun claim détecté pour le moment...</p>
       <p class="mt-2 text-sm">Les claims apparaîtront ici au fil de la conversation.</p>
     </div>
@@ -54,15 +54,15 @@
               style="color: {STATUS_COLOR[selectedClaim.status]}">
               {STATUS_LABEL[selectedClaim.status]}
             </span>
-            <span class="ml-auto text-sm tabular-nums text-zinc-600"
+            <span class="ml-auto text-sm tabular-nums text-fg-faint"
               >{formatTime(selectedClaim.timestamp)}</span>
             <button
-              class="cursor-pointer p-0 text-sm leading-none text-zinc-600 hover:text-zinc-400"
+              class="cursor-pointer p-0 text-sm leading-none text-fg-faint hover:text-fg-muted"
               onclick={() => (selectedClaim = null)}>✕</button>
           </div>
           <p class="mt-0 mb-1 text-sm text-fg italic">« {selectedClaim.text} »</p>
           {#if selectedClaim.explanation}
-            <p class="m-0 text-sm leading-normal text-zinc-500">
+            <p class="m-0 text-sm leading-normal text-fg-muted">
               {selectedClaim.explanation}
             </p>
           {/if}
@@ -125,10 +125,10 @@
 
         <!-- Time labels -->
         {#if sorted.length >= 2}
-          <text x="5" y="62" font-size="4" fill="#555" text-anchor="middle">
+          <text x="5" y="62" font-size="4" fill="var(--color-fg-faint)" text-anchor="middle">
             {formatTime(minTs, { withSeconds: false })}
           </text>
-          <text x="95" y="62" font-size="4" fill="#555" text-anchor="middle">
+          <text x="95" y="62" font-size="4" fill="var(--color-fg-faint)" text-anchor="middle">
             {formatTime(maxTs, { withSeconds: false })}
           </text>
         {/if}
@@ -136,7 +136,7 @@
     </div>
 
     <!-- Hint -->
-    <p class="-mt-2 text-center text-sm text-zinc-700">
+    <p class="-mt-2 text-center text-sm text-fg-faint">
       Cliquez sur un point pour voir les détails.
     </p>
 
@@ -151,8 +151,8 @@
           style="--color: {STATUS_COLOR[c.status]}"
           onclick={() => selectClaim(c)}>
           <span class="mt-px shrink-0 text-sm">{STATUS_ICON[c.status]}</span>
-          <span class="flex-1 text-sm leading-snug text-zinc-300">{c.text}</span>
-          <span class="mt-0.5 shrink-0 text-xs tabular-nums text-zinc-600"
+          <span class="flex-1 text-sm leading-snug text-fg">{c.text}</span>
+          <span class="mt-0.5 shrink-0 text-xs tabular-nums text-fg-faint"
             >{formatTime(c.timestamp)}</span>
         </button>
       {/each}

@@ -1,39 +1,106 @@
 @import "tailwindcss";
 
 /*
-  Design tokens for the LiveFactChecker dark theme.
+  Design tokens for LiveFactChecker.
 
-  Static, recurring palette only.
+  Two themes share one set of token NAMES (--color-surface, --color-fg, …); only
+  their VALUES swap, so components built on `bg-surface` / `text-fg` / `border-edge`
+  follow the theme with no markup change.
+
+  Theme resolution is driven by `data-theme` on <html> (set by lib/stores/theme.ts
+  and the anti-FOUC script in app.html):
+    - dark is the DEFAULT — applied when data-theme is "dark", absent, or "auto"+OS-dark
+    - light is applied for data-theme="light", or "auto"+OS-light
+  The @theme block holds the light palette (Tailwind's compile-time default); the dark
+  values are reapplied at runtime below. Keep the two palettes in sync, key for key.
 */
-/* stylelint-disable-next-line at-rule-no-unknown */
+
+/* Map Tailwind's `dark:` variant onto our attribute strategy, in case a component
+   needs a one-off dark-only tweak. Most styling goes through the swapping tokens. */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
 @theme {
   /* ── Monospace stacks (code/log/terminal views) ── */
   --font-mono: "SF Mono", "Fira Code", monospace;
   --font-term: "Cascadia Code", "Fira Code", "Consolas", "Courier New", monospace;
 
-  /* ── Surfaces (darkest → lightest) ── */
-  --color-background: #121220; /* app bg */
-  --color-surface: #1e1e2e; /* main card / panel */
-  --color-surface-alt: #1a1a2a; /* login, modals, alternate panels */
-  --color-surface-raised: #26263a; /* hover / interactive surfaces */
-  --color-surface-selected: #2e2e4e; /* active / selected state */
+  /* ── LIGHT palette (default) ── */
 
-  /* ── Borders ── */
-  --color-edge: #2e2e3e; /* standard border */
-  --color-edge-hi: #3a3a4e; /* stronger border, focus rings */
+  /* Surfaces (app bg → raised) */
+  --color-background: #f4f4f8; /* app bg */
+  --color-surface: #ffffff; /* main card / panel */
+  --color-surface-alt: #f7f7fb; /* login, modals, alternate panels */
+  --color-surface-raised: #ececf4; /* hover / interactive surfaces */
+  --color-surface-selected: #e2e2f2; /* active / selected state */
+  --color-surface-term: #f3f3f8; /* terminal/log console bg (own light tone) */
+  --color-surface-term-bar: #e8e8f0; /* terminal header bar */
 
-  /* ── Accent (indigo / violet) ── */
-  --color-accent: #5a5ad0;
-  --color-accent-dim: #5555aa;
-  --color-accent-light: #7a7ad0;
+  /* Borders */
+  --color-edge: #d9d9e4; /* standard border */
+  --color-edge-hi: #c4c4d6; /* stronger border, focus rings */
 
-  /* ── Foreground text ── */
-  --color-fg: #e0e0e0; /* body text */
-  --color-fg-muted: #9a9ac0; /* secondary labels */
-  --color-fg-faint: #6a6a88; /* tertiary / hints */
+  /* Accent (indigo / violet) — slightly deeper for contrast on white */
+  --color-accent: #4a4ac8;
+  --color-accent-dim: #6a6ac0;
+  --color-accent-light: #4848b0;
+
+  /* Foreground text (darkest body → faint hint) */
+  --color-fg: #1c1c28; /* body text */
+  --color-fg-muted: #55556e; /* secondary labels */
+  --color-fg-faint: #8a8aa2; /* tertiary / hints */
 
   /* ── Extra text size step (below xs) ── */
   --text-2xs: 0.72rem;
+}
+
+/*
+  DARK palette — the default theme. Applied when data-theme is "dark"/absent, and
+  for "auto" when the OS prefers dark. Same token names, dark values.
+*/
+@layer base {
+  :root,
+  [data-theme="dark"] {
+    --color-background: #121220;
+    --color-surface: #1e1e2e;
+    --color-surface-alt: #1a1a2a;
+    --color-surface-raised: #26263a;
+    --color-surface-selected: #2e2e4e;
+    --color-surface-term: #0d0d0f;
+    --color-surface-term-bar: #111118;
+
+    --color-edge: #2e2e3e;
+    --color-edge-hi: #3a3a4e;
+
+    --color-accent: #5a5ad0;
+    --color-accent-dim: #5555aa;
+    --color-accent-light: #7a7ad0;
+
+    --color-fg: #e0e0e0;
+    --color-fg-muted: #9a9ac0;
+    --color-fg-faint: #6a6a88;
+  }
+
+  /* Explicit light override wins over :root dark when the user picks light. */
+  [data-theme="light"] {
+    --color-background: #f4f4f8;
+    --color-surface: #ffffff;
+    --color-surface-alt: #f7f7fb;
+    --color-surface-raised: #ececf4;
+    --color-surface-selected: #e2e2f2;
+    --color-surface-term: #f3f3f8;
+    --color-surface-term-bar: #e8e8f0;
+
+    --color-edge: #d9d9e4;
+    --color-edge-hi: #c4c4d6;
+
+    --color-accent: #4a4ac8;
+    --color-accent-dim: #6a6ac0;
+    --color-accent-light: #4848b0;
+
+    --color-fg: #1c1c28;
+    --color-fg-muted: #55556e;
+    --color-fg-faint: #8a8aa2;
+  }
 }
 
 @layer base {

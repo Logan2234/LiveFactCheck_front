@@ -38,15 +38,15 @@
         « {shown.text} »
       </blockquote>
       {#if shown.explanation}
-        <p class="m-0 max-w-150 text-base leading-relaxed text-zinc-500">{shown.explanation}</p>
+        <p class="m-0 max-w-150 text-base leading-relaxed text-fg-muted">{shown.explanation}</p>
       {/if}
-      <span class="text-sm tabular-nums text-zinc-700">{formatTime(shown.timestamp)}</span>
+      <span class="text-sm tabular-nums text-fg-faint">{formatTime(shown.timestamp)}</span>
     </div>
   {:else}
     <div
       class="flex min-h-70 flex-col items-center justify-center gap-5 rounded-xl border border-t-4 border-edge bg-surface-alt px-16 py-12 text-center transition-[border-color] duration-300 border-t-(--sc)"
       style="--sc: #333">
-      <p class="m-0 text-lg text-zinc-700">En attente d'un fait à vérifier...</p>
+      <p class="m-0 text-lg text-fg-faint">En attente d'un fait à vérifier...</p>
     </div>
   {/if}
 
@@ -57,14 +57,14 @@
           class={[
             "flex shrink-0 cursor-pointer items-center gap-1.5 rounded-[20px] border bg-surface px-3 py-1.5 whitespace-nowrap transition-all duration-150",
             selectedId === claim.id || (!selectedId && claim.id === spotlight?.id)
-              ? "border-(--sc) bg-[#222235]"
+              ? "border-(--sc) bg-surface-selected"
               : "border-edge hover:border-(--sc)"
           ]}
           style="--sc: {STATUS_COLOR[claim.status] ?? STATUS_COLOR.pending}"
           onclick={() => (selectedId = claim.id === selectedId ? null : claim.id)}
           title={claim.text}>
           <span class="text-sm">{STATUS_ICON[claim.status] ?? STATUS_ICON.pending}</span>
-          <span class="text-xs text-zinc-400"
+          <span class="text-xs text-fg-muted"
             >{claim.text.slice(0, 40)}{claim.text.length > 40 ? "…" : ""}</span>
         </button>
       {/each}

@@ -53,7 +53,7 @@
         <div class="mb-4 flex items-center justify-between">
           <h2 class="m-0 text-base">{title}</h2>
           <button
-            class="cursor-pointer px-1 py-0 text-2xl leading-none text-zinc-500 transition-colors duration-150 hover:text-white"
+            class="cursor-pointer px-1 py-0 text-2xl leading-none text-fg-muted transition-colors duration-150 hover:text-fg"
             onclick={close}
             aria-label="Fermer">×</button>
         </div>

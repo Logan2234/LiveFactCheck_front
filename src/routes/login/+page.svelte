@@ -48,7 +48,7 @@
         placeholder="••••••••"
         autocomplete="current-password"
         required
-        class="border border-edge rounded-lg bg-background px-3.5 py-3 text-base text-slate-100 transition-[border-color] duration-150 focus:border-accent focus:outline-none" />
+        class="border border-edge rounded-lg bg-surface px-3.5 py-3 text-base text-fg transition-[border-color] duration-150 focus:border-accent focus:outline-none" />
     </label>
 
     {#if error}

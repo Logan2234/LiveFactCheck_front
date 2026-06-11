@@ -57,7 +57,7 @@
 {/if}
 
 <button
-  class="fixed right-5 bottom-5 z-9000 flex h-9.5 w-9.5 cursor-pointer items-center justify-center rounded-full border border-edge-hi bg-surface text-base font-semibold text-fg-muted shadow-[0_4px_14px_rgba(0,0,0,0.4)] transition-all duration-150 hover:-translate-y-px hover:border-accent-dim hover:bg-[#2a2a44] hover:text-white"
+  class="fixed right-5 bottom-5 z-9000 flex h-9.5 w-9.5 cursor-pointer items-center justify-center rounded-full border border-edge-hi bg-surface text-base font-semibold text-fg-muted shadow-[0_4px_14px_rgba(0,0,0,0.4)] transition-all duration-150 hover:-translate-y-px hover:border-accent-dim hover:bg-surface-selected hover:text-fg"
   onclick={() => (helpOpen = true)}
   title="Raccourcis clavier (?)"
   aria-label="Afficher les raccourcis clavier">

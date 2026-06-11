@@ -90,12 +90,12 @@
 <!-- Drop zone -->
 <div
   class={[
-    "flex cursor-pointer flex-col items-center gap-1.5 rounded-xl border-2 border-dashed bg-[#0e0e1c] p-8 text-center transition-[border-color,background] duration-150",
+    "flex cursor-pointer flex-col items-center gap-1.5 rounded-xl border-2 border-dashed bg-surface-term p-8 text-center transition-[border-color,background] duration-150",
     dragging
-      ? "border-accent bg-[#12122a]"
+      ? "border-accent bg-surface-raised"
       : file
         ? "border-solid border-edge-hi"
-        : "border-surface-selected hover:border-accent hover:bg-[#12122a]"
+        : "border-surface-selected hover:border-accent hover:bg-surface-raised"
   ]}
   role="button"
   tabindex="0"
@@ -114,7 +114,7 @@
     onchange={onFileInput}
     style="display:none" />
   {#if file}
-    <span class="text-sm font-medium text-slate-200">🎵 {file.name}</span>
+    <span class="text-sm font-medium text-fg">🎵 {file.name}</span>
     <span class="text-xs text-fg-faint">{(file.size / 1024).toFixed(0)} Ko</span>
   {:else}
     <span class="text-sm text-fg-faint">Glisser un fichier audio ici ou cliquer pour choisir</span>
@@ -154,7 +154,7 @@
       <div
         class="flex min-w-27.5 flex-col gap-1 rounded-xl border border-edge bg-surface-alt px-4 py-2.5">
         <span class="text-2xs text-fg-faint">{stat.label}</span>
-        <span class="text-sm font-semibold text-slate-100">{stat.value}</span>
+        <span class="text-sm font-semibold text-fg">{stat.value}</span>
       </div>
     {/each}
   </div>
@@ -162,14 +162,14 @@
   <!-- Texte complet -->
   {#if result.text}
     <section class="mb-4 rounded-xl border border-edge bg-surface-alt px-5 py-4">
-      <div class="mb-3 border-b border-surface-raised pb-2.5 text-sm font-semibold text-slate-200">
+      <div class="mb-3 border-b border-surface-raised pb-2.5 text-sm font-semibold text-fg">
         Transcription complète
       </div>
       <p class="m-0 text-sm leading-relaxed whitespace-pre-wrap text-fg">{result.text}</p>
     </section>
   {:else}
     <p
-      class="rounded-xl border border-dashed border-edge bg-[#0e0e1c] p-6 text-center text-sm text-fg-faint">
+      class="rounded-xl border border-dashed border-edge bg-surface-term p-6 text-center text-sm text-fg-faint">
       Aucun contenu vocal détecté (VAD filtre les silences).
     </p>
   {/if}
@@ -177,7 +177,7 @@
   <!-- Segments -->
   {#if result.segments.length > 0}
     <section class="mb-4 rounded-xl border border-edge bg-surface-alt px-5 py-4">
-      <div class="mb-3 border-b border-surface-raised pb-2.5 text-sm font-semibold text-slate-200">
+      <div class="mb-3 border-b border-surface-raised pb-2.5 text-sm font-semibold text-fg">
         Segments ({result.segments.length})
       </div>
       <table class="w-full border-collapse text-sm">
@@ -200,7 +200,7 @@
               <td
                 class="border-b border-surface-alt px-2 py-1.5 align-top font-mono text-xs text-fg-faint"
                 >{seg.end}s</td>
-              <td class="border-b border-surface-alt px-2 py-1.5 align-top text-slate-300"
+              <td class="border-b border-surface-alt px-2 py-1.5 align-top text-fg-muted"
                 >{seg.text}</td>
               <td class="border-b border-surface-alt px-2 py-1.5 align-top">
                 <StatusBadge color={conf.color} label={conf.label} />

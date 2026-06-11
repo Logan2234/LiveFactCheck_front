@@ -58,15 +58,15 @@
         <span
           class="inline-block h-1 max-w-12 min-w-1 rounded-xs opacity-80"
           style="width: {claim.confidence * 10}%; background: {STATUS_COLOR[claim.status]}"></span>
-        <span class="text-2xs tabular-nums text-zinc-600">{claim.confidence}/10</span>
+        <span class="text-2xs tabular-nums text-fg-faint">{claim.confidence}/10</span>
       </span>
     {/if}
 
-    <span class="ml-auto text-xs whitespace-nowrap tabular-nums text-zinc-500"
+    <span class="ml-auto text-xs whitespace-nowrap tabular-nums text-fg-muted"
       >{formatTime(claim.timestamp)}</span>
 
     <button
-      class="shrink-0 rounded-sm border border-transparent bg-transparent px-1.5 py-0.5 text-sm leading-none text-zinc-600 transition-all duration-150 hover:border-edge-hi hover:text-zinc-400"
+      class="shrink-0 rounded-sm border border-transparent bg-transparent px-1.5 py-0.5 text-sm leading-none text-fg-faint transition-all duration-150 hover:border-edge-hi hover:text-fg-muted"
       onclick={copy}
       title="Copier ce claim"
       aria-label="Copier">
@@ -77,20 +77,20 @@
   <p class="my-1 text-sm leading-normal text-fg italic">« {claim.text} »</p>
 
   {#if claim.explanation}
-    <p class="mt-2 text-sm leading-normal text-zinc-400">{claim.explanation}</p>
+    <p class="mt-2 text-sm leading-normal text-fg-muted">{claim.explanation}</p>
   {/if}
 
   {#if claim.counter_claim}
     <div
       class="mt-2 rounded-r-md border-l-[3px] border-emerald-500 bg-emerald-500/12 px-2.5 py-1.5 text-sm">
       <span class="mr-1.5 font-semibold text-emerald-500">✔ Réalité :</span>
-      <span class="text-zinc-300">{claim.counter_claim}</span>
+      <span class="text-fg">{claim.counter_claim}</span>
     </div>
   {/if}
 
   {#if claim.sources.length > 0}
     <div class="mt-2 flex flex-col gap-0.5 text-sm">
-      <span class="text-zinc-600">Sources :</span>
+      <span class="text-fg-faint">Sources :</span>
       {#each claim.sources as source (source)}
         <a
           href={source}

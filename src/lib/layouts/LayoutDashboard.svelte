@@ -19,7 +19,7 @@
       <button
         class={[
           "stat-tile relative flex cursor-pointer flex-col items-center gap-1 overflow-hidden rounded-xl border bg-surface px-3 py-4 transition-all duration-150",
-          $claimFilter === s.key ? "active border-(--c) bg-[#222235]" : "border-edge"
+          $claimFilter === s.key ? "active border-(--c) bg-surface-selected" : "border-edge"
         ]}
         style="--c: {s.color}"
         onclick={() => claimFilter.set($claimFilter === s.key ? "all" : s.key)}
@@ -27,25 +27,25 @@
         <span class="text-xl">{s.icon}</span>
         <span class="text-[1.75rem] leading-none font-bold" style="color: {s.color}"
           >{$claimStats[s.key]}</span>
-        <span class="text-3 tracking-wider text-zinc-500 uppercase">{s.label}</span>
+        <span class="text-3 tracking-wider text-fg-muted uppercase">{s.label}</span>
       </button>
     {/each}
   </div>
 
   <div class="grid grid-cols-[1fr_2fr] items-start gap-6 max-[900px]:grid-cols-1">
     <div>
-      <h3 class="mt-0 mb-3 flex items-center gap-2 text-sm tracking-wider text-zinc-500 uppercase">
+      <h3 class="mt-0 mb-3 flex items-center gap-2 text-sm tracking-wider text-fg-muted uppercase">
         📝 Transcript
       </h3>
       <div class="flex max-h-120 flex-col gap-2 overflow-y-auto rounded-lg bg-surface-alt p-3">
         {#if $reversedTranscript.length === 0}
-          <p class="m-0 p-8 text-center text-sm text-zinc-700">En attente...</p>
+          <p class="m-0 p-8 text-center text-sm text-fg-faint">En attente...</p>
         {:else}
           {#each $reversedTranscript as entry (entry.timestamp)}
             <div
               class="flex flex-col gap-0.5 border-b border-surface pb-2 last:border-b-0 last:pb-0">
-              <span class="text-3 tabular-nums text-zinc-700">{formatTime(entry.timestamp)}</span>
-              <span class="text-sm leading-snug text-zinc-500">{entry.text}</span>
+              <span class="text-3 tabular-nums text-fg-faint">{formatTime(entry.timestamp)}</span>
+              <span class="text-sm leading-snug text-fg-muted">{entry.text}</span>
             </div>
           {/each}
         {/if}
@@ -53,20 +53,20 @@
     </div>
 
     <div>
-      <h3 class="mt-0 mb-3 flex items-center gap-2 text-sm tracking-wider text-zinc-500 uppercase">
+      <h3 class="mt-0 mb-3 flex items-center gap-2 text-sm tracking-wider text-fg-muted uppercase">
         Faits
         {#if $claimFilter !== "all"}<span
-            class="rounded-sm border border-accent-dim bg-surface-selected px-1.5 py-0.5 text-3 text-zinc-400 normal-case"
+            class="rounded-sm border border-accent-dim bg-surface-selected px-1.5 py-0.5 text-3 text-fg-muted normal-case"
             >{$claimFilter}</span
           >{/if}
-        <span class="text-sm text-zinc-600">({$filteredClaims.length})</span>
+        <span class="text-sm text-fg-faint">({$filteredClaims.length})</span>
       </h3>
       <div class="flex max-h-120 flex-col gap-2 overflow-y-auto">
         {#each $filteredClaims as claim (claim.id)}
           <ClaimCard {claim} />
         {/each}
         {#if $filteredClaims.length === 0}
-          <p class="m-0 p-8 text-center text-sm text-zinc-700">Aucun fait détecté...</p>
+          <p class="m-0 p-8 text-center text-sm text-fg-faint">Aucun fait détecté...</p>
         {/if}
       </div>
     </div>

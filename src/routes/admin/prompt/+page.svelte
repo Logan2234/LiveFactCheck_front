@@ -68,16 +68,15 @@
 {:else}
   <div
     class="mb-6 rounded-lg border border-surface-selected bg-surface-alt px-4 py-2.5 text-sm text-fg-muted">
-    Modèle actif : <strong class="text-slate-200">{data.model}</strong>
-    &nbsp;·&nbsp; min. <strong class="text-slate-200">{data.min_words}</strong> mots pour déclencher une
-    analyse
+    Modèle actif : <strong class="text-fg">{data.model}</strong>
+    &nbsp;·&nbsp; min. <strong class="text-fg">{data.min_words}</strong> mots pour déclencher une analyse
   </div>
 
   {#snippet sectionHeader(key: string, label: string, json?: unknown)}
     <div class="mb-2.5 flex items-center justify-between">
-      <h2 class="m-0 text-base text-slate-200">{@html label}</h2>
+      <h2 class="m-0 text-base text-fg">{@html label}</h2>
       <button
-        class="cursor-pointer rounded-md border border-edge bg-surface px-3 py-1 text-xs text-fg-muted transition-all duration-150 hover:bg-surface-raised hover:text-slate-200"
+        class="cursor-pointer rounded-md border border-edge bg-surface px-3 py-1 text-xs text-fg-muted transition-all duration-150 hover:bg-surface-raised hover:text-fg"
         onclick={() =>
           copyToClipboard(
             key,
@@ -91,7 +90,7 @@
   <section class="mb-8">
     {@render sectionHeader("prompt", "Prompt système")}
     <pre
-      class="m-0 max-h-100 overflow-x-auto overflow-y-auto rounded-xl border border-edge bg-[#0e0e1c] px-5 py-4 font-mono text-xs leading-relaxed wrap-break-word whitespace-pre-wrap text-slate-200">{data.system_prompt}</pre>
+      class="m-0 max-h-100 overflow-x-auto overflow-y-auto rounded-xl border border-edge bg-surface-term px-5 py-4 font-mono text-xs leading-relaxed wrap-break-word whitespace-pre-wrap text-fg">{data.system_prompt}</pre>
   </section>
 
   <section class="mb-8">
@@ -107,7 +106,7 @@
       {/each}
     </div>
     <pre
-      class="m-0 max-h-100 overflow-x-auto overflow-y-auto rounded-xl border border-edge bg-[#0e0e1c] px-5 py-4 font-mono text-xs leading-relaxed wrap-break-word whitespace-pre-wrap text-slate-200">{JSON.stringify(
+      class="m-0 max-h-100 overflow-x-auto overflow-y-auto rounded-xl border border-edge bg-surface-term px-5 py-4 font-mono text-xs leading-relaxed wrap-break-word whitespace-pre-wrap text-fg">{JSON.stringify(
         data.claim_tool,
         null,
         2
@@ -121,7 +120,7 @@
       data.web_search_tool
     )}
     <pre
-      class="m-0 max-h-100 overflow-x-auto overflow-y-auto rounded-xl border border-edge bg-[#0e0e1c] px-5 py-4 font-mono text-xs leading-relaxed wrap-break-word whitespace-pre-wrap text-slate-200">{JSON.stringify(
+      class="m-0 max-h-100 overflow-x-auto overflow-y-auto rounded-xl border border-edge bg-surface-term px-5 py-4 font-mono text-xs leading-relaxed wrap-break-word whitespace-pre-wrap text-fg">{JSON.stringify(
         data.web_search_tool,
         null,
         2

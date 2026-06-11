@@ -26,7 +26,7 @@
 
 <div class="flex h-[calc(100vh-160px)] min-h-125 flex-col">
   <div
-    class="flex items-center rounded-t-[10px] border border-b-0 border-surface-selected bg-surface-alt px-4 py-3 text-sm text-zinc-500">
+    class="flex items-center rounded-t-[10px] border border-b-0 border-surface-selected bg-surface-alt px-4 py-3 text-sm text-fg-muted">
     <div class="flex flex-1 items-center gap-2">
       <div
         class="flex h-8 w-8 items-center justify-center rounded-full bg-surface-selected text-base">
@@ -34,7 +34,7 @@
       </div>
       <span>Speaker</span>
     </div>
-    <div class="flex-none px-4 text-xs text-zinc-700">vs</div>
+    <div class="flex-none px-4 text-xs text-fg-faint">vs</div>
     <div class="flex flex-1 items-center justify-end gap-2">
       <span>Fact-Checker</span>
       <div
@@ -45,9 +45,9 @@
   </div>
 
   <div
-    class="flex flex-1 flex-col gap-3 overflow-y-auto rounded-b-[10px] border border-t-0 border-surface-selected bg-[#0f0f1e] p-4">
+    class="flex flex-1 flex-col gap-3 overflow-y-auto rounded-b-[10px] border border-t-0 border-surface-selected bg-surface p-4">
     {#if feed.length === 0}
-      <div class="flex flex-1 items-center justify-center text-sm text-zinc-700">
+      <div class="flex flex-1 items-center justify-center text-sm text-fg-faint">
         <p>La conversation commencera quand vous parlerez...</p>
       </div>
     {:else}
@@ -59,9 +59,10 @@
               class="flex h-7 w-7 shrink-0 items-center justify-center self-end rounded-full bg-surface-raised text-sm">
               🎙
             </div>
-            <div class="relative max-w-full rounded-2xl rounded-tl-sm bg-[#252540] px-3.5 py-2.5">
+            <div
+              class="relative max-w-full rounded-2xl rounded-tl-sm bg-surface-raised px-3.5 py-2.5">
               <p class="mt-0 mb-1 text-sm leading-normal text-fg">{item.text}</p>
-              <span class="block text-right text-2xs tabular-nums text-zinc-600"
+              <span class="block text-right text-2xs tabular-nums text-fg-faint"
                 >{formatTime(item.timestamp)}</span>
             </div>
           </div>
@@ -83,11 +84,11 @@
                 « {item.text} »
               </p>
               {#if item.explanation && item.status !== "pending"}
-                <p class="mt-1 mb-0.5 text-sm leading-snug text-zinc-400">
+                <p class="mt-1 mb-0.5 text-sm leading-snug text-fg-muted">
                   {item.explanation}
                 </p>
               {/if}
-              <span class="block text-right text-2xs tabular-nums text-zinc-600"
+              <span class="block text-right text-2xs tabular-nums text-fg-faint"
                 >{formatTime(item.timestamp)}</span>
             </div>
             <div

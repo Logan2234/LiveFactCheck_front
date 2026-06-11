@@ -1,6 +1,7 @@
 ﻿<script lang="ts">
   import AudioControls from "$lib/components/AudioControls.svelte";
   import KeyboardShortcuts from "$lib/components/KeyboardShortcuts.svelte";
+  import ThemeToggle from "$lib/components/ThemeToggle.svelte";
   import LayoutChat from "$lib/layouts/LayoutChat.svelte";
   import LayoutClassic from "$lib/layouts/LayoutClassic.svelte";
   import LayoutDashboard from "$lib/layouts/LayoutDashboard.svelte";
@@ -53,29 +54,32 @@
 <KeyboardShortcuts />
 
 <main class="mx-auto max-w-300 p-8">
-  <header class="mb-6 flex flex-wrap items-center justify-between gap-4">
+  <header class="mb-6 flex flex-wrap items-start justify-between gap-4">
     <div>
       <h1 class="m-0 text-2xl">🔍 LiveFactChecker</h1>
-      <p class="mt-0.5 mb-0 text-sm text-zinc-500">Vérification de faits en temps réel</p>
+      <p class="mt-0.5 mb-0 text-sm text-fg-muted">Vérification de faits en temps réel</p>
     </div>
-    <div class="flex flex-col items-end gap-2">
-      <div class="gap-1 flex">
-        {#each layouts as l (l.key)}
-          <button
-            class={[
-              "cursor-pointer rounded-md border px-2.5 py-1.5 text-xs transition-all duration-150",
-              $activeLayout === l.key
-                ? "border-accent-dim bg-surface-selected text-white"
-                : "border-edge bg-surface text-zinc-500 hover:border-zinc-600 hover:text-zinc-200"
-            ]}
-            onclick={() => activeLayout.set(l.key)}
-            title={l.label}>
-            {l.icon}
-            {l.label}
-          </button>
-        {/each}
+    <div class="flex items-start gap-3">
+      <div class="flex flex-col items-end gap-2">
+        <div class="gap-1 flex">
+          {#each layouts as l (l.key)}
+            <button
+              class={[
+                "cursor-pointer rounded-md border px-2.5 py-1.5 text-xs transition-all duration-150",
+                $activeLayout === l.key
+                  ? "border-accent-dim bg-surface-selected text-fg"
+                  : "border-edge bg-surface text-fg-muted hover:border-edge-hi hover:text-fg"
+              ]}
+              onclick={() => activeLayout.set(l.key)}
+              title={l.label}>
+              {l.icon}
+              {l.label}
+            </button>
+          {/each}
+        </div>
+        <AudioControls />
       </div>
-      <AudioControls />
+      <ThemeToggle />
     </div>
   </header>
   {#if $activeLayout === "classic"}

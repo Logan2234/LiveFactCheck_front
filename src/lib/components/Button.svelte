@@ -32,7 +32,7 @@
   const variantClass: Record<Variant, string> = {
     primary: "bg-[linear-gradient(135deg,#5a5ad0,#7a4ad0)] text-white enabled:hover:opacity-90",
     secondary:
-      "border border-edge bg-surface text-slate-300 enabled:hover:bg-surface-raised enabled:hover:text-fg",
+      "border border-edge bg-surface text-fg-muted enabled:hover:bg-surface-raised enabled:hover:text-fg",
     danger:
       "border border-red-900/40 bg-transparent text-red-300 enabled:hover:border-red-900 enabled:hover:bg-red-500/12"
   };
