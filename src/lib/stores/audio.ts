@@ -1,4 +1,4 @@
-import { writable } from "svelte/store";
+import { derived, writable } from "svelte/store";
 
 export type RecordingState = "idle" | "recording" | "paused";
 
@@ -9,6 +9,10 @@ export interface TranscriptEntry {
 
 export const recordingState = writable<RecordingState>("idle");
 export const transcriptEntries = writable<TranscriptEntry[]>([]);
+
+// Newest-first view of the transcript, mirroring sortedClaims. Layouts render
+// most-recent-on-top from here instead of each reversing the list themselves.
+export const reversedTranscript = derived(transcriptEntries, ($entries) => [...$entries].reverse());
 export const isMuted = writable(false);
 // User-facing error when recording can't start (mic permission / no device).
 // null when there's nothing to show.

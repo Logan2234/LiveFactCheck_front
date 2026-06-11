@@ -1,16 +1,7 @@
 ﻿<script lang="ts">
-  import { STATUS_COLOR, STATUS_ICON, STATUS_LABEL } from "$lib/constants/status";
-  import { claimFilter, filteredClaims, type ClaimFilter } from "$lib/stores/claims";
+  import { CLAIM_FILTERS, STATUS_COLOR, STATUS_ICON, STATUS_LABEL } from "$lib/constants/status";
+  import { claimFilter, filteredClaims } from "$lib/stores/claims";
   import { formatTime } from "$lib/utils/format";
-
-  const filters: { key: ClaimFilter; label: string; icon: string }[] = [
-    { key: "all", label: "Tous", icon: "📋" },
-    { key: "verified", label: "Vrais", icon: "✅" },
-    { key: "false", label: "Faux", icon: "❌" },
-    { key: "pending", label: "En cours", icon: "⏳" },
-    { key: "uncertain", label: "Incertains", icon: "❓" },
-    { key: "unverifiable", label: "Invérifiables", icon: "🔍" }
-  ];
 
   let expandedId = $state<string | null>(null);
 </script>
@@ -18,7 +9,7 @@
 <div class="flex flex-col gap-3">
   <div class="flex flex-wrap items-center justify-between gap-3">
     <div class="flex flex-wrap gap-1.5">
-      {#each filters as { key, label, icon } (key)}
+      {#each CLAIM_FILTERS as { key, label, icon } (key)}
         <button
           class={[
             "cursor-pointer rounded-[20px] border px-3 py-1.5 text-sm transition-all duration-150",
@@ -65,17 +56,15 @@
             <tr
               class="claim-row cursor-pointer border-b border-surface-alt"
               class:expanded={expandedId === claim.id}
-              style="--sc: {STATUS_COLOR[claim.status] ?? STATUS_COLOR.pending}"
+              style="--sc: {STATUS_COLOR[claim.status]}"
               onclick={() => (expandedId = expandedId === claim.id ? null : claim.id)}>
               <td
                 class="w-20 px-3.5 py-2.5 align-top text-xs whitespace-nowrap tabular-nums text-zinc-600"
                 >{formatTime(claim.timestamp)}</td>
               <td class="w-32.5 px-3.5 py-2.5 align-top whitespace-nowrap">
-                <span
-                  class="text-sm font-medium"
-                  style="color: {STATUS_COLOR[claim.status] ?? STATUS_COLOR.pending}">
-                  {STATUS_ICON[claim.status] ?? STATUS_ICON.pending}
-                  {STATUS_LABEL[claim.status] ?? STATUS_LABEL.pending}
+                <span class="text-sm font-medium" style="color: {STATUS_COLOR[claim.status]}">
+                  {STATUS_ICON[claim.status]}
+                  {STATUS_LABEL[claim.status]}
                 </span>
               </td>
               <td class="min-w-50 px-3.5 py-2.5 align-top">

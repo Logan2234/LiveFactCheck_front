@@ -1,6 +1,6 @@
 ﻿<script lang="ts">
   import { STATUS_COLOR, STATUS_ICON } from "$lib/constants/status";
-  import { transcriptEntries } from "$lib/stores/audio";
+  import { reversedTranscript } from "$lib/stores/audio";
   import { claims } from "$lib/stores/claims";
   import { formatTime } from "$lib/utils/format";
 
@@ -21,10 +21,10 @@
     </div>
 
     <div class="flex flex-1 flex-col gap-3 overflow-y-auto px-6 py-4 text-lg leading-[1.7]">
-      {#if $transcriptEntries.length === 0}
+      {#if $reversedTranscript.length === 0}
         <p class="m-auto text-center text-zinc-700">En attente de la transcription...</p>
       {:else}
-        {#each [...$transcriptEntries].reverse() as entry (entry.timestamp)}
+        {#each $reversedTranscript as entry (entry.timestamp)}
           <div class="flex items-baseline gap-3">
             <span class="mt-1 shrink-0 text-xs tabular-nums text-zinc-700"
               >{formatTime(entry.timestamp)}</span>

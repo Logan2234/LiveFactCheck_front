@@ -1,17 +1,16 @@
 ﻿<script lang="ts">
   import ClaimCard from "$lib/components/ClaimCard.svelte";
-  import { transcriptEntries } from "$lib/stores/audio";
-  import { claimFilter, claimStats, filteredClaims, type ClaimFilter } from "$lib/stores/claims";
+  import { STATUS_META, STATUS_ORDER } from "$lib/constants/status";
+  import { reversedTranscript } from "$lib/stores/audio";
+  import { claimFilter, claimStats, filteredClaims } from "$lib/stores/claims";
   import { formatTime } from "$lib/utils/format";
 
-  const statCards: { key: keyof typeof $claimStats; label: string; icon: string; color: string }[] =
-    [
-      { key: "verified", label: "Vrais", icon: "✅", color: "#10b981" },
-      { key: "false", label: "Faux", icon: "❌", color: "#ef4444" },
-      { key: "pending", label: "En cours", icon: "⏳", color: "#f59e0b" },
-      { key: "uncertain", label: "Incertains", icon: "❓", color: "#6b7280" },
-      { key: "unverifiable", label: "Invérifiables", icon: "🔍", color: "#8b5cf6" }
-    ];
+  const statCards = STATUS_ORDER.map((key) => ({
+    key,
+    label: STATUS_META[key].filterLabel,
+    icon: STATUS_META[key].icon,
+    color: STATUS_META[key].color
+  }));
 </script>
 
 <div class="flex flex-col gap-5">
@@ -23,7 +22,7 @@
           $claimFilter === s.key ? "active border-(--c) bg-[#222235]" : "border-edge"
         ]}
         style="--c: {s.color}"
-        onclick={() => claimFilter.set($claimFilter === s.key ? "all" : (s.key as ClaimFilter))}
+        onclick={() => claimFilter.set($claimFilter === s.key ? "all" : s.key)}
         title="Filtrer : {s.label}">
         <span class="text-xl">{s.icon}</span>
         <span class="text-[1.75rem] leading-none font-bold" style="color: {s.color}"
@@ -39,10 +38,10 @@
         📝 Transcript
       </h3>
       <div class="flex max-h-120 flex-col gap-2 overflow-y-auto rounded-lg bg-surface-alt p-3">
-        {#if $transcriptEntries.length === 0}
+        {#if $reversedTranscript.length === 0}
           <p class="m-0 p-8 text-center text-sm text-zinc-700">En attente...</p>
         {:else}
-          {#each [...$transcriptEntries].reverse() as entry (entry.timestamp)}
+          {#each $reversedTranscript as entry (entry.timestamp)}
             <div
               class="flex flex-col gap-0.5 border-b border-surface pb-2 last:border-b-0 last:pb-0">
               <span class="text-3 tabular-nums text-zinc-700">{formatTime(entry.timestamp)}</span>

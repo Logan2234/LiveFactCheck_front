@@ -12,7 +12,7 @@
 
   function copy() {
     const lines = [
-      `${STATUS_ICON[claim.status] ?? STATUS_ICON.pending} ${STATUS_LABEL[claim.status] ?? STATUS_LABEL.pending} — ${claim.text}`,
+      `${STATUS_ICON[claim.status]} ${STATUS_LABEL[claim.status]} — ${claim.text}`,
       claim.explanation ? `→ ${claim.explanation}` : "",
       claim.counter_claim ? `✔ Réalité : ${claim.counter_claim}` : "",
       claim.sources.length ? `Sources : ${claim.sources.join(", ")}` : ""
@@ -29,13 +29,11 @@
 
 <div
   class="mb-3 rounded-lg border-l-4 bg-surface px-4 py-3.5"
-  style="border-left-color: {STATUS_COLOR[claim.status] ?? STATUS_COLOR.pending}">
+  style="border-left-color: {STATUS_COLOR[claim.status]}">
   <div class="mb-2 flex flex-wrap items-center gap-1.5">
-    <span>{STATUS_ICON[claim.status] ?? STATUS_ICON.pending}</span>
-    <span
-      class="text-sm font-semibold"
-      style="color: {STATUS_COLOR[claim.status] ?? STATUS_COLOR.pending}">
-      {STATUS_LABEL[claim.status] ?? STATUS_LABEL.pending}
+    <span>{STATUS_ICON[claim.status]}</span>
+    <span class="text-sm font-semibold" style="color: {STATUS_COLOR[claim.status]}">
+      {STATUS_LABEL[claim.status]}
     </span>
 
     {#if claim.category && claim.status !== "pending"}
@@ -59,8 +57,7 @@
       <span class="ml-0.5 flex items-center gap-1.5" title="Score de confiance">
         <span
           class="inline-block h-1 max-w-12 min-w-1 rounded-xs opacity-80"
-          style="width: {claim.confidence * 10}%; background: {STATUS_COLOR[claim.status] ??
-            STATUS_COLOR.pending}"></span>
+          style="width: {claim.confidence * 10}%; background: {STATUS_COLOR[claim.status]}"></span>
         <span class="text-2xs tabular-nums text-zinc-600">{claim.confidence}/10</span>
       </span>
     {/if}

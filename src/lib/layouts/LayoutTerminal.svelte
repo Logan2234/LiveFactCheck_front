@@ -1,5 +1,5 @@
 ﻿<script lang="ts">
-  import { STATUS_COLOR } from "$lib/constants/status";
+  import { STATUS_COLOR, STATUS_META, STATUS_ORDER } from "$lib/constants/status";
   import { transcriptEntries } from "$lib/stores/audio";
   import {
     claimFilter,
@@ -46,11 +46,9 @@
   <div
     class="flex flex-wrap items-center justify-between gap-2 border-b border-surface bg-[#111118] px-4 py-2">
     <span class="flex gap-3 text-sm font-semibold">
-      <span class="text-emerald-500">{$claimStats.verified}✓</span>
-      <span class="text-red-500">{$claimStats.false}✗</span>
-      <span class="text-amber-500">{$claimStats.pending}…</span>
-      <span class="text-gray-500">{$claimStats.uncertain}?</span>
-      <span class="text-violet-500">{$claimStats.unverifiable}~</span>
+      {#each STATUS_ORDER as s (s)}
+        <span style="color: {STATUS_META[s].color}">{$claimStats[s]}{STATUS_SYM[s]}</span>
+      {/each}
     </span>
     <span class="flex gap-0.5">
       {#each filterKeys as { key, label } (key)}

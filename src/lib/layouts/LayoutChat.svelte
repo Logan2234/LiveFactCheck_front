@@ -1,7 +1,7 @@
 ﻿<script lang="ts">
   import { STATUS_COLOR, STATUS_ICON, STATUS_LABEL } from "$lib/constants/status";
   import { transcriptEntries } from "$lib/stores/audio";
-  import { claims } from "$lib/stores/claims";
+  import { claims, type VerificationStatus } from "$lib/stores/claims";
   import { formatTime } from "$lib/utils/format";
 
   // Merge transcripts and claims into a unified chronological feed
@@ -11,7 +11,7 @@
         kind: "claim";
         id: string;
         text: string;
-        status: string;
+        status: VerificationStatus;
         explanation: string;
         timestamp: number;
       };

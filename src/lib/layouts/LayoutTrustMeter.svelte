@@ -1,5 +1,5 @@
 ﻿<script lang="ts">
-  import { STATUS_COLOR, STATUS_LABEL } from "$lib/constants/status";
+  import { STATUS_COLOR, STATUS_LABEL, STATUS_ORDER } from "$lib/constants/status";
   import { claimStats, sortedClaims } from "$lib/stores/claims";
 
   const R = 80;
@@ -97,12 +97,13 @@
 
     <!-- Legend -->
     <div class="mb-4 flex flex-col gap-2">
-      {#each Object.entries(STATUS_COLOR).filter(([k]) => k !== "pending") as [key, color] (key)}
-        {@const count = ($claimStats as Record<string, number>)[key] ?? 0}
+      {#each STATUS_ORDER.filter((s) => s !== "pending") as key (key)}
         <div class="flex items-center gap-2 text-sm">
-          <span class="h-2.5 w-2.5 shrink-0 rounded-full" style="background: {color}"></span>
+          <span class="h-2.5 w-2.5 shrink-0 rounded-full" style="background: {STATUS_COLOR[key]}"
+          ></span>
           <span class="flex-1 text-zinc-400">{STATUS_LABEL[key]}</span>
-          <span class="font-semibold tabular-nums" style="color: {color}">{count}</span>
+          <span class="font-semibold tabular-nums" style="color: {STATUS_COLOR[key]}"
+            >{$claimStats[key]}</span>
         </div>
       {/each}
     </div>
