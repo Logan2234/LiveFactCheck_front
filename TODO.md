@@ -22,8 +22,12 @@ au presse-papier. Tout est éphémère (un refresh vide l'écran), pas de recher
       (animation, son optionnel) — pertinent en contexte débat/direct.
 - [ ] **Sélecteur de niveau de vérification** dans `AudioControls` (rapide vs approfondi),
       en miroir de l'option back correspondante.
-- [ ] **Réglage de la langue** de transcription/vérification depuis l'UI (miroir du
-      multilingue back).
+- [x] **Réglage de la langue de transcription** depuis l'UI : sélecteur filtrable
+      (auto + 100 langues) dans `AudioControls`, persisté en localStorage, envoyé au back
+      via un message WS `config`. La langue sert de filtre (les chunks d'une autre langue
+      sont ignorés), badge de langue détectée affiché en mode auto.
+- [ ] **Réglage de la langue de vérification** (langue des claims / prompt Claude) depuis
+      l'UI — dépend du multilingue back (cf. « Multilingue (prompt Claude) » dans back/TODO.md).
 - [ ] **Partage d'un claim** : générer une image/carte partageable d'un démenti
       (au-delà du texte copié actuellement).
 
