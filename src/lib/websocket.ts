@@ -1,9 +1,11 @@
-import { writable } from "svelte/store";
-import type { Claim, VerificationStatus } from "./stores/claims";
+import { get, writable } from "svelte/store";
 import { WS_URL } from "./config";
+import type { LanguageCode } from "./languages";
+import type { Claim, VerificationStatus } from "./stores/claims";
+import { transcriptionLanguage } from "./stores/transcription";
 
 export type WSMessage =
-  | { type: "transcript"; text: string }
+  | { type: "transcript"; text: string; language?: LanguageCode; language_probability?: number }
   | { type: "claim"; claim: Claim }
   | { type: "remove_claim"; id: string };
 
@@ -43,10 +45,22 @@ function isClaim(value: unknown): value is Claim {
 
 function parseWSMessage(raw: unknown): WSMessage | null {
   if (typeof raw !== "object" || raw === null) return null;
+
   const msg = raw as Record<string, unknown>;
+
   switch (msg.type) {
-    case "transcript":
-      return typeof msg.text === "string" ? { type: "transcript", text: msg.text } : null;
+    case "transcript": {
+      if (typeof msg.text !== "string") return null;
+      // language/probability are optional (auto mode only); validate when present.
+      const language =
+        typeof msg.language === "string" ? (msg.language as LanguageCode) : undefined;
+      const prob =
+        typeof msg.language_probability === "number" && Number.isFinite(msg.language_probability)
+          ? msg.language_probability
+          : undefined;
+      return { type: "transcript", text: msg.text, language, language_probability: prob };
+    }
+
     case "claim":
       return isClaim(msg.claim) ? { type: "claim", claim: msg.claim } : null;
     case "remove_claim":
@@ -59,6 +73,10 @@ function parseWSMessage(raw: unknown): WSMessage | null {
 export type WSStatus = "disconnected" | "connecting" | "connected" | "error";
 
 export const wsStatus = writable<WSStatus>("disconnected");
+
+// Language Whisper detected on the latest chunk while in auto mode, with its
+// probability. Null when no detection has happened yet (or a language is forced).
+export const detectedLanguage = writable<{ code: LanguageCode; probability: number } | null>(null);
 
 let ws: WebSocket | null = null;
 let onClaimCallback: ((claim: Claim) => void) | null = null;
@@ -76,21 +94,27 @@ function scheduleRetry() {
     if (retryCount >= MAX_RETRIES) wsStatus.set("error");
     return;
   }
+
   // Exponential backoff plafonné à 30s : 1s, 2s, 4s, 8s, 16s, 30s, 30s…
   const delay = Math.min(BASE_DELAY_MS * 2 ** retryCount, 30_000);
+
   retryCount++;
+
   console.log(
     `WebSocket: reconnexion dans ${delay / 1000}s (tentative ${retryCount}/${MAX_RETRIES})`
   );
+
   retryTimer = setTimeout(() => connect(false), delay);
 }
 
 export function connect(resetRetries = true) {
   if (ws?.readyState === WebSocket.OPEN) return;
+
   if (retryTimer !== null) {
     clearTimeout(retryTimer);
     retryTimer = null;
   }
+
   if (resetRetries) {
     retryCount = 0;
     manualDisconnect = false;
@@ -103,23 +127,37 @@ export function connect(resetRetries = true) {
     retryCount = 0;
     wsStatus.set("connected");
     console.log("WebSocket connecté");
+    // Tell the server which language to transcribe in, including after an
+    // auto-reconnect (the previous socket's config didn't survive).
+    sendLanguageConfig(get(transcriptionLanguage));
   };
 
   ws.onmessage = (event) => {
     let raw: unknown;
+
     try {
       raw = JSON.parse(event.data);
     } catch (e) {
       console.error("Failed to parse WS message:", e);
       return;
     }
+
     const message = parseWSMessage(raw);
+
     if (message === null) {
       console.warn("Discarding malformed WS message:", raw);
       return;
     }
+
     switch (message.type) {
       case "transcript":
+        if (message.language !== undefined && message.language_probability !== undefined) {
+          detectedLanguage.set({
+            code: message.language,
+            probability: message.language_probability
+          });
+        }
+
         onTranscriptCallback?.(message.text);
         break;
       case "claim":
@@ -137,6 +175,7 @@ export function connect(resetRetries = true) {
 
   ws.onclose = () => {
     ws = null;
+
     if (!manualDisconnect) {
       wsStatus.set("disconnected");
       scheduleRetry();
@@ -148,10 +187,12 @@ export function connect(resetRetries = true) {
 
 export function disconnect() {
   manualDisconnect = true;
+
   if (retryTimer !== null) {
     clearTimeout(retryTimer);
     retryTimer = null;
   }
+
   ws?.close();
   ws = null;
   wsStatus.set("disconnected");
@@ -160,6 +201,14 @@ export function disconnect() {
 export function sendAudioChunk(chunk: Blob) {
   if (ws?.readyState === WebSocket.OPEN) {
     ws.send(chunk);
+  }
+}
+
+export function sendLanguageConfig(language: LanguageCode) {
+  if (language !== "auto") detectedLanguage.set(null);
+
+  if (ws?.readyState === WebSocket.OPEN) {
+    ws.send(JSON.stringify({ type: "config", language }));
   }
 }
 
