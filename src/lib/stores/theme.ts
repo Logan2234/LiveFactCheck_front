@@ -19,7 +19,9 @@ function storedTheme(): Theme {
 function resolve(theme: Theme): "light" | "dark" {
   if (theme !== "auto") return theme;
   if (!browser) return DEFAULT_THEME === "dark" ? "dark" : "light";
-  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  return window.matchMedia("(prefers-color-scheme: dark)").matches
+    ? "dark"
+    : "light";
 }
 
 // The single place that drives the actual look: writes the concrete theme onto
@@ -39,7 +41,9 @@ theme.subscribe((value) => {
 
 // Re-resolve on OS change, but only while the user is on "auto".
 if (browser) {
-  window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => {
-    if (storedTheme() === "auto") applyTheme("auto");
-  });
+  window
+    .matchMedia("(prefers-color-scheme: dark)")
+    .addEventListener("change", () => {
+      if (storedTheme() === "auto") applyTheme("auto");
+    });
 }

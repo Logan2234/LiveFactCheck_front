@@ -8,7 +8,9 @@ const DEFAULT_LANGUAGE: LanguageCode = "auto";
 function storedLanguage() {
   if (!browser) return DEFAULT_LANGUAGE;
 
-  return (localStorage.getItem(STORAGE_KEY) as LanguageCode) ?? DEFAULT_LANGUAGE;
+  return (
+    (localStorage.getItem(STORAGE_KEY) as LanguageCode) ?? DEFAULT_LANGUAGE
+  );
 }
 
 export const transcriptionLanguage = writable<LanguageCode>(storedLanguage());

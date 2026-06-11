@@ -1,5 +1,9 @@
 ﻿<script lang="ts">
-  import { STATUS_COLOR, STATUS_ICON, STATUS_LABEL } from "$lib/constants/status";
+  import {
+    STATUS_COLOR,
+    STATUS_ICON,
+    STATUS_LABEL
+  } from "$lib/constants/status";
   import type { Claim } from "$lib/stores/claims";
   import { claims } from "$lib/stores/claims";
   import { formatTime } from "$lib/utils/format";
@@ -10,7 +14,9 @@
 
   // Time range for axis
   let minTs = $derived(sorted.length > 0 ? sorted[0].timestamp : 0);
-  let maxTs = $derived(sorted.length > 0 ? sorted[sorted.length - 1].timestamp : 0);
+  let maxTs = $derived(
+    sorted.length > 0 ? sorted[sorted.length - 1].timestamp : 0
+  );
   let range = $derived(maxTs - minTs || 1);
 
   function xPct(ts: number): number {
@@ -34,14 +40,18 @@
   {#if sorted.length === 0}
     <div class="p-12 text-center text-fg-faint">
       <p>Aucun claim détecté pour le moment...</p>
-      <p class="mt-2 text-sm">Les claims apparaîtront ici au fil de la conversation.</p>
+      <p class="mt-2 text-sm">
+        Les claims apparaîtront ici au fil de la conversation.
+      </p>
     </div>
   {:else}
     <!-- Selected claim detail -->
     <div
       class={[
         "min-h-20 transition-opacity duration-200",
-        selectedClaim !== null ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"
+        selectedClaim !== null
+          ? "pointer-events-auto opacity-100"
+          : "pointer-events-none opacity-0"
       ]}>
       {#if selectedClaim}
         <div
@@ -60,7 +70,9 @@
               class="cursor-pointer p-0 text-sm leading-none text-fg-faint hover:text-fg-muted"
               onclick={() => (selectedClaim = null)}>✕</button>
           </div>
-          <p class="mt-0 mb-1 text-sm text-fg italic">« {selectedClaim.text} »</p>
+          <p class="mt-0 mb-1 text-sm text-fg italic">
+            « {selectedClaim.text} »
+          </p>
           {#if selectedClaim.explanation}
             <p class="m-0 text-sm leading-normal text-fg-muted">
               {selectedClaim.explanation}
@@ -125,10 +137,20 @@
 
         <!-- Time labels -->
         {#if sorted.length >= 2}
-          <text x="5" y="62" font-size="4" fill="var(--color-fg-faint)" text-anchor="middle">
+          <text
+            x="5"
+            y="62"
+            font-size="4"
+            fill="var(--color-fg-faint)"
+            text-anchor="middle">
             {formatTime(minTs, { withSeconds: false })}
           </text>
-          <text x="95" y="62" font-size="4" fill="var(--color-fg-faint)" text-anchor="middle">
+          <text
+            x="95"
+            y="62"
+            font-size="4"
+            fill="var(--color-fg-faint)"
+            text-anchor="middle">
             {formatTime(maxTs, { withSeconds: false })}
           </text>
         {/if}
@@ -146,7 +168,9 @@
         <button
           class={[
             "flex w-full cursor-pointer items-start gap-2 rounded-md border border-l-[3px] border-edge bg-surface px-3 py-2 text-left transition-[background] duration-150 border-l-(--color)",
-            selectedClaim?.id === c.id ? "bg-surface-raised" : "hover:bg-surface-raised"
+            selectedClaim?.id === c.id
+              ? "bg-surface-raised"
+              : "hover:bg-surface-raised"
           ]}
           style="--color: {STATUS_COLOR[c.status]}"
           onclick={() => selectClaim(c)}>

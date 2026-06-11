@@ -42,7 +42,10 @@ export async function login(password: string): Promise<void> {
 }
 
 /** fetch wrapper that attaches the admin bearer token. */
-export async function authFetch(path: string, init: RequestInit = {}): Promise<Response> {
+export async function authFetch(
+  path: string,
+  init: RequestInit = {}
+): Promise<Response> {
   const t = getToken();
   return fetch(`${BACKEND_URL}${path}`, {
     ...init,

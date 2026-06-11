@@ -49,7 +49,12 @@
       ]}>
       {#if opt.value === "auto"}
         <!-- Monitor / system -->
-        <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2">
+        <svg
+          viewBox="0 0 24 24"
+          class="h-4 w-4"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2">
           <rect x="3" y="4" width="18" height="12" rx="1.5" />
           <path d="M8 20h8M12 16v4" stroke-linecap="round" />
         </svg>

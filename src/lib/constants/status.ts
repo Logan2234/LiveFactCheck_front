@@ -12,10 +12,25 @@ interface StatusMeta {
 }
 
 export const STATUS_META: Record<VerificationStatus, StatusMeta> = {
-  verified: { color: "#10b981", icon: "✅", label: "Vérifié", filterLabel: "Vrais" },
+  verified: {
+    color: "#10b981",
+    icon: "✅",
+    label: "Vérifié",
+    filterLabel: "Vrais"
+  },
   false: { color: "#ef4444", icon: "❌", label: "Faux", filterLabel: "Faux" },
-  pending: { color: "#f59e0b", icon: "⏳", label: "Analyse en cours...", filterLabel: "En cours" },
-  uncertain: { color: "#6b7280", icon: "❓", label: "Incertain", filterLabel: "Incertains" },
+  pending: {
+    color: "#f59e0b",
+    icon: "⏳",
+    label: "Analyse en cours...",
+    filterLabel: "En cours"
+  },
+  uncertain: {
+    color: "#6b7280",
+    icon: "❓",
+    label: "Incertain",
+    filterLabel: "Incertains"
+  },
   unverifiable: {
     color: "#8b5cf6",
     icon: "🔍",
@@ -34,7 +49,11 @@ export const STATUS_ORDER: VerificationStatus[] = [
 ];
 
 // Filter-bar entries: the "Tous" pseudo-filter followed by one per status, in order.
-export const CLAIM_FILTERS: { key: ClaimFilter; label: string; icon: string }[] = [
+export const CLAIM_FILTERS: {
+  key: ClaimFilter;
+  label: string;
+  icon: string;
+}[] = [
   { key: "all", label: "Tous", icon: "📋" },
   ...STATUS_ORDER.map((s) => ({
     key: s,
@@ -46,10 +65,9 @@ export const CLAIM_FILTERS: { key: ClaimFilter; label: string; icon: string }[] 
 // Flat lookups derived from STATUS_META for ergonomic use in templates. Typed by
 // VerificationStatus so indexing with a claim's status is exhaustive — no fallback needed.
 function mapMeta<T>(pick: (m: StatusMeta) => T): Record<VerificationStatus, T> {
-  return Object.fromEntries(STATUS_ORDER.map((s) => [s, pick(STATUS_META[s])])) as Record<
-    VerificationStatus,
-    T
-  >;
+  return Object.fromEntries(
+    STATUS_ORDER.map((s) => [s, pick(STATUS_META[s])])
+  ) as Record<VerificationStatus, T>;
 }
 
 export const STATUS_COLOR = mapMeta((m) => m.color);

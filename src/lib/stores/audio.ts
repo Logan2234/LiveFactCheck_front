@@ -12,7 +12,9 @@ export const transcriptEntries = writable<TranscriptEntry[]>([]);
 
 // Newest-first view of the transcript, mirroring sortedClaims. Layouts render
 // most-recent-on-top from here instead of each reversing the list themselves.
-export const reversedTranscript = derived(transcriptEntries, ($entries) => [...$entries].reverse());
+export const reversedTranscript = derived(transcriptEntries, ($entries) =>
+  [...$entries].reverse()
+);
 export const isMuted = writable(false);
 // User-facing error when recording can't start (mic permission / no device).
 // null when there's nothing to show.
@@ -77,7 +79,10 @@ function micErrorMessage(error: unknown): string {
       return "Accès au micro refusé. Autorisez le micro dans votre navigateur, puis réessayez.";
     }
 
-    if (error.name === "NotFoundError" || error.name === "DevicesNotFoundError") {
+    if (
+      error.name === "NotFoundError" ||
+      error.name === "DevicesNotFoundError"
+    ) {
       return "Aucun micro détecté. Branchez un micro, puis réessayez.";
     }
   }
@@ -121,5 +126,8 @@ export function onAudioChunk(callback: (chunk: Blob) => void) {
 }
 
 export function appendTranscript(text: string) {
-  transcriptEntries.update((entries) => [...entries, { text, timestamp: Date.now() }]);
+  transcriptEntries.update((entries) => [
+    ...entries,
+    { text, timestamp: Date.now() }
+  ]);
 }

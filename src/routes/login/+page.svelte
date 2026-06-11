@@ -1,6 +1,6 @@
 ﻿<script lang="ts">
   import { resolve } from "$app/paths";
-  import Button from "$lib/components/Button.svelte";
+  import Button from "$lib/components/ui/Button.svelte";
   import { login } from "$lib/stores/auth";
   import { navigate } from "$lib/utils/navigation";
 

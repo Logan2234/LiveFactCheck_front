@@ -24,7 +24,10 @@ export default defineConfig(
       globals: { ...globals.browser, ...globals.node },
       // Enable type-aware linting (required by no-floating-promises, no-misused-promises,
       // await-thenable). projectService auto-discovers the nearest tsconfig per file.
-      parserOptions: { projectService: true, tsconfigRootDir: import.meta.dirname }
+      parserOptions: {
+        projectService: true,
+        tsconfigRootDir: import.meta.dirname
+      }
     },
     rules: {
       // typescript-eslint strongly recommend that you do not use the no-undef lint rule on TypeScript projects.
@@ -61,9 +64,16 @@ export default defineConfig(
         { blankLine: "always", prev: "*", next: "block-like" },
         { blankLine: "always", prev: "block-like", next: "*" }
       ],
-      "@stylistic/lines-between-class-members": ["warn", "always", { exceptAfterSingleLine: true }],
+      "@stylistic/lines-between-class-members": [
+        "warn",
+        "always",
+        { exceptAfterSingleLine: true }
+      ],
       "@stylistic/spaced-comment": ["warn", "always", { markers: ["/"] }],
-      "@stylistic/no-multiple-empty-lines": ["warn", { max: 1, maxEOF: 0, maxBOF: 0 }],
+      "@stylistic/no-multiple-empty-lines": [
+        "warn",
+        { max: 1, maxEOF: 0, maxBOF: 0 }
+      ],
       "@stylistic/padded-blocks": ["warn", "never"],
       "@stylistic/multiline-comment-style": ["warn", "separate-lines"]
     }

@@ -1,8 +1,8 @@
-<script lang="ts">
-  import Alert from "$lib/components/Alert.svelte";
-  import Button from "$lib/components/Button.svelte";
-  import ClaimCard from "$lib/components/ClaimCard.svelte";
-  import LoadingSpinner from "$lib/components/LoadingSpinner.svelte";
+﻿<script lang="ts">
+  import Alert from "$lib/components/ui/Alert.svelte";
+  import Button from "$lib/components/ui/Button.svelte";
+  import ClaimCard from "$lib/components/features/claims/ClaimCard.svelte";
+  import LoadingSpinner from "$lib/components/ui/LoadingSpinner.svelte";
   import { authFetch, clearToken } from "$lib/stores/auth";
   import type { Claim } from "$lib/stores/claims";
 
@@ -45,11 +45,15 @@
       const elapsed = Math.round(performance.now() - start);
       if (res.status === 401) {
         clearToken();
-        return { claims: null, elapsed, error: "Session expirée" };
+        return { claims: null, elapsed, error: "Session expirÃ©e" };
       }
       if (!res.ok) {
         const detail = await res.json().catch(() => null);
-        return { claims: null, elapsed, error: detail?.detail ?? `Erreur ${res.status}` };
+        return {
+          claims: null,
+          elapsed,
+          error: detail?.detail ?? `Erreur ${res.status}`
+        };
       }
       const data = await res.json();
       return { claims: (data.claims ?? []).map(toClaim), elapsed, error: "" };
@@ -57,7 +61,7 @@
       return {
         claims: null,
         elapsed: Math.round(performance.now() - start),
-        error: e instanceof Error ? e.message : "Erreur réseau"
+        error: e instanceof Error ? e.message : "Erreur rÃ©seau"
       };
     }
   }
@@ -70,7 +74,10 @@
     withWeb = { claims: null, elapsed: 0, error: "" };
     withoutWeb = { claims: null, elapsed: 0, error: "" };
 
-    const [r1, r2] = await Promise.allSettled([fetchSide(true), fetchSide(false)]);
+    const [r1, r2] = await Promise.allSettled([
+      fetchSide(true),
+      fetchSide(false)
+    ]);
     withWeb =
       r1.status === "fulfilled"
         ? r1.value
@@ -84,9 +91,10 @@
   }
 
   function delta(): string {
-    if (!ran || withWeb.claims === null || withoutWeb.claims === null) return "";
+    if (!ran || withWeb.claims === null || withoutWeb.claims === null)
+      return "";
     const diff = withWeb.claims.length - withoutWeb.claims.length;
-    if (diff === 0) return "Même nombre de claims";
+    if (diff === 0) return "MÃªme nombre de claims";
     return diff > 0
       ? `+${diff} claim${diff > 1 ? "s" : ""} avec le web`
       : `${diff} claim${Math.abs(diff) > 1 ? "s" : ""} avec le web`;
@@ -94,13 +102,13 @@
 </script>
 
 <svelte:head>
-  <title>Benchmark — Admin</title>
+  <title>Benchmark â€” Admin</title>
 </svelte:head>
 
 <header>
-  <h1 class="mt-0 mb-1 text-2xl">⚡ Benchmark</h1>
+  <h1 class="mt-0 mb-1 text-2xl">âš¡ Benchmark</h1>
   <p class="mt-0 mb-6 text-sm text-fg-muted">
-    Compare le même texte avec et sans recherche web en parallèle.
+    Compare le mÃªme texte avec et sans recherche web en parallÃ¨le.
   </p>
 </header>
 
@@ -108,30 +116,34 @@
   <textarea
     bind:value={text}
     rows="5"
-    placeholder="Colle un texte à analyser…"
+    placeholder="Colle un texte Ã  analyserâ€¦"
     disabled={loading}
     class="box-border w-full resize-y rounded-xl border border-edge bg-surface-alt px-4 py-3.5 font-[inherit] text-base leading-normal text-fg transition-[border-color] duration-150 focus:border-accent focus:outline-none disabled:opacity-50"
   ></textarea>
   <div class="mt-3 flex items-center gap-2">
-    <Button variant="secondary" onclick={() => (text = "")} disabled={!text || loading}>
+    <Button
+      variant="secondary"
+      onclick={() => (text = "")}
+      disabled={!text || loading}>
       Vider
     </Button>
     <Button type="submit" class="ml-auto" disabled={loading || !text.trim()}>
-      {loading ? "Analyse en cours…" : "Comparer"}
+      {loading ? "Analyse en coursâ€¦" : "Comparer"}
     </Button>
   </div>
 </form>
 
 {#if loading}
   <div class="grid grid-cols-2 gap-5">
-    {#each ["🌐 Avec web search", "🧠 Sans web search"] as label (label)}
+    {#each ["ðŸŒ Avec web search", "ðŸ§  Sans web search"] as label (label)}
       <div class="flex min-w-0 flex-col gap-3">
         <div
           class="flex flex-wrap items-center gap-2 border-b border-edge pb-2 text-sm font-semibold text-fg">
           {label}
         </div>
-        <div class="rounded-xl border border-dashed border-edge bg-surface-alt p-6">
-          <LoadingSpinner message="Analyse…" />
+        <div
+          class="rounded-xl border border-dashed border-edge bg-surface-alt p-6">
+          <LoadingSpinner message="Analyseâ€¦" />
         </div>
       </div>
     {/each}
@@ -144,7 +156,7 @@
     </div>
   {/if}
   <div class="grid grid-cols-2 gap-5">
-    {#each [{ label: "🌐 Avec web search", side: withWeb }, { label: "🧠 Sans web search", side: withoutWeb }] as { label, side } (label)}
+    {#each [{ label: "ðŸŒ Avec web search", side: withWeb }, { label: "ðŸ§  Sans web search", side: withoutWeb }] as { label, side } (label)}
       <div class="flex min-w-0 flex-col gap-3">
         <div
           class="flex flex-wrap items-center gap-2 border-b border-edge pb-2 text-sm font-semibold text-fg">
@@ -165,7 +177,7 @@
         {:else if side.claims !== null && side.claims.length === 0}
           <p
             class="m-0 rounded-xl border border-dashed border-edge bg-surface-alt p-5 text-center text-sm text-fg-muted">
-            Aucun fait vérifiable trouvé.
+            Aucun fait vÃ©rifiable trouvÃ©.
           </p>
         {:else if side.claims !== null}
           <div class="flex flex-col gap-3">

@@ -1,5 +1,10 @@
 <script lang="ts">
-  import { LANGUAGES, languageName, type LanguageCode, type LanguageName } from "$lib/languages";
+  import {
+    LANGUAGES,
+    languageName,
+    type LanguageCode,
+    type LanguageName
+  } from "$lib/languages";
   import { transcriptionLanguage } from "$lib/stores/transcription";
   import { sendLanguageConfig } from "$lib/websocket";
 
@@ -10,19 +15,26 @@
   let root: HTMLDivElement;
 
   const currentLabel = $derived(
-    $transcriptionLanguage === "auto" ? "Auto" : languageName($transcriptionLanguage)
+    $transcriptionLanguage === "auto"
+      ? "Auto"
+      : languageName($transcriptionLanguage)
   );
 
-  const filtered: { code: LanguageCode; name: LanguageName }[] = $derived.by(() => {
-    const q = query.trim().toLowerCase();
+  const filtered: { code: LanguageCode; name: LanguageName }[] = $derived.by(
+    () => {
+      const q = query.trim().toLowerCase();
 
-    const langs = LANGUAGES.filter(
-      (l) => !q || l.name.toLowerCase().includes(q) || l.code.toLowerCase().includes(q)
-    );
+      const langs = LANGUAGES.filter(
+        (l) =>
+          !q ||
+          l.name.toLowerCase().includes(q) ||
+          l.code.toLowerCase().includes(q)
+      );
 
-    const autoMatches = !q || "auto".includes(q);
-    return autoMatches ? [{ code: "auto", name: "Auto" }, ...langs] : langs;
-  });
+      const autoMatches = !q || "auto".includes(q);
+      return autoMatches ? [{ code: "auto", name: "Auto" }, ...langs] : langs;
+    }
+  );
 
   function select(code: LanguageCode) {
     transcriptionLanguage.set(code);
@@ -93,7 +105,8 @@
             onclick={() => select(lang.code)}>
             <span>{lang.name}</span>
             {#if lang.code !== "auto"}
-              <span class="font-mono text-2xs text-fg-faint uppercase">{lang.code}</span>
+              <span class="font-mono text-2xs text-fg-faint uppercase"
+                >{lang.code}</span>
             {/if}
           </button>
         {:else}

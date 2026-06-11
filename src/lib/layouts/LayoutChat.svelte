@@ -1,5 +1,9 @@
 ﻿<script lang="ts">
-  import { STATUS_COLOR, STATUS_ICON, STATUS_LABEL } from "$lib/constants/status";
+  import {
+    STATUS_COLOR,
+    STATUS_ICON,
+    STATUS_LABEL
+  } from "$lib/constants/status";
   import { transcriptEntries } from "$lib/stores/audio";
   import { claims, type VerificationStatus } from "$lib/stores/claims";
   import { formatTime } from "$lib/utils/format";
@@ -47,7 +51,8 @@
   <div
     class="flex flex-1 flex-col gap-3 overflow-y-auto rounded-b-[10px] border border-t-0 border-surface-selected bg-surface p-4">
     {#if feed.length === 0}
-      <div class="flex flex-1 items-center justify-center text-sm text-fg-faint">
+      <div
+        class="flex flex-1 items-center justify-center text-sm text-fg-faint">
         <p>La conversation commencera quand vous parlerez...</p>
       </div>
     {:else}
@@ -61,7 +66,9 @@
             </div>
             <div
               class="relative max-w-full rounded-2xl rounded-tl-sm bg-surface-raised px-3.5 py-2.5">
-              <p class="mt-0 mb-1 text-sm leading-normal text-fg">{item.text}</p>
+              <p class="mt-0 mb-1 text-sm leading-normal text-fg">
+                {item.text}
+              </p>
               <span class="block text-right text-2xs tabular-nums text-fg-faint"
                 >{formatTime(item.timestamp)}</span>
             </div>

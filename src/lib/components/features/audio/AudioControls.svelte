@@ -1,5 +1,5 @@
 ﻿<script lang="ts">
-  import LanguageSelector from "$lib/components/LanguageSelector.svelte";
+  import LanguageSelector from "$lib/components/features/LanguageSelector.svelte";
   import { languageName } from "$lib/languages";
   import {
     audioError,
@@ -71,8 +71,10 @@
       class="flex items-center gap-1 rounded-full border border-edge bg-surface px-2.5 py-1 text-2xs text-fg-muted"
       title="Langue détectée automatiquement">
       <span aria-hidden="true">🌐</span>
-      <span class="font-medium text-fg">{languageName($detectedLanguage.code)}</span>
-      <span class="text-fg-faint">{Math.round($detectedLanguage.probability * 100)} %</span>
+      <span class="font-medium text-fg"
+        >{languageName($detectedLanguage.code)}</span>
+      <span class="text-fg-faint"
+        >{Math.round($detectedLanguage.probability * 100)} %</span>
     </span>
   {/if}
 

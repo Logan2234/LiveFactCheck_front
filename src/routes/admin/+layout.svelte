@@ -2,8 +2,8 @@
   import { resolve } from "$app/paths";
   import { page } from "$app/state";
   import type { RouteId } from "$app/types";
-  import Button from "$lib/components/Button.svelte";
-  import ThemeToggle from "$lib/components/ThemeToggle.svelte";
+  import Button from "$lib/components/ui/Button.svelte";
+  import ThemeToggle from "$lib/components/features/ThemeToggle.svelte";
   import { clearToken, getToken, token } from "$lib/stores/auth";
   import { navigate } from "$lib/utils/navigation";
   import { onMount } from "svelte";
@@ -52,7 +52,8 @@
         <span class="text-2xl">🔍</span>
         <div class="flex flex-col leading-[1.2]">
           <strong class="text-sm">LiveFactChecker</strong>
-          <span class="text-2xs tracking-wider text-accent-light uppercase">Admin</span>
+          <span class="text-2xs tracking-wider text-accent-light uppercase"
+            >Admin</span>
         </div>
       </div>
       <nav class="flex flex-col gap-1">

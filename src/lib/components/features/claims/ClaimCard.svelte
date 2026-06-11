@@ -1,12 +1,18 @@
 ﻿<script lang="ts">
   import { CATEGORY_COLORS } from "$lib/constants/categories";
-  import { STATUS_COLOR, STATUS_ICON, STATUS_LABEL } from "$lib/constants/status";
+  import {
+    STATUS_COLOR,
+    STATUS_ICON,
+    STATUS_LABEL
+  } from "$lib/constants/status";
   import type { Claim } from "$lib/stores/claims";
   import { formatTime } from "$lib/utils/format";
 
   let { claim }: { claim: Claim } = $props();
 
-  let catColor = $derived(CATEGORY_COLORS[claim.category] || CATEGORY_COLORS.autre);
+  let catColor = $derived(
+    CATEGORY_COLORS[claim.category] || CATEGORY_COLORS.autre
+  );
 
   let copied = $state(false);
 
@@ -32,7 +38,9 @@
   style="border-left-color: {STATUS_COLOR[claim.status]}">
   <div class="mb-2 flex flex-wrap items-center gap-1.5">
     <span>{STATUS_ICON[claim.status]}</span>
-    <span class="text-sm font-semibold" style="color: {STATUS_COLOR[claim.status]}">
+    <span
+      class="text-sm font-semibold"
+      style="color: {STATUS_COLOR[claim.status]}">
       {STATUS_LABEL[claim.status]}
     </span>
 
@@ -57,8 +65,11 @@
       <span class="ml-0.5 flex items-center gap-1.5" title="Score de confiance">
         <span
           class="inline-block h-1 max-w-12 min-w-1 rounded-xs opacity-80"
-          style="width: {claim.confidence * 10}%; background: {STATUS_COLOR[claim.status]}"></span>
-        <span class="text-2xs tabular-nums text-fg-faint">{claim.confidence}/10</span>
+          style="width: {claim.confidence * 10}%; background: {STATUS_COLOR[
+            claim.status
+          ]}"></span>
+        <span class="text-2xs tabular-nums text-fg-faint"
+          >{claim.confidence}/10</span>
       </span>
     {/if}
 

@@ -1,6 +1,6 @@
-<script lang="ts">
-  import Alert from "$lib/components/Alert.svelte";
-  import Button from "$lib/components/Button.svelte";
+﻿<script lang="ts">
+  import Alert from "$lib/components/ui/Alert.svelte";
+  import Button from "$lib/components/ui/Button.svelte";
   import { authFetch, clearToken } from "$lib/stores/auth";
   import { formatTime } from "$lib/utils/format";
   import { onDestroy, onMount, tick } from "svelte";
@@ -35,7 +35,9 @@
   let visible = $derived(
     filterLevel === "ALL"
       ? entries
-      : entries.filter((e) => (LEVEL_ORDER[e.level] ?? 0) >= (LEVEL_ORDER[filterLevel] ?? 0))
+      : entries.filter(
+          (e) => (LEVEL_ORDER[e.level] ?? 0) >= (LEVEL_ORDER[filterLevel] ?? 0)
+        )
   );
 
   async function poll() {
@@ -58,7 +60,7 @@
         logBox?.scrollTo({ top: logBox.scrollHeight, behavior: "smooth" });
       }
     } catch {
-      error = "Connexion perdue — nouvelle tentative…";
+      error = "Connexion perdue â€” nouvelle tentativeâ€¦";
     }
   }
 
@@ -76,15 +78,15 @@
 </script>
 
 <svelte:head>
-  <title>Logs — Admin</title>
+  <title>Logs â€” Admin</title>
 </svelte:head>
 
 <header>
   <div>
-    <h1 class="mt-0 mb-1 text-2xl">📜 Logs</h1>
+    <h1 class="mt-0 mb-1 text-2xl">ðŸ“œ Logs</h1>
     <p class="mt-0 mb-5 text-sm text-fg-muted">
-      Flux en direct du logger <code class="font-mono text-fg-muted">app.*</code> — rafraîchissement toutes
-      les 1,5 s.
+      Flux en direct du logger <code class="font-mono text-fg-muted"
+        >app.*</code> â€” rafraÃ®chissement toutes les 1,5 s.
     </p>
   </div>
 </header>
@@ -101,14 +103,22 @@
       {/each}
     </select>
     <span class="text-xs tabular-nums text-fg-faint"
-      >{visible.length} entrée{visible.length !== 1 ? "s" : ""}</span>
+      >{visible.length} entrÃ©e{visible.length !== 1 ? "s" : ""}</span>
   </div>
   <div class="flex items-center gap-2.5">
-    <label class="flex cursor-pointer items-center gap-1.5 text-sm text-fg-muted select-none">
-      <input type="checkbox" bind:checked={autoScroll} class="cursor-pointer accent-accent-light" />
+    <label
+      class="flex cursor-pointer items-center gap-1.5 text-sm text-fg-muted select-none">
+      <input
+        type="checkbox"
+        bind:checked={autoScroll}
+        class="cursor-pointer accent-accent-light" />
       Auto-scroll
     </label>
-    <Button variant="secondary" size="sm" onclick={clearLogs} disabled={entries.length === 0}>
+    <Button
+      variant="secondary"
+      size="sm"
+      onclick={clearLogs}
+      disabled={entries.length === 0}>
       Vider
     </Button>
   </div>
@@ -125,7 +135,8 @@
   bind:this={logBox}>
   {#if visible.length === 0}
     <div class="py-4 text-center text-sm text-edge-hi">
-      Aucun log — les messages apparaîtront dès que le backend émet quelque chose.
+      Aucun log â€” les messages apparaÃ®tront dÃ¨s que le backend Ã©met quelque
+      chose.
     </div>
   {:else}
     {#each visible as entry (entry.id)}
@@ -134,16 +145,18 @@
         <span class="ts whitespace-nowrap text-edge-hi"
           >{formatTime(new Date(entry.t * 1000))}</span>
         <span class="lvl font-bold whitespace-nowrap">{entry.level}</span>
-        <span class="logger overflow-hidden text-ellipsis whitespace-nowrap text-fg-faint"
+        <span
+          class="logger overflow-hidden text-ellipsis whitespace-nowrap text-fg-faint"
           >{entry.logger}</span>
-        <span class="msg break-all whitespace-pre-wrap text-fg-muted">{entry.msg}</span>
+        <span class="msg break-all whitespace-pre-wrap text-fg-muted"
+          >{entry.msg}</span>
       </div>
     {/each}
   {/if}
 </div>
 
 <style>
-  /* Per-level colors use dynamic compound selectors — can't be expressed as utilities. */
+  /* Per-level colors use dynamic compound selectors â€” can't be expressed as utilities. */
   .level-debug .lvl {
     color: #5a5a88;
   }

@@ -11,7 +11,8 @@
       (function () {
         try {
           var pref = localStorage.getItem("lfc_theme");
-          if (pref !== "light" && pref !== "dark" && pref !== "auto") pref = "dark";
+          if (pref !== "light" && pref !== "dark" && pref !== "auto")
+            pref = "dark";
           var resolved =
             pref === "auto"
               ? window.matchMedia("(prefers-color-scheme: dark)").matches
