@@ -40,8 +40,8 @@
     }
   }
 
-  function copyToClipboard(key: string, value: string) {
-    navigator.clipboard.writeText(value).then(() => {
+  async function copyToClipboard(key: string, value: string) {
+    void navigator.clipboard.writeText(value).then(() => {
       copied = key;
       setTimeout(() => (copied = null), 1800);
     });

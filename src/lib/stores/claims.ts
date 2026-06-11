@@ -26,11 +26,13 @@ export function removeClaim(id: string) {
 export function addOrUpdateClaim(claim: Claim) {
   claims.update((current) => {
     const index = current.findIndex((c) => c.id === claim.id);
+
     if (index >= 0) {
       const updated = [...current];
       updated[index] = claim;
       return updated;
     }
+
     return [...current, claim];
   });
 }

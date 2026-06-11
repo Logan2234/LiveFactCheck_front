@@ -31,10 +31,12 @@ export async function login(password: string): Promise<void> {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ password })
   });
+
   if (!res.ok) {
     const detail = await res.json().catch(() => null);
     throw new Error(detail?.detail ?? "Échec de la connexion");
   }
+
   const data = await res.json();
   setToken(data.token);
 }

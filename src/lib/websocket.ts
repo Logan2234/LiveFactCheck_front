@@ -99,11 +99,6 @@ function scheduleRetry() {
   const delay = Math.min(BASE_DELAY_MS * 2 ** retryCount, 30_000);
 
   retryCount++;
-
-  console.log(
-    `WebSocket: reconnexion dans ${delay / 1000}s (tentative ${retryCount}/${MAX_RETRIES})`
-  );
-
   retryTimer = setTimeout(() => connect(false), delay);
 }
 
@@ -126,9 +121,6 @@ export function connect(resetRetries = true) {
   ws.onopen = () => {
     retryCount = 0;
     wsStatus.set("connected");
-    console.log("WebSocket connecté");
-    // Tell the server which language to transcribe in, including after an
-    // auto-reconnect (the previous socket's config didn't survive).
     sendLanguageConfig(get(transcriptionLanguage));
   };
 

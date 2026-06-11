@@ -55,8 +55,8 @@
   }
 
   onMount(() => {
-    poll();
-    interval = setInterval(poll, 2000);
+    void poll();
+    interval = setInterval(() => void poll(), 2000);
   });
 
   onDestroy(() => clearInterval(interval));

@@ -20,7 +20,7 @@
       .filter(Boolean)
       .join("\n");
 
-    navigator.clipboard.writeText(lines).then(() => {
+    void navigator.clipboard.writeText(lines).then(() => {
       copied = true;
       setTimeout(() => (copied = false), 1500);
     });

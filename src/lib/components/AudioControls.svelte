@@ -19,7 +19,7 @@
     if (isRecording) {
       stopRecording();
     } else {
-      startRecording();
+      void startRecording();
     }
   }
 

@@ -41,7 +41,7 @@
     if (e.code === "Space") {
       e.preventDefault();
       if ($recordingState === "recording") stopRecording();
-      else startRecording();
+      else void startRecording();
     }
   }
 

@@ -46,6 +46,7 @@ function recordOneChunk() {
     if (chunks.length > 0 && onChunkCallback) {
       onChunkCallback(new Blob(chunks, { type: "audio/webm;codecs=opus" }));
     }
+
     if (isRecording) recordOneChunk();
   };
 
@@ -57,6 +58,7 @@ function recordOneChunk() {
 
 export async function startRecording() {
   audioError.set(null);
+
   try {
     activeStream = await navigator.mediaDevices.getUserMedia({ audio: true });
     isRecording = true;
@@ -74,27 +76,34 @@ function micErrorMessage(error: unknown): string {
     if (error.name === "NotAllowedError" || error.name === "SecurityError") {
       return "Accès au micro refusé. Autorisez le micro dans votre navigateur, puis réessayez.";
     }
+
     if (error.name === "NotFoundError" || error.name === "DevicesNotFoundError") {
       return "Aucun micro détecté. Branchez un micro, puis réessayez.";
     }
   }
+
   return "Impossible de démarrer l'enregistrement du micro.";
 }
 
 export function stopRecording() {
   isRecording = false;
+
   if (chunkTimer !== null) {
     clearTimeout(chunkTimer);
     chunkTimer = null;
   }
+
   if (activeRecorder && activeRecorder.state !== "inactive") {
     activeRecorder.stop();
   }
+
   activeRecorder = null;
+
   if (activeStream) {
     activeStream.getTracks().forEach((track) => track.stop());
     activeStream = null;
   }
+
   recordingState.set("idle");
 }
 

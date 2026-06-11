@@ -210,8 +210,8 @@
   }
 
   onMount(() => {
-    loadAll();
-    interval = setInterval(refreshHealth, 30_000);
+    void loadAll();
+    interval = setInterval(() => void refreshHealth(), 30_000);
   });
 
   onDestroy(() => clearInterval(interval));

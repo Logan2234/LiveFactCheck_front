@@ -13,7 +13,7 @@
 
   onMount(() => {
     if (!getToken()) {
-      navigate("/login");
+      void navigate("/login");
     } else {
       ready = true;
     }
@@ -21,12 +21,14 @@
 
   // Redirect out if the token is cleared while on an admin page.
   $effect(() => {
-    if (ready && $token === null) navigate("/login");
+    if (ready && $token === null) {
+      void navigate("/login");
+    }
   });
 
   function logout() {
     clearToken();
-    navigate("/login");
+    void navigate("/login");
   }
 
   const nav: { href: RouteId; label: string; icon: string }[] = [
