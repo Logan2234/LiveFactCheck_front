@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+<script lang="ts">
   import { languageName } from "$lib/languages";
   import {
     audioError,
@@ -40,13 +40,25 @@
     onclick={toggle}
     disabled={status !== "connected"}
     title="Espace pour démarrer/arrêter">
-    <span
-      class={[
-        "h-2.5 w-2.5 shrink-0 rounded-full",
-        isRecording ? "record-dot-animate bg-white" : "bg-red-500"
-      ]}></span>
+    {#if isRecording}
+      <!-- rec 05: waveform replaces static dot during recording -->
+      <span class="waveform" aria-hidden="true">
+        <span class="bar" style="--delay:0s"></span>
+        <span class="bar" style="--delay:0.12s"></span>
+        <span class="bar" style="--delay:0.22s"></span>
+        <span class="bar" style="--delay:0.06s"></span>
+        <span class="bar" style="--delay:0.16s"></span>
+      </span>
+    {:else}
+      <span class="h-2.5 w-2.5 shrink-0 rounded-full bg-red-500"></span>
+    {/if}
     {isRecording ? "Arrêter" : "Enregistrer"}
   </button>
+
+  <!-- rec 05: LIVE badge appears while recording -->
+  {#if isRecording}
+    <span class="live-label" aria-live="polite">● LIVE</span>
+  {/if}
 
   {#if isRecording}
     <button
@@ -91,18 +103,38 @@
 </div>
 
 <style>
-  /* Custom pulse (opacity 1 → 0.3, 1s) — distinct from Tailwind's built-in animate-pulse. */
-  @keyframes pulse {
-    0%,
-    100% {
-      opacity: 1;
+  .waveform {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    height: 16px;
+    flex-shrink: 0;
+  }
+
+  .bar {
+    display: block;
+    width: 2.5px;
+    height: 100%;
+    background: white;
+    border-radius: 2px;
+    transform-origin: bottom;
+    animation: wave-bar 0.75s ease-in-out infinite alternate;
+    animation-delay: var(--delay, 0s);
+  }
+
+  @keyframes wave-bar {
+    from {
+      transform: scaleY(0.15);
     }
-    50% {
-      opacity: 0.3;
+    to {
+      transform: scaleY(1);
     }
   }
 
-  .record-dot-animate {
-    animation: pulse 1s infinite;
+  .live-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--color-accent);
   }
 </style>

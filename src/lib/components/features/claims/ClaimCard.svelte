@@ -1,4 +1,5 @@
-﻿<script lang="ts">
+<script lang="ts">
+  import StatusIcon from "$lib/components/ui/StatusIcon.svelte";
   import { CATEGORY_COLORS } from "$lib/constants/categories";
   import {
     STATUS_COLOR,
@@ -7,6 +8,7 @@
   } from "$lib/constants/status";
   import type { Claim } from "$lib/stores/claims";
   import { formatTime } from "$lib/utils/format";
+  import { fly } from "svelte/transition";
 
   let { claim }: { claim: Claim } = $props();
 
@@ -15,6 +17,11 @@
   );
 
   let copied = $state(false);
+
+  // Confidence fill: 0–10 scale → 0–100%
+  let fillPct = $derived(
+    claim.status === "pending" ? 0 : claim.confidence * 10
+  );
 
   function copy() {
     const lines = [
@@ -33,11 +40,21 @@
   }
 </script>
 
+<!--
+  rec 06: confidence fill as horizontal gradient instead of thick left border
+  rec 07: fly in from right on mount (new claims only — keyed by id in parent)
+-->
 <div
-  class="mb-3 rounded-lg border-l-4 bg-surface px-4 py-3.5"
-  style="border-left-color: {STATUS_COLOR[claim.status]}">
+  class="mb-3 rounded-lg border-l-[3px] px-4 py-3.5"
+  style="border-left-color: {STATUS_COLOR[
+    claim.status
+  ]}; background: linear-gradient(to right, color-mix(in srgb, {STATUS_COLOR[
+    claim.status
+  ]} 11%, var(--color-surface)) {fillPct}%, var(--color-surface) {fillPct}%);"
+  in:fly={{ x: 18, duration: 280 }}>
   <div class="mb-2 flex flex-wrap items-center gap-1.5">
-    <span>{STATUS_ICON[claim.status]}</span>
+    <!-- rec 04: SVG icon replaces emoji -->
+    <StatusIcon status={claim.status} size={15} />
     <span
       class="text-sm font-semibold"
       style="color: {STATUS_COLOR[claim.status]}">
@@ -62,15 +79,9 @@
     {/if}
 
     {#if claim.confidence > 0 && claim.status !== "pending"}
-      <span class="ml-0.5 flex items-center gap-1.5" title="Score de confiance">
-        <span
-          class="inline-block h-1 max-w-12 min-w-1 rounded-xs opacity-80"
-          style="width: {claim.confidence * 10}%; background: {STATUS_COLOR[
-            claim.status
-          ]}"></span>
-        <span class="text-2xs tabular-nums text-fg-faint"
-          >{claim.confidence}/10</span>
-      </span>
+      <span
+        class="ml-0.5 text-2xs tabular-nums text-fg-faint"
+        title="Score de confiance">{claim.confidence}/10</span>
     {/if}
 
     <span class="ml-auto text-xs whitespace-nowrap tabular-nums text-fg-muted"

@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,700;0,800;1,700&display=swap");
 @import "tailwindcss";
 
 /*
@@ -20,35 +21,40 @@
 @custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 
 @theme {
-  /* ── Monospace stacks (code/log/terminal views) ── */
+  /* ── Typeface stacks ── */
+  --font-display:
+    "Barlow Condensed", ui-sans-serif, system-ui, sans-serif; /* rec 03 */
   --font-mono: "SF Mono", "Fira Code", monospace;
   --font-term:
     "Cascadia Code", "Fira Code", "Consolas", "Courier New", monospace;
 
-  /* ── LIGHT palette (default) ── */
+  /* ── LIGHT palette (default) — warm paper tones ── */
 
-  /* Surfaces (app bg → raised) */
-  --color-background: #f4f4f8; /* app bg */
-  --color-surface: #ffffff; /* main card / panel */
-  --color-surface-alt: #f7f7fb; /* login, modals, alternate panels */
-  --color-surface-raised: #ececf4; /* hover / interactive surfaces */
-  --color-surface-selected: #e2e2f2; /* active / selected state */
-  --color-surface-term: #f3f3f8; /* terminal/log console bg (own light tone) */
-  --color-surface-term-bar: #e8e8f0; /* terminal header bar */
+  /* Surfaces */
+  --color-background: #faf8f2; /* warm paper bg   rec 10 */
+  --color-surface: #fffef9; /* warm white card  rec 10 */
+  --color-surface-alt: #f6f4ee;
+  --color-surface-raised: #eceae4;
+  --color-surface-selected: #e4e2d8;
+  --color-surface-term: #f2f0ea;
+  --color-surface-term-bar: #e8e6e0;
 
-  /* Borders */
-  --color-edge: #d9d9e4; /* standard border */
-  --color-edge-hi: #c4c4d6; /* stronger border, focus rings */
+  /* Borders — slightly warm */
+  --color-edge: #dddad0;
+  --color-edge-hi: #ccc8bc;
 
-  /* Accent (indigo / violet) — slightly deeper for contrast on white */
-  --color-accent: #4a4ac8;
-  --color-accent-dim: #6a6ac0;
-  --color-accent-light: #4848b0;
+  /* Accent — broadcast red, deep for contrast on white   rec 01 */
+  --color-accent: #c1121f;
+  --color-accent-dim: #920d17;
+  --color-accent-light: #e63946;
 
-  /* Foreground text (darkest body → faint hint) */
-  --color-fg: #1c1c28; /* body text */
-  --color-fg-muted: #55556e; /* secondary labels */
-  --color-fg-faint: #8a8aa2; /* tertiary / hints */
+  /* Foreground text */
+  --color-fg: #1c1c28;
+  --color-fg-muted: #55556e;
+  --color-fg-faint: #8a8aa2;
+
+  /* Terminal accent — dark green on warm-light bg   rec 09 */
+  --color-term-accent: #1a6b2a;
 
   /* ── Extra text size step (below xs) ── */
   --text-2xs: 0.72rem;
@@ -72,35 +78,39 @@
     --color-edge: #2e2e3e;
     --color-edge-hi: #3a3a4e;
 
-    --color-accent: #5a5ad0;
-    --color-accent-dim: #5555aa;
-    --color-accent-light: #7a7ad0;
+    --color-accent: #e63946; /* broadcast red   rec 01 */
+    --color-accent-dim: #b81c28;
+    --color-accent-light: #ff8a8a; /* lighter for text on dark surfaces */
 
     --color-fg: #e0e0e0;
     --color-fg-muted: #9a9ac0;
     --color-fg-faint: #6a6a88;
+
+    --color-term-accent: #00e676; /* phosphor green   rec 09 */
   }
 
   /* Explicit light override wins over :root dark when the user picks light. */
   [data-theme="light"] {
-    --color-background: #f4f4f8;
-    --color-surface: #ffffff;
-    --color-surface-alt: #f7f7fb;
-    --color-surface-raised: #ececf4;
-    --color-surface-selected: #e2e2f2;
-    --color-surface-term: #f3f3f8;
-    --color-surface-term-bar: #e8e8f0;
+    --color-background: #faf8f2;
+    --color-surface: #fffef9;
+    --color-surface-alt: #f6f4ee;
+    --color-surface-raised: #eceae4;
+    --color-surface-selected: #e4e2d8;
+    --color-surface-term: #f2f0ea;
+    --color-surface-term-bar: #e8e6e0;
 
-    --color-edge: #d9d9e4;
-    --color-edge-hi: #c4c4d6;
+    --color-edge: #dddad0;
+    --color-edge-hi: #ccc8bc;
 
-    --color-accent: #4a4ac8;
-    --color-accent-dim: #6a6ac0;
-    --color-accent-light: #4848b0;
+    --color-accent: #c1121f;
+    --color-accent-dim: #920d17;
+    --color-accent-light: #e63946;
 
     --color-fg: #1c1c28;
     --color-fg-muted: #55556e;
     --color-fg-faint: #8a8aa2;
+
+    --color-term-accent: #1a6b2a;
   }
 }
 
@@ -122,6 +132,15 @@
   @keyframes spin {
     to {
       transform: rotate(360deg);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
     }
   }
 }

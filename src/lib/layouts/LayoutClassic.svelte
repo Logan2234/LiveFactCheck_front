@@ -1,5 +1,6 @@
-﻿<script lang="ts">
+<script lang="ts">
   import ClaimCard from "$lib/components/features/claims/ClaimCard.svelte";
+  import StatusIcon from "$lib/components/ui/StatusIcon.svelte";
   import {
     CLAIM_FILTERS,
     STATUS_META,
@@ -12,7 +13,7 @@
 
 <div class="grid grid-cols-1 items-start gap-8 md:grid-cols-2">
   <section>
-    <h2 class="mt-0 mb-3 text-lg">📝 Transcription</h2>
+    <h2 class="mt-0 mb-3 text-lg">Transcription</h2>
     <div
       class="flex max-h-115 flex-col gap-1.5 overflow-y-auto rounded-lg bg-surface p-3">
       {#if $reversedTranscript.length === 0}
@@ -35,16 +36,24 @@
 
   <section>
     <div class="mb-2">
-      <h2 class="mt-0 mb-3 text-lg">📊 Claims ({$claimStats.total})</h2>
+      <h2 class="mt-0 mb-3 text-lg">
+        Claims ({$claimStats.total})
+      </h2>
+      <!-- rec 04: StatusIcon replaces emoji in stats row -->
       <div class="mt-1.5 flex flex-wrap gap-3 text-sm">
         {#each STATUS_ORDER as s (s)}
-          <span style="color: {STATUS_META[s].color}"
-            >{STATUS_META[s].icon} {$claimStats[s]}</span>
+          <span
+            class="flex items-center gap-1"
+            style="color: {STATUS_META[s].color}">
+            <StatusIcon status={s} size={13} />
+            {$claimStats[s]}
+          </span>
         {/each}
       </div>
     </div>
+    <!-- rec 04: icon removed from filter pills — label text is sufficient -->
     <div class="mb-3 flex flex-wrap gap-1.5">
-      {#each CLAIM_FILTERS as { key, label, icon } (key)}
+      {#each CLAIM_FILTERS as { key, label } (key)}
         <button
           class={[
             "cursor-pointer rounded-[20px] border px-3 py-1.5 text-sm transition-all duration-150",
@@ -53,7 +62,6 @@
               : "border-edge bg-surface text-fg-muted hover:border-edge-hi hover:text-fg"
           ]}
           onclick={() => claimFilter.set(key)}>
-          {icon}
           {label}
         </button>
       {/each}

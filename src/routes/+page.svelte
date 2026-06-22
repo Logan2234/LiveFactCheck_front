@@ -50,11 +50,18 @@
 
 <main class="mx-auto max-w-300 p-8">
   <header class="mb-6 flex flex-wrap items-center justify-between gap-4">
-    <div>
-      <h1 class="m-0 text-2xl">🔍 LiveFactChecker</h1>
-      <p class="mt-0.5 mb-0 text-sm text-fg-muted">
-        Vérification de faits en temps réel
-      </p>
+    <!-- rec 02: structured logotype with pulsing live dot -->
+    <div class="flex items-center gap-3">
+      <span class="live-dot" aria-hidden="true"></span>
+      <div>
+        <h1
+          class="m-0 font-display text-[2.2rem] font-extrabold leading-none tracking-tight uppercase">
+          LFC
+        </h1>
+        <p class="m-0 text-[0.62rem] tracking-[0.22em] text-fg-faint uppercase">
+          Live Fact Checker
+        </p>
+      </div>
     </div>
     <div class="flex flex-wrap items-center justify-end gap-x-3 gap-y-2">
       <AudioControls />
@@ -85,3 +92,26 @@
     <LayoutTable />
   {/if}
 </main>
+
+<style>
+  .live-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--color-accent);
+    flex-shrink: 0;
+    animation: dot-pulse 1.4s ease-in-out infinite;
+  }
+
+  @keyframes dot-pulse {
+    0%,
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.45;
+      transform: scale(0.72);
+    }
+  }
+</style>

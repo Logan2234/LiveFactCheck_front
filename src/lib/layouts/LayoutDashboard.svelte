@@ -1,5 +1,6 @@
 ﻿<script lang="ts">
   import ClaimCard from "$lib/components/features/claims/ClaimCard.svelte";
+  import StatusIcon from "$lib/components/ui/StatusIcon.svelte";
   import { STATUS_META, STATUS_ORDER } from "$lib/constants/status";
   import { reversedTranscript } from "$lib/stores/audio";
   import { claimFilter, claimStats, filteredClaims } from "$lib/stores/claims";
@@ -8,7 +9,6 @@
   const statCards = STATUS_ORDER.map((key) => ({
     key,
     label: STATUS_META[key].filterLabel,
-    icon: STATUS_META[key].icon,
     color: STATUS_META[key].color
   }));
 </script>
@@ -26,7 +26,8 @@
         style="--c: {s.color}"
         onclick={() => claimFilter.set($claimFilter === s.key ? "all" : s.key)}
         title="Filtrer : {s.label}">
-        <span class="text-xl">{s.icon}</span>
+        <!-- rec 04: SVG icon replaces emoji in stat tiles -->
+        <StatusIcon status={s.key} size={22} />
         <span
           class="text-[1.75rem] leading-none font-bold"
           style="color: {s.color}">{$claimStats[s.key]}</span>
