@@ -18,8 +18,12 @@ au presse-papier. Tout est éphémère (un refresh vide l'écran), pas de recher
       relire une session passée sans micro.
 - [ ] **Mode overlay / streaming** : un layout transparent plein écran (claims qui
       apparaissent/disparaissent en fade) destiné à être capturé dans OBS pour un live.
-- [ ] **Alerte visuelle/sonore sur claim "false"** : mettre en avant un démenti
-      (animation, son optionnel) — pertinent en contexte débat/direct.
+- [x] **Alerte visuelle/sonore sur claim "false"** (front uniquement) : toast global
+      `FalseClaimAlert.svelte` (animation, auto-disparition) + bip Web Audio optionnel
+      (toggle 🔔 persisté dans `stores/alerts.ts`), déclenché depuis `+page.svelte`.
+- [ ] **Webhook / notification serveur sur claim "false"** : pousser l'alerte hors de
+      l'onglet (webhook configurable, intégration OBS/Slack…). Côté back — cf.
+      « Webhook / notification sur claim "false" » dans `backend/TODO.md`.
 - [x] **Sélecteur de niveau de vérification** dans `AudioControls` (rapide vs approfondi),
       en miroir de l'option back : toggle `VerificationSelector.svelte`, persisté en
       localStorage (`stores/verification.ts`), envoyé au back via le message WS `config`

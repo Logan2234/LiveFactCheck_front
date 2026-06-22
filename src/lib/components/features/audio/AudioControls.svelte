@@ -1,6 +1,7 @@
 ﻿<script lang="ts">
   import LanguageSelector from "$lib/components/features/LanguageSelector.svelte";
   import VerificationSelector from "$lib/components/features/VerificationSelector.svelte";
+  import { falseAlertSound } from "$lib/stores/alerts";
   import { languageName } from "$lib/languages";
   import {
     audioError,
@@ -68,6 +69,23 @@
   <LanguageSelector />
 
   <VerificationSelector />
+
+  <button
+    type="button"
+    class={[
+      "flex h-8 cursor-pointer items-center gap-1.5 rounded-full border px-3 text-xs transition-colors",
+      $falseAlertSound
+        ? "border-edge bg-surface text-fg-muted hover:border-edge-hi hover:text-fg"
+        : "border-edge bg-surface text-fg-faint hover:border-edge-hi hover:text-fg-muted"
+    ]}
+    aria-pressed={$falseAlertSound}
+    title={$falseAlertSound
+      ? "Son d'alerte sur claim faux activé"
+      : "Son d'alerte sur claim faux coupé"}
+    onclick={() => falseAlertSound.update((on) => !on)}>
+    <span aria-hidden="true">{$falseAlertSound ? "🔔" : "🔕"}</span>
+    <span>Alerte</span>
+  </button>
 
   {#if $transcriptionLanguage === "auto" && $detectedLanguage}
     <span

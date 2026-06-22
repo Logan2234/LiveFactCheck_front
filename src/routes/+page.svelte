@@ -1,5 +1,6 @@
 ﻿<script lang="ts">
   import AudioControls from "$lib/components/features/audio/AudioControls.svelte";
+  import FalseClaimAlert from "$lib/components/features/claims/FalseClaimAlert.svelte";
   import KeyboardShortcuts from "$lib/components/features/KeyboardShortcuts.svelte";
   import ThemeToggle from "$lib/components/features/ThemeToggle.svelte";
   import LayoutChat from "$lib/layouts/LayoutChat.svelte";
@@ -11,6 +12,7 @@
   import LayoutTicker from "$lib/layouts/LayoutTicker.svelte";
   import LayoutTimeline from "$lib/layouts/LayoutTimeline.svelte";
   import LayoutTrustMeter from "$lib/layouts/LayoutTrustMeter.svelte";
+  import { notifyClaim } from "$lib/stores/alerts";
   import { appendTranscript, onAudioChunk } from "$lib/stores/audio";
   import { addOrUpdateClaim, removeClaim } from "$lib/stores/claims";
   import { activeLayout, type Layout } from "$lib/stores/layout";
@@ -27,7 +29,10 @@
   onMount(() => {
     connect();
     onAudioChunk(sendAudioChunk);
-    onClaim(addOrUpdateClaim);
+    onClaim((claim) => {
+      addOrUpdateClaim(claim);
+      notifyClaim(claim);
+    });
     onRemoveClaim(removeClaim);
     onTranscript(appendTranscript);
   });
@@ -52,6 +57,7 @@
 </svelte:head>
 
 <KeyboardShortcuts />
+<FalseClaimAlert />
 
 <main class="mx-auto max-w-300 p-8">
   <header class="mb-6 flex flex-wrap items-start justify-between gap-4">
