@@ -6,7 +6,7 @@
     type LanguageName
   } from "$lib/languages";
   import { transcriptionLanguage } from "$lib/stores/transcription";
-  import { sendLanguageConfig } from "$lib/websocket";
+  import { sendConfig } from "$lib/websocket";
 
   // Filterable combobox: "auto" + the ~100 Whisper languages. A plain <select>
   // with 100 options is unusable, so we open a searchable list instead.
@@ -38,7 +38,7 @@
 
   function select(code: LanguageCode) {
     transcriptionLanguage.set(code);
-    sendLanguageConfig(code);
+    sendConfig();
     open = false;
     query = "";
   }

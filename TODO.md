@@ -20,8 +20,10 @@ au presse-papier. Tout est éphémère (un refresh vide l'écran), pas de recher
       apparaissent/disparaissent en fade) destiné à être capturé dans OBS pour un live.
 - [ ] **Alerte visuelle/sonore sur claim "false"** : mettre en avant un démenti
       (animation, son optionnel) — pertinent en contexte débat/direct.
-- [ ] **Sélecteur de niveau de vérification** dans `AudioControls` (rapide vs approfondi),
-      en miroir de l'option back correspondante.
+- [x] **Sélecteur de niveau de vérification** dans `AudioControls` (rapide vs approfondi),
+      en miroir de l'option back : toggle `VerificationSelector.svelte`, persisté en
+      localStorage (`stores/verification.ts`), envoyé au back via le message WS `config`
+      (champ `verification_level`).
 - [x] **Réglage de la langue de transcription** depuis l'UI : sélecteur filtrable
       (auto + 100 langues) dans `AudioControls`, persisté en localStorage, envoyé au back
       via un message WS `config`. La langue sert de filtre (les chunks d'une autre langue

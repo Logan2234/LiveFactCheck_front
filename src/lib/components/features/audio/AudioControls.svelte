@@ -1,5 +1,6 @@
 ﻿<script lang="ts">
   import LanguageSelector from "$lib/components/features/LanguageSelector.svelte";
+  import VerificationSelector from "$lib/components/features/VerificationSelector.svelte";
   import { languageName } from "$lib/languages";
   import {
     audioError,
@@ -65,6 +66,8 @@
   {/if}
 
   <LanguageSelector />
+
+  <VerificationSelector />
 
   {#if $transcriptionLanguage === "auto" && $detectedLanguage}
     <span

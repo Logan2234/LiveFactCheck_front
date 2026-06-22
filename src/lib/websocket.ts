@@ -3,6 +3,7 @@ import { WS_URL } from "./config";
 import type { LanguageCode } from "./languages";
 import type { Claim, VerificationStatus } from "./stores/claims";
 import { transcriptionLanguage } from "./stores/transcription";
+import { verificationLevel } from "./stores/verification";
 
 export type WSMessage =
   | {
@@ -141,7 +142,7 @@ export function connect(resetRetries = true) {
   ws.onopen = () => {
     retryCount = 0;
     wsStatus.set("connected");
-    sendLanguageConfig(get(transcriptionLanguage));
+    sendConfig();
   };
 
   ws.onmessage = (event) => {
@@ -219,11 +220,23 @@ export function sendAudioChunk(chunk: Blob) {
   }
 }
 
-export function sendLanguageConfig(language: LanguageCode) {
+// Send the full session config (language + verification level) in one frame.
+// Reads the current store values, so callers just update the store then call
+// this. Mirrors ConfigMessage in backend/app/schemas/claim.py.
+export function sendConfig() {
+  const language = get(transcriptionLanguage);
+
+  // Forcing a language hides any stale auto-detected badge.
   if (language !== "auto") detectedLanguage.set(null);
 
   if (ws?.readyState === WebSocket.OPEN) {
-    ws.send(JSON.stringify({ type: "config", language }));
+    ws.send(
+      JSON.stringify({
+        type: "config",
+        language,
+        verification_level: get(verificationLevel)
+      })
+    );
   }
 }
 
