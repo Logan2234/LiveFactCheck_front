@@ -1,13 +1,13 @@
-﻿<script lang="ts">
-  import { STATUS_COLOR, STATUS_ICON } from "$lib/constants/status";
+<script lang="ts">
+  import StatusIcon from "$lib/components/ui/StatusIcon.svelte";
+  import { STATUS_COLOR, STATUS_LABEL } from "$lib/constants/status";
   import { reversedTranscript } from "$lib/stores/audio";
-  import { claims } from "$lib/stores/claims";
+  import { claims, claimStats } from "$lib/stores/claims";
   import { formatTime } from "$lib/utils/format";
 
-  // Ticker items: only finalized claims, repeated so there's always enough to scroll
-  let tickerItems = $derived($claims.filter((c) => c.status !== "pending"));
+  // rec C: STATUS_ICON (emoji) removed — StatusIcon component used instead
 
-  // Duplicate items so the ticker loops smoothly
+  let tickerItems = $derived($claims.filter((c) => c.status !== "pending"));
   let tickerContent = $derived(
     tickerItems.length > 0 ? [...tickerItems, ...tickerItems] : []
   );
@@ -19,8 +19,11 @@
     class="flex flex-1 flex-col overflow-hidden rounded-t-[10px] border border-b-0 border-edge bg-surface">
     <div
       class="flex items-center gap-3 border-b border-surface-selected bg-surface-alt px-5 py-3">
-      <h2 class="m-0 text-xl">📡 LiveFactChecker — En direct</h2>
-      <div class="live-dot ml-auto h-2.5 w-2.5 rounded-full bg-red-500"></div>
+      <h2
+        class="m-0 text-xl font-display font-extrabold uppercase tracking-wide">
+        En direct
+      </h2>
+      <div class="live-dot ml-auto h-2.5 w-2.5 rounded-full bg-accent"></div>
     </div>
 
     <div
@@ -40,43 +43,51 @@
       {/if}
     </div>
 
-    <!-- Stats bar -->
+    <!-- Stats bar — rec C: StatusIcon replaces emoji -->
     <div
       class="flex gap-6 border-t border-edge bg-surface-alt px-5 py-2 text-sm">
-      <span class="tabular-nums text-emerald-500"
-        >✅ {$claims.filter((c) => c.status === "verified").length} vérifiés</span>
-      <span class="tabular-nums text-red-500"
-        >❌ {$claims.filter((c) => c.status === "false").length} faux</span>
-      <span class="tabular-nums text-amber-500"
-        >❓ {$claims.filter((c) => c.status === "uncertain").length} incertains</span>
-      <span class="tabular-nums text-fg-muted">Total: {$claims.length}</span>
+      <span class="flex items-center gap-1.5 tabular-nums text-emerald-500">
+        <StatusIcon status="verified" size={13} />
+        {$claimStats.verified} vérifiés
+      </span>
+      <span class="flex items-center gap-1.5 tabular-nums text-red-500">
+        <StatusIcon status="false" size={13} />
+        {$claimStats.false} faux
+      </span>
+      <span class="flex items-center gap-1.5 tabular-nums text-amber-500">
+        <StatusIcon status="uncertain" size={13} />
+        {$claimStats.uncertain} incertains
+      </span>
+      <span class="tabular-nums text-fg-muted"
+        >Total : {$claimStats.total}</span>
     </div>
   </div>
 
-  <!-- Ticker band -->
+  <!-- Ticker band — rec C: hardcoded #cc0000/#ff0000 replaced by accent tokens -->
   <div
-    class="flex h-10.5 items-stretch overflow-hidden rounded-b-[10px] border border-t-0 border-[#ff0000] bg-[#cc0000]">
+    class="flex h-10.5 items-stretch overflow-hidden rounded-b-[10px] border border-t-0 border-accent bg-accent-dim">
     <div
-      class="flex shrink-0 items-center bg-[#ff0000] px-4 text-xs font-extrabold tracking-widest text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.5)]">
+      class="flex shrink-0 items-center bg-accent px-4 text-xs font-extrabold tracking-widest text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.4)]">
       FACT CHECK
     </div>
-    <div class="flex flex-1 items-center overflow-hidden bg-[#1a0000]">
+    <div class="flex flex-1 items-center overflow-hidden bg-[#0d0002]">
       {#if tickerContent.length === 0}
-        <div class="px-4 text-sm text-zinc-400">En attente des claims...</div>
+        <div class="px-4 text-sm text-fg-faint">En attente des claims...</div>
       {:else}
         <div
           class="ticker-track flex items-center gap-0 whitespace-nowrap will-change-transform"
           style="animation-duration: {Math.max(tickerItems.length * 8, 20)}s">
           {#each tickerContent as c, i (c.id + "-" + i)}
             <span
-              class="inline-flex items-center gap-1.5 px-2 text-(--color)"
-              style="--color: {STATUS_COLOR[c.status]}">
-              <span class="text-sm">{STATUS_ICON[c.status]}</span>
+              class="inline-flex items-center gap-1.5 px-2"
+              style="color: {STATUS_COLOR[c.status]}">
+              <StatusIcon status={c.status} size={12} />
               <span
-                class="max-w-87.5 overflow-hidden text-sm text-ellipsis text-zinc-200"
-                >{c.text}</span>
+                class="max-w-87.5 overflow-hidden text-sm text-ellipsis text-zinc-200">
+                {STATUS_LABEL[c.status]} — {c.text}
+              </span>
             </span>
-            <span class="px-2 text-2.5 text-red-700">◆</span>
+            <span class="px-2 text-2.5 text-accent/60">◆</span>
           {/each}
         </div>
       {/if}
@@ -85,8 +96,6 @@
 </div>
 
 <style>
-  /* Animations (live pulse, scrolling ticker) — keyframes can't be utilities.
-     The ticker scroll duration is set inline since it depends on item count. */
   .live-dot {
     animation: pulse 1.5s ease-in-out infinite;
   }

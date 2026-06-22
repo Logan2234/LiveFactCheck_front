@@ -25,7 +25,9 @@
     onTranscript,
     sendAudioChunk
   } from "$lib/websocket";
+  import WsToast from "$lib/components/ui/WsToast.svelte";
   import { onDestroy, onMount } from "svelte";
+  import { fade } from "svelte/transition";
 
   onMount(() => {
     connect();
@@ -47,6 +49,8 @@
 
 <KeyboardShortcuts />
 <FalseClaimAlert />
+<!-- rec G: WebSocket connection toasts -->
+<WsToast />
 
 <main class="mx-auto max-w-300 p-8">
   <header class="mb-6 flex flex-wrap items-center justify-between gap-4">
@@ -72,25 +76,30 @@
       </div>
     </div>
   </header>
-  {#if $activeLayout === "classic"}
-    <LayoutClassic />
-  {:else if $activeLayout === "dashboard"}
-    <LayoutDashboard />
-  {:else if $activeLayout === "terminal"}
-    <LayoutTerminal />
-  {:else if $activeLayout === "spotlight"}
-    <LayoutSpotlight />
-  {:else if $activeLayout === "trustmeter"}
-    <LayoutTrustMeter />
-  {:else if $activeLayout === "ticker"}
-    <LayoutTicker />
-  {:else if $activeLayout === "timeline"}
-    <LayoutTimeline />
-  {:else if $activeLayout === "chat"}
-    <LayoutChat />
-  {:else}
-    <LayoutTable />
-  {/if}
+  <!-- rec H: fade on layout switch so 9 very different layouts don't swap brutally -->
+  {#key $activeLayout}
+    <div in:fade={{ duration: 150 }}>
+      {#if $activeLayout === "classic"}
+        <LayoutClassic />
+      {:else if $activeLayout === "dashboard"}
+        <LayoutDashboard />
+      {:else if $activeLayout === "terminal"}
+        <LayoutTerminal />
+      {:else if $activeLayout === "spotlight"}
+        <LayoutSpotlight />
+      {:else if $activeLayout === "trustmeter"}
+        <LayoutTrustMeter />
+      {:else if $activeLayout === "ticker"}
+        <LayoutTicker />
+      {:else if $activeLayout === "timeline"}
+        <LayoutTimeline />
+      {:else if $activeLayout === "chat"}
+        <LayoutChat />
+      {:else}
+        <LayoutTable />
+      {/if}
+    </div>
+  {/key}
 </main>
 
 <style>

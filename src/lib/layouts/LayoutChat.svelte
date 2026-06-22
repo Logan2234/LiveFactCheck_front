@@ -1,14 +1,12 @@
-﻿<script lang="ts">
-  import {
-    STATUS_COLOR,
-    STATUS_ICON,
-    STATUS_LABEL
-  } from "$lib/constants/status";
+<script lang="ts">
+  import StatusIcon from "$lib/components/ui/StatusIcon.svelte";
+  import { STATUS_COLOR, STATUS_LABEL } from "$lib/constants/status";
   import { transcriptEntries } from "$lib/stores/audio";
   import { claims, type VerificationStatus } from "$lib/stores/claims";
   import { formatTime } from "$lib/utils/format";
 
-  // Merge transcripts and claims into a unified chronological feed
+  // rec D: STATUS_ICON (emoji) removed — StatusIcon component used instead
+
   type ChatItem =
     | { kind: "transcript"; text: string; timestamp: number }
     | {
@@ -29,12 +27,42 @@
 </script>
 
 <div class="flex h-[calc(100vh-160px)] min-h-125 flex-col">
+  <!-- Header bar — rec D: emoji avatars replaced by SVG icons -->
   <div
     class="flex items-center rounded-t-[10px] border border-b-0 border-surface-selected bg-surface-alt px-4 py-3 text-sm text-fg-muted">
     <div class="flex flex-1 items-center gap-2">
       <div
-        class="flex h-8 w-8 items-center justify-center rounded-full bg-surface-selected text-base">
-        🎙
+        class="flex h-8 w-8 items-center justify-center rounded-full bg-surface-selected text-fg-muted">
+        <!-- Microphone SVG -->
+        <svg
+          width="15"
+          height="15"
+          viewBox="0 0 14 14"
+          fill="none"
+          aria-hidden="true">
+          <rect
+            x="4.5"
+            y="0.5"
+            width="5"
+            height="7.5"
+            rx="2.5"
+            stroke="currentColor"
+            stroke-width="1.4" />
+          <path
+            d="M1.5 7.5C1.5 10.5 4 12.5 7 12.5C10 12.5 12.5 10.5 12.5 7.5"
+            stroke="currentColor"
+            stroke-width="1.4"
+            stroke-linecap="round"
+            fill="none" />
+          <line
+            x1="7"
+            y1="12.5"
+            x2="7"
+            y2="13.5"
+            stroke="currentColor"
+            stroke-width="1.4"
+            stroke-linecap="round" />
+        </svg>
       </div>
       <span>Speaker</span>
     </div>
@@ -42,8 +70,29 @@
     <div class="flex flex-1 items-center justify-end gap-2">
       <span>Fact-Checker</span>
       <div
-        class="flex h-8 w-8 items-center justify-center rounded-full bg-surface-selected text-base">
-        🔍
+        class="flex h-8 w-8 items-center justify-center rounded-full bg-surface-selected text-fg-muted">
+        <!-- Magnifying glass SVG -->
+        <svg
+          width="15"
+          height="15"
+          viewBox="0 0 14 14"
+          fill="none"
+          aria-hidden="true">
+          <circle
+            cx="6"
+            cy="6"
+            r="4.5"
+            stroke="currentColor"
+            stroke-width="1.4" />
+          <line
+            x1="9.5"
+            y1="9.5"
+            x2="13"
+            y2="13"
+            stroke="currentColor"
+            stroke-width="1.4"
+            stroke-linecap="round" />
+        </svg>
       </div>
     </div>
   </div>
@@ -61,8 +110,36 @@
           <!-- Left bubble: speaker -->
           <div class="flex max-w-[70%] items-end gap-2 self-start">
             <div
-              class="flex h-7 w-7 shrink-0 items-center justify-center self-end rounded-full bg-surface-raised text-sm">
-              🎙
+              class="flex h-7 w-7 shrink-0 items-center justify-center self-end rounded-full bg-surface-raised text-fg-faint">
+              <svg
+                width="13"
+                height="13"
+                viewBox="0 0 14 14"
+                fill="none"
+                aria-hidden="true">
+                <rect
+                  x="4.5"
+                  y="0.5"
+                  width="5"
+                  height="7.5"
+                  rx="2.5"
+                  stroke="currentColor"
+                  stroke-width="1.4" />
+                <path
+                  d="M1.5 7.5C1.5 10.5 4 12.5 7 12.5C10 12.5 12.5 10.5 12.5 7.5"
+                  stroke="currentColor"
+                  stroke-width="1.4"
+                  stroke-linecap="round"
+                  fill="none" />
+                <line
+                  x1="7"
+                  y1="12.5"
+                  x2="7"
+                  y2="13.5"
+                  stroke="currentColor"
+                  stroke-width="1.4"
+                  stroke-linecap="round" />
+              </svg>
             </div>
             <div
               class="relative max-w-full rounded-2xl rounded-tl-sm bg-surface-raised px-3.5 py-2.5">
@@ -74,15 +151,15 @@
             </div>
           </div>
         {:else}
-          <!-- Right bubble: fact-checker -->
+          <!-- Right bubble: fact-checker — rec D: StatusIcon + font-display label -->
           <div class="flex max-w-[70%] flex-row items-end gap-2 self-end">
             <div
               class="fc-bubble relative max-w-full rounded-2xl rounded-tr-sm px-3.5 py-2.5"
               style="--color: {STATUS_COLOR[item.status]}">
-              <div class="mb-1.5 flex items-center gap-1.5">
-                <span class="text-sm">{STATUS_ICON[item.status]}</span>
+              <div class="mb-1.5 flex items-center gap-2">
+                <StatusIcon status={item.status} size={14} />
                 <span
-                  class="text-sm font-semibold tracking-wider uppercase"
+                  class="font-display text-sm font-extrabold tracking-wider uppercase"
                   style="color: {STATUS_COLOR[item.status]}">
                   {STATUS_LABEL[item.status]}
                 </span>
@@ -99,8 +176,28 @@
                 >{formatTime(item.timestamp)}</span>
             </div>
             <div
-              class="flex h-7 w-7 shrink-0 items-center justify-center self-end rounded-full bg-surface-raised text-sm">
-              🤖
+              class="flex h-7 w-7 shrink-0 items-center justify-center self-end rounded-full bg-surface-raised text-fg-faint">
+              <svg
+                width="13"
+                height="13"
+                viewBox="0 0 14 14"
+                fill="none"
+                aria-hidden="true">
+                <circle
+                  cx="6"
+                  cy="6"
+                  r="4.5"
+                  stroke="currentColor"
+                  stroke-width="1.4" />
+                <line
+                  x1="9.5"
+                  y1="9.5"
+                  x2="13"
+                  y2="13"
+                  stroke="currentColor"
+                  stroke-width="1.4"
+                  stroke-linecap="round" />
+              </svg>
             </div>
           </div>
         {/if}
@@ -110,8 +207,7 @@
 </div>
 
 <style>
-  /* Fact-checker bubble tint mixes the JS-injected status --color, so the
-     background/border can't be static utilities. */
+  /* Fact-checker bubble tint — can't be expressed as static utilities. */
   .fc-bubble {
     background: color-mix(in srgb, var(--color) 15%, var(--color-surface-alt));
     border: 1px solid color-mix(in srgb, var(--color) 40%, transparent);

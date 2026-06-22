@@ -1,4 +1,5 @@
 <script lang="ts">
+  import StatusIcon from "$lib/components/ui/StatusIcon.svelte";
   import { dismissFalseAlert, falseAlerts } from "$lib/stores/alerts";
 </script>
 
@@ -10,9 +11,11 @@
         class="false-alert-in pointer-events-auto w-full max-w-xl rounded-xl border border-red-500/50 bg-red-900/90 px-4 py-3 shadow-lg backdrop-blur"
         role="alert">
         <div class="flex items-start gap-3">
+          <!-- rec F: StatusIcon + Barlow Condensed replaces ⚠️ FAUX badge -->
           <span
-            class="false-alert-pulse mt-0.5 shrink-0 rounded-md bg-red-600 px-2 py-0.5 text-xs font-bold tracking-wide text-white">
-            ⚠️ FAUX
+            class="false-alert-pulse mt-0.5 inline-flex shrink-0 items-center gap-1.5 rounded-md bg-red-600/90 px-2.5 py-1 font-display text-sm font-extrabold tracking-wider text-white uppercase">
+            <StatusIcon status="false" size={14} />
+            Affirmation fausse
           </span>
           <div class="min-w-0 flex-1">
             <p class="m-0 text-sm text-red-50">{alert.text}</p>

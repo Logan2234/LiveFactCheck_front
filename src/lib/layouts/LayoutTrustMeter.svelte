@@ -1,4 +1,5 @@
-﻿<script lang="ts">
+<script lang="ts">
+  import StatusIcon from "$lib/components/ui/StatusIcon.svelte";
   import {
     STATUS_COLOR,
     STATUS_LABEL,
@@ -11,7 +12,6 @@
   const CX = 100;
   const CY = 100;
 
-  // Only count finalized claims for the trust %
   let finalized = $derived(
     $claimStats.verified +
       $claimStats.false +
@@ -26,7 +26,6 @@
     trustPct >= 70 ? "#10b981" : trustPct >= 40 ? "#f59e0b" : "#ef4444"
   );
 
-  // Donut segments for all statuses (excluding pending)
   type Segment = {
     key: string;
     count: number;
@@ -81,7 +80,10 @@
 <div
   class="grid grid-cols-[300px_1fr] items-start gap-8 max-[800px]:grid-cols-1">
   <div class="sticky top-4 rounded-xl bg-surface-alt p-6 max-[800px]:static">
-    <h2 class="mt-0 mb-4 text-lg">🎯 Trust Meter</h2>
+    <h2
+      class="mt-0 mb-4 font-display text-xl font-extrabold uppercase tracking-wide">
+      Trust Meter
+    </h2>
 
     <div class="mb-5 flex justify-center">
       <svg viewBox="0 0 200 200" class="h-45 w-45">
@@ -95,7 +97,6 @@
           stroke-width="20" />
 
         {#if segments.length > 0}
-          <!-- Segments (rotate -90° so we start at 12 o'clock) -->
           <g transform="rotate(-90 100 100)">
             {#each segments as seg (seg.key)}
               <circle
@@ -111,41 +112,47 @@
           </g>
         {/if}
 
-        <!-- Center text -->
+        <!--
+          rec E: Barlow Condensed via font-family attribute on SVG text.
+          SVG text inherits CSS but font-family must be explicit here.
+        -->
         <text
           x="100"
-          y="92"
+          y="96"
           text-anchor="middle"
-          class="text-[2rem] font-bold tabular-nums"
+          font-family="'Barlow Condensed', sans-serif"
+          font-weight="800"
+          font-size="34"
           fill={gaugeColor}>
           {trustPct}%
         </text>
         <text
           x="100"
-          y="112"
+          y="115"
           text-anchor="middle"
-          class="text-sm"
+          font-family="'Barlow Condensed', sans-serif"
+          font-weight="700"
+          font-size="11"
+          letter-spacing="1"
           fill="var(--color-fg-muted)">
-          vérifié
+          VÉRIFIÉ
         </text>
         <text
           x="100"
-          y="130"
+          y="132"
           text-anchor="middle"
-          class="text-xs"
+          font-size="11"
           fill="var(--color-fg-faint)">
           {finalized} claim{finalized !== 1 ? "s" : ""}
         </text>
       </svg>
     </div>
 
-    <!-- Legend -->
+    <!-- Legend with StatusIcon -->
     <div class="mb-4 flex flex-col gap-2">
       {#each STATUS_ORDER.filter((s) => s !== "pending") as key (key)}
         <div class="flex items-center gap-2 text-sm">
-          <span
-            class="h-2.5 w-2.5 shrink-0 rounded-full"
-            style="background: {STATUS_COLOR[key]}"></span>
+          <StatusIcon status={key} size={13} />
           <span class="flex-1 text-fg-muted">{STATUS_LABEL[key]}</span>
           <span
             class="font-semibold tabular-nums"
@@ -154,7 +161,6 @@
       {/each}
     </div>
 
-    <!-- Overall totals -->
     <div class="flex flex-col gap-1.5 border-t border-edge pt-3">
       <div class="flex justify-between text-sm text-fg-muted">
         <span>Total analysés</span>
@@ -169,17 +175,21 @@
 
   <div class="min-w-0">
     <h2 class="mt-0 mb-4 text-lg">Derniers claims</h2>
+    <!-- rec E: confidence fill instead of border-l-4, matching ClaimCard -->
     <div class="flex max-h-150 flex-col gap-2 overflow-y-auto">
       {#each $sortedClaims as c (c.id)}
+        {@const fillPct = c.status === "pending" ? 0 : c.confidence * 10}
         <div
-          class="rounded-lg border-l-4 bg-surface px-4 py-3 border-l-(--color)"
-          style="--color: {STATUS_COLOR[c.status]}">
+          class="rounded-lg border-l-[3px] px-4 py-3"
+          style="border-left-color: {STATUS_COLOR[
+            c.status
+          ]}; background: linear-gradient(to right, color-mix(in srgb, {STATUS_COLOR[
+            c.status
+          ]} 11%, var(--color-surface)) {fillPct}%, var(--color-surface) {fillPct}%);">
           <div class="mb-1.5 flex items-center gap-2">
+            <StatusIcon status={c.status} size={13} />
             <span
-              class="h-2 w-2 rounded-full"
-              style="background: {STATUS_COLOR[c.status]}"></span>
-            <span
-              class="text-sm font-semibold tracking-wide uppercase"
+              class="font-display text-sm font-extrabold tracking-wide uppercase"
               style="color: {STATUS_COLOR[c.status]}"
               >{STATUS_LABEL[c.status]}</span>
           </div>
