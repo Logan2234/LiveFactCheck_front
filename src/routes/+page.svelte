@@ -2,7 +2,8 @@
   import AudioControls from "$lib/components/features/audio/AudioControls.svelte";
   import FalseClaimAlert from "$lib/components/features/claims/FalseClaimAlert.svelte";
   import KeyboardShortcuts from "$lib/components/features/KeyboardShortcuts.svelte";
-  import ThemeToggle from "$lib/components/features/ThemeToggle.svelte";
+  import LayoutSelector from "$lib/components/features/LayoutSelector.svelte";
+  import SettingsMenu from "$lib/components/features/SettingsMenu.svelte";
   import LayoutChat from "$lib/layouts/LayoutChat.svelte";
   import LayoutClassic from "$lib/layouts/LayoutClassic.svelte";
   import LayoutDashboard from "$lib/layouts/LayoutDashboard.svelte";
@@ -15,7 +16,7 @@
   import { notifyClaim } from "$lib/stores/alerts";
   import { appendTranscript, onAudioChunk } from "$lib/stores/audio";
   import { addOrUpdateClaim, removeClaim } from "$lib/stores/claims";
-  import { activeLayout, type Layout } from "$lib/stores/layout";
+  import { activeLayout } from "$lib/stores/layout";
   import {
     connect,
     disconnect,
@@ -38,18 +39,6 @@
   });
 
   onDestroy(() => disconnect());
-
-  const layouts: { key: Layout; label: string; icon: string }[] = [
-    { key: "classic", label: "Classic", icon: "⊞" },
-    { key: "dashboard", label: "Dashboard", icon: "📊" },
-    { key: "terminal", label: "Terminal", icon: ">" },
-    { key: "spotlight", label: "Spotlight", icon: "◎" },
-    { key: "table", label: "Table", icon: "≡" },
-    { key: "trustmeter", label: "Trust Meter", icon: "🎯" },
-    { key: "ticker", label: "Ticker", icon: "📺" },
-    { key: "timeline", label: "Timeline", icon: "⏱" },
-    { key: "chat", label: "Chat", icon: "💬" }
-  ];
 </script>
 
 <svelte:head>
@@ -60,34 +49,20 @@
 <FalseClaimAlert />
 
 <main class="mx-auto max-w-300 p-8">
-  <header class="mb-6 flex flex-wrap items-start justify-between gap-4">
+  <header class="mb-6 flex flex-wrap items-center justify-between gap-4">
     <div>
       <h1 class="m-0 text-2xl">🔍 LiveFactChecker</h1>
       <p class="mt-0.5 mb-0 text-sm text-fg-muted">
         Vérification de faits en temps réel
       </p>
     </div>
-    <div class="flex items-start gap-3">
-      <div class="flex flex-col items-end gap-2">
-        <div class="gap-1 flex">
-          {#each layouts as l (l.key)}
-            <button
-              class={[
-                "cursor-pointer rounded-md border px-2.5 py-1.5 text-xs transition-all duration-150",
-                $activeLayout === l.key
-                  ? "border-accent-dim bg-surface-selected text-fg"
-                  : "border-edge bg-surface text-fg-muted hover:border-edge-hi hover:text-fg"
-              ]}
-              onclick={() => activeLayout.set(l.key)}
-              title={l.label}>
-              {l.icon}
-              {l.label}
-            </button>
-          {/each}
-        </div>
-        <AudioControls />
+    <div class="flex flex-wrap items-center justify-end gap-x-3 gap-y-2">
+      <AudioControls />
+      <div class="hidden h-6 w-px bg-edge md:block" aria-hidden="true"></div>
+      <div class="flex items-center gap-2">
+        <LayoutSelector />
+        <SettingsMenu />
       </div>
-      <ThemeToggle />
     </div>
   </header>
   {#if $activeLayout === "classic"}

@@ -22,7 +22,7 @@
 </script>
 
 <div
-  class="relative inline-flex h-8 w-fit shrink-0 items-center rounded-full border border-edge bg-surface p-0.5"
+  class="relative flex h-8 w-full items-center rounded-full border border-edge bg-surface p-0.5"
   role="radiogroup"
   aria-label="Thème de l'interface"
   tabindex="0"
@@ -44,7 +44,7 @@
       aria-label={opt.label}
       onclick={() => theme.set(opt.value)}
       class={[
-        "relative z-10 flex h-7 w-7 cursor-pointer items-center justify-center rounded-full bg-transparent transition-colors duration-150",
+        "relative z-10 flex h-7 flex-1 cursor-pointer items-center justify-center rounded-full bg-transparent transition-colors duration-150",
         $theme === opt.value ? "text-fg" : "text-fg-faint hover:text-fg-muted"
       ]}>
       {#if opt.value === "auto"}
