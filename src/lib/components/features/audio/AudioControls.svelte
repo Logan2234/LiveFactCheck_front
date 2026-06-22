@@ -87,16 +87,6 @@
     </span>
   {/if}
 
-  <span class="text-sm text-fg-muted">
-    {status === "connected"
-      ? "🟢 Connecté"
-      : status === "connecting"
-        ? "🟡 Connexion..."
-        : status === "error"
-          ? "⛔ Backend injoignable"
-          : "🔴 Déconnecté"}
-  </span>
-
   {#if $audioError}
     <span class="text-sm text-red-400" role="alert">⚠️ {$audioError}</span>
   {/if}

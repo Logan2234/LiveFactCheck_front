@@ -26,8 +26,18 @@
     sendAudioChunk
   } from "$lib/websocket";
   import WsToast from "$lib/components/ui/WsToast.svelte";
+  import { wsStatus } from "$lib/websocket";
   import { onDestroy, onMount } from "svelte";
   import { fade } from "svelte/transition";
+
+  const WS_DOT: Record<string, { color: string; label: string; pulse: boolean }> = {
+    connected: { color: "#10b981", label: "Backend connecté", pulse: false },
+    connecting: { color: "#f59e0b", label: "Connexion en cours…", pulse: true },
+    error: { color: "#ef4444", label: "Backend injoignable", pulse: false },
+    disconnected: { color: "var(--color-fg-faint)", label: "Déconnecté", pulse: false }
+  };
+
+  let dot = $derived(WS_DOT[$wsStatus] ?? WS_DOT.disconnected);
 
   onMount(() => {
     connect();
@@ -49,8 +59,15 @@
 
 <KeyboardShortcuts />
 <FalseClaimAlert />
-<!-- rec G: WebSocket connection toasts -->
 <WsToast />
+
+<!-- WS status dot — fixed top-right, title as tooltip -->
+<span
+  class="ws-dot fixed top-3 right-3 z-9500 h-2.5 w-2.5 rounded-full"
+  class:ws-dot--pulse={dot.pulse}
+  style="background: {dot.color};"
+  title={dot.label}
+  aria-hidden="true"></span>
 
 <main class="mx-auto max-w-300 p-8">
   <header class="mb-6 flex flex-wrap items-center justify-between gap-4">
@@ -122,5 +139,9 @@
       opacity: 0.45;
       transform: scale(0.72);
     }
+  }
+
+  .ws-dot--pulse {
+    animation: dot-pulse 1s ease-in-out infinite;
   }
 </style>
