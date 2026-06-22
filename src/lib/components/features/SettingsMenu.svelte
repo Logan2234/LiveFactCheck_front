@@ -25,75 +25,73 @@
     </button>
   {/snippet}
 
-  {#snippet children()}
-    <div class="border-b border-edge px-4 py-2.5">
-      <span class="text-sm font-semibold text-fg">Réglages</span>
-    </div>
+  <div class="border-b border-edge px-4 py-2.5">
+    <span class="text-sm font-semibold text-fg">Réglages</span>
+  </div>
 
-    <div class="flex flex-col gap-4 p-4">
-      <section class="flex flex-col gap-2">
-        <span
-          class="text-2xs font-semibold tracking-wide text-fg-faint uppercase">
-          Langue de transcription
-        </span>
-        <LanguageSelector />
-      </section>
+  <div class="flex flex-col gap-4 p-4">
+    <section class="flex flex-col gap-2">
+      <span
+        class="text-2xs font-semibold tracking-wide text-fg-faint uppercase">
+        Langue de transcription
+      </span>
+      <LanguageSelector />
+    </section>
 
-      <section class="flex flex-col gap-2">
-        <span
-          class="text-2xs font-semibold tracking-wide text-fg-faint uppercase">
-          Mode de vérification
-        </span>
-        <VerificationSelector />
-      </section>
+    <section class="flex flex-col gap-2">
+      <span
+        class="text-2xs font-semibold tracking-wide text-fg-faint uppercase">
+        Mode de vérification
+      </span>
+      <VerificationSelector />
+    </section>
 
-      <section class="flex flex-col gap-2">
-        <span
-          class="text-2xs font-semibold tracking-wide text-fg-faint uppercase">
-          Alerte sur claim faux
-        </span>
-        <div
-          class="flex h-8 w-full items-center gap-0.5 rounded-full border border-edge bg-surface p-0.5"
-          role="group"
-          aria-label="Alerte sur claim faux">
-          <button
-            type="button"
-            aria-pressed={$falseAlertSound}
-            title="Son d'alerte activé"
-            class={[
-              "flex h-full flex-1 cursor-pointer items-center justify-center gap-1 rounded-full text-xs transition-colors",
-              $falseAlertSound
-                ? "bg-surface-selected font-medium text-fg"
-                : "text-fg-muted hover:text-fg"
-            ]}
-            onclick={() => falseAlertSound.set(true)}>
-            <span aria-hidden="true">🔔</span>
-            <span>Son activé</span>
-          </button>
-          <button
-            type="button"
-            aria-pressed={!$falseAlertSound}
-            title="Son d'alerte coupé"
-            class={[
-              "flex h-full flex-1 cursor-pointer items-center justify-center gap-1 rounded-full text-xs transition-colors",
-              !$falseAlertSound
-                ? "bg-surface-selected font-medium text-fg"
-                : "text-fg-muted hover:text-fg"
-            ]}
-            onclick={() => falseAlertSound.set(false)}>
-            <span aria-hidden="true">🔕</span>
-            <span>Muet</span>
-          </button>
-        </div>
-      </section>
+    <section class="flex flex-col gap-2">
+      <span
+        class="text-2xs font-semibold tracking-wide text-fg-faint uppercase">
+        Alerte sur claim faux
+      </span>
+      <div
+        class="flex h-8 w-full items-center gap-0.5 rounded-full border border-edge bg-surface p-0.5"
+        role="group"
+        aria-label="Alerte sur claim faux">
+        <button
+          type="button"
+          aria-pressed={$falseAlertSound}
+          title="Son d'alerte activé"
+          class={[
+            "flex h-full flex-1 cursor-pointer items-center justify-center gap-1 rounded-full text-xs transition-colors",
+            $falseAlertSound
+              ? "bg-surface-selected font-medium text-fg"
+              : "text-fg-muted hover:text-fg"
+          ]}
+          onclick={() => falseAlertSound.set(true)}>
+          <span aria-hidden="true">🔔</span>
+          <span>Son activé</span>
+        </button>
+        <button
+          type="button"
+          aria-pressed={!$falseAlertSound}
+          title="Son d'alerte coupé"
+          class={[
+            "flex h-full flex-1 cursor-pointer items-center justify-center gap-1 rounded-full text-xs transition-colors",
+            !$falseAlertSound
+              ? "bg-surface-selected font-medium text-fg"
+              : "text-fg-muted hover:text-fg"
+          ]}
+          onclick={() => falseAlertSound.set(false)}>
+          <span aria-hidden="true">🔕</span>
+          <span>Muet</span>
+        </button>
+      </div>
+    </section>
 
-      <section class="flex flex-col gap-2">
-        <span
-          class="text-2xs font-semibold tracking-wide text-fg-faint uppercase">
-          Thème
-        </span>
-        <ThemeToggle />
-      </section>
-    </div>
-  {/snippet}
+    <section class="flex flex-col gap-2">
+      <span
+        class="text-2xs font-semibold tracking-wide text-fg-faint uppercase">
+        Thème
+      </span>
+      <ThemeToggle />
+    </section>
+  </div>
 </Popover>
