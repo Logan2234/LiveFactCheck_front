@@ -88,7 +88,7 @@
               : data!.system_prompt
           )}>
         {copied === key
-          ? "âœ“ Copié"
+          ? "✓ Copié"
           : json !== undefined
             ? "Copier JSON"
             : "Copier"}

@@ -1,11 +1,10 @@
 ﻿<script lang="ts">
   import { resolve } from "$app/paths";
   import { page } from "$app/state";
-  import type { RouteId } from "$app/types";
   import Button from "$lib/components/ui/Button.svelte";
   import ThemeToggle from "$lib/components/features/ThemeToggle.svelte";
   import { clearToken, getToken, token } from "$lib/stores/auth";
-  import { navigate } from "$lib/utils/navigation";
+  import { navigate, type StaticRouteId } from "$lib/utils/navigation";
   import { onMount } from "svelte";
 
   let { children } = $props();
@@ -31,14 +30,15 @@
     void navigate("/login");
   }
 
-  const nav: { href: RouteId; label: string; icon: string }[] = [
+  const nav: { href: StaticRouteId; label: string; icon: string }[] = [
     { href: "/admin", label: "Test pipeline", icon: "🧪" },
     { href: "/admin/benchmark", label: "Benchmark", icon: "⚡" },
     { href: "/admin/prompt", label: "Prompt & Outil", icon: "📋" },
     { href: "/admin/system", label: "Système", icon: "🖥️" },
     { href: "/admin/logs", label: "Logs", icon: "📜" },
     { href: "/admin/whisper", label: "Test Whisper", icon: "🎙️" },
-    { href: "/admin/ws", label: "WebSockets", icon: "🔌" }
+    { href: "/admin/ws", label: "WebSockets", icon: "🔌" },
+    { href: "/admin/sessions", label: "Sessions", icon: "🗂️" }
   ];
 </script>
 

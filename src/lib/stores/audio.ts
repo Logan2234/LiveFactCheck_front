@@ -21,54 +21,41 @@ export const isMuted = writable(false);
 export const audioError = writable<string | null>(null);
 
 let activeStream: MediaStream | null = null;
-let activeRecorder: MediaRecorder | null = null;
-let chunkTimer: ReturnType<typeof setTimeout> | null = null;
-let onChunkCallback: ((chunk: Blob) => void) | null = null;
-let isRecording = false;
+let audioContext: AudioContext | null = null;
+let sourceNode: MediaStreamAudioSourceNode | null = null;
+let workletNode: AudioWorkletNode | null = null;
+let onChunkCallback: ((chunk: ArrayBuffer) => void) | null = null;
 
-// Shared with the backend contract: each chunk is a self-contained ~5 s
-// WebM/Opus blob. The backend transcribes per-chunk assuming this ~5 s window,
-// so keep this in sync with that assumption (see root CLAUDE.md, WS contract).
-const CHUNK_INTERVAL_MS = 5000;
-
-function recordOneChunk() {
-  if (!isRecording || !activeStream) return;
-
-  const recorder = new MediaRecorder(activeStream, {
-    mimeType: "audio/webm;codecs=opus"
-  });
-  activeRecorder = recorder;
-  const chunks: Blob[] = [];
-
-  recorder.ondataavailable = (e) => {
-    if (e.data.size > 0) chunks.push(e.data);
-  };
-
-  recorder.onstop = () => {
-    if (chunks.length > 0 && onChunkCallback) {
-      onChunkCallback(new Blob(chunks, { type: "audio/webm;codecs=opus" }));
-    }
-
-    if (isRecording) recordOneChunk();
-  };
-
-  recorder.start();
-  chunkTimer = setTimeout(() => {
-    if (recorder.state !== "inactive") recorder.stop();
-  }, CHUNK_INTERVAL_MS);
-}
+// The PCM downsampler worklet is served from /static (see static/pcm-worklet.js).
+const WORKLET_URL = "/pcm-worklet.js";
 
 export async function startRecording() {
   audioError.set(null);
 
   try {
     activeStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    isRecording = true;
+
+    // Stream raw PCM continuously instead of recording 5 s slices: the backend
+    // cuts utterances on natural pauses, so there's no per-chunk capture gap.
+    audioContext = new AudioContext();
+    await audioContext.audioWorklet.addModule(WORKLET_URL);
+    // May start suspended under the autoplay policy; resume so process() runs.
+    await audioContext.resume();
+    sourceNode = audioContext.createMediaStreamSource(activeStream);
+    workletNode = new AudioWorkletNode(audioContext, "pcm-downsampler");
+    workletNode.port.onmessage = (e) =>
+      onChunkCallback?.(e.data as ArrayBuffer);
+
+    // The worklet emits silence; the connection to destination only keeps it in
+    // the render graph (an unconnected node isn't pulled). No mic playback.
+    sourceNode.connect(workletNode);
+    workletNode.connect(audioContext.destination);
+
     recordingState.set("recording");
-    recordOneChunk();
   } catch (error) {
     console.error("Failed to start recording:", error);
     audioError.set(micErrorMessage(error));
+    stopRecording();
   }
 }
 
@@ -91,18 +78,21 @@ function micErrorMessage(error: unknown): string {
 }
 
 export function stopRecording() {
-  isRecording = false;
-
-  if (chunkTimer !== null) {
-    clearTimeout(chunkTimer);
-    chunkTimer = null;
+  if (workletNode) {
+    workletNode.port.onmessage = null;
+    workletNode.disconnect();
+    workletNode = null;
   }
 
-  if (activeRecorder && activeRecorder.state !== "inactive") {
-    activeRecorder.stop();
+  if (sourceNode) {
+    sourceNode.disconnect();
+    sourceNode = null;
   }
 
-  activeRecorder = null;
+  if (audioContext) {
+    void audioContext.close();
+    audioContext = null;
+  }
 
   if (activeStream) {
     activeStream.getTracks().forEach((track) => track.stop());
@@ -121,7 +111,7 @@ export function toggleMute() {
   });
 }
 
-export function onAudioChunk(callback: (chunk: Blob) => void) {
+export function onAudioChunk(callback: (chunk: ArrayBuffer) => void) {
   onChunkCallback = callback;
 }
 

@@ -2,12 +2,25 @@
   import LanguageSelector from "$lib/components/features/LanguageSelector.svelte";
   import ThemeToggle from "$lib/components/features/ThemeToggle.svelte";
   import VerificationSelector from "$lib/components/features/VerificationSelector.svelte";
+  import Button from "$lib/components/ui/Button.svelte";
   import Popover from "$lib/components/ui/Popover.svelte";
   import { falseAlertSound } from "$lib/stores/alerts";
+  import { transcriptEntries } from "$lib/stores/audio";
+  import { claims } from "$lib/stores/claims";
+  import { exportActiveSession, type ExportFormat } from "$lib/utils/export";
 
   // Groups the "set once and forget" controls (transcription language,
   // verification depth, false-claim alert sound, theme) behind one labelled
   // popover, so the header keeps only the primary action and view controls.
+
+  // Client-side export of the live session — available to any user, no auth.
+  let hasContent = $derived(
+    $claims.length > 0 || $transcriptEntries.length > 0
+  );
+
+  function exportSession(format: ExportFormat) {
+    exportActiveSession(format, $claims, $transcriptEntries);
+  }
 </script>
 
 <Popover label="Réglages" panelClass="w-72">
@@ -92,6 +105,27 @@
         Thème
       </span>
       <ThemeToggle />
+    </section>
+
+    <section class="flex flex-col gap-2">
+      <span
+        class="text-2xs font-semibold tracking-wide text-fg-faint uppercase">
+        Exporter la session en cours
+      </span>
+      <div class="flex gap-1.5">
+        <Button
+          onclick={() => exportSession("md")}
+          variant="secondary"
+          size="xs"
+          disabled={!hasContent}
+          class="flex-1">Markdown</Button>
+        <Button
+          onclick={() => exportSession("json")}
+          variant="secondary"
+          size="xs"
+          disabled={!hasContent}
+          class="flex-1">JSON</Button>
+      </div>
     </section>
   </div>
 </Popover>

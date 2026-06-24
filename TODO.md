@@ -12,10 +12,14 @@ au presse-papier. Tout est éphémère (un refresh vide l'écran), pas de recher
       utile dès qu'une session devient longue.
 - [ ] **Filtre par catégorie & par score de confiance** (les données existent déjà sur
       chaque `Claim` : `category`, `confidence` — actuellement non exploitées comme filtres).
-- [ ] **Export de la session** côté front (bouton « Exporter ») : Markdown / JSON /
-      copie globale — généralise le copier-coller par carte de `ClaimCard.svelte`.
-- [ ] **Mode replay / historique** : consommer l'historique back (cf. TODO back) pour
-      relire une session passée sans micro.
+- [x] **Export de la session** : deux chemins. (1) Session **en cours** exportée
+      côté client (sans auth) en Markdown / JSON depuis les stores
+      (`lib/utils/export.ts`, boutons dans `SettingsMenu.svelte`). (2) Sessions
+      **passées** exportées via la route back admin (`lib/sessions.ts` →
+      `/sessions/{id}/export`). PDF non fait.
+- [x] **Mode replay / historique** : page admin `routes/admin/sessions/`
+      (liste + détail `[id]` : stats, claims, transcript) consommant l'historique
+      back. Lecture seule (pas de « rejeu » audio temps réel).
 - [ ] **Mode overlay / streaming** : un layout transparent plein écran (claims qui
       apparaissent/disparaissent en fade) destiné à être capturé dans OBS pour un live.
 - [x] **Alerte visuelle/sonore sur claim "false"** (front uniquement) : toast global

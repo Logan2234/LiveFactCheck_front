@@ -30,11 +30,18 @@
   import { onDestroy, onMount } from "svelte";
   import { fade } from "svelte/transition";
 
-  const WS_DOT: Record<string, { color: string; label: string; pulse: boolean }> = {
+  const WS_DOT: Record<
+    string,
+    { color: string; label: string; pulse: boolean }
+  > = {
     connected: { color: "#10b981", label: "Backend connecté", pulse: false },
     connecting: { color: "#f59e0b", label: "Connexion en cours…", pulse: true },
     error: { color: "#ef4444", label: "Backend injoignable", pulse: false },
-    disconnected: { color: "var(--color-fg-faint)", label: "Déconnecté", pulse: false }
+    disconnected: {
+      color: "var(--color-fg-faint)",
+      label: "Déconnecté",
+      pulse: false
+    }
   };
 
   let dot = $derived(WS_DOT[$wsStatus] ?? WS_DOT.disconnected);

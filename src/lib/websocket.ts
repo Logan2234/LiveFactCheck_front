@@ -214,7 +214,7 @@ export function disconnect() {
   wsStatus.set("disconnected");
 }
 
-export function sendAudioChunk(chunk: Blob) {
+export function sendAudioChunk(chunk: ArrayBuffer) {
   if (ws?.readyState === WebSocket.OPEN) {
     ws.send(chunk);
   }

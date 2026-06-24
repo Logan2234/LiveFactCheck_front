@@ -12,7 +12,7 @@
   // Mirror of the backend descriptor contract (app/schemas/admin.py). Any change to
   // ConfigFieldValue / ConfigBlockOut / AdminHealthResponse is a two-repo change.
   type FieldKind = "readonly" | "editable" | "secret_status";
-  type ValueType = "str" | "int" | "bool" | "list";
+  type ValueType = "str" | "int" | "float" | "bool" | "list";
 
   interface ConfigFieldValue {
     key: string;
@@ -94,6 +94,7 @@
     anthropic: "🔑",
     whisper: "🎙️",
     audio: "🔊",
+    vad: "✂️",
     auth: "🔒",
     cors: "🌐",
     logs: "📋"
@@ -103,6 +104,7 @@
     anthropic: "border-l-2 border-l-violet-500/60",
     whisper: "border-l-2 border-l-cyan-500/60",
     audio: "border-l-2 border-l-sky-500/60",
+    vad: "border-l-2 border-l-fuchsia-500/60",
     auth: "border-l-2 border-l-amber-500/60",
     cors: "border-l-2 border-l-emerald-500/60",
     logs: "border-l-2 border-l-slate-500/60"
@@ -241,7 +243,7 @@
       size="sm"
       onclick={refreshHealth}
       disabled={refreshing}>
-      {refreshing ? "…" : "â†º Rafraîchir"}
+      {refreshing ? "…" : "↺ Rafraîchir"}
     </Button>
   </div>
 </header>
@@ -319,10 +321,11 @@
                           setDraft(f.key, e.currentTarget.checked)} />
                       {drafts[f.key] ? "Activé" : "Désactivé"}
                     </label>
-                  {:else if f.value_type === "int"}
+                  {:else if f.value_type === "int" || f.value_type === "float"}
                     <input
                       id={f.key}
                       type="number"
+                      step={f.value_type === "float" ? "any" : undefined}
                       value={drafts[f.key] as number}
                       oninput={(e) =>
                         setDraft(f.key, e.currentTarget.valueAsNumber)}
@@ -368,18 +371,18 @@
     {/each}
   </div>
 
-  <!-- â”€â”€ Barre d'action (les éditions peuvent couvrir plusieurs blocs) â”€â”€ -->
+  <!-- ── Barre d'action (les éditions peuvent couvrir plusieurs blocs) ── -->
   {#if saveError}
     <Alert message={saveError} type="error" class="mt-4" />
   {/if}
 
   <div class="mt-4 flex flex-wrap items-center justify-between gap-3">
-    <Alert type="warning" message={`âš  ${config.note}`} />
+    <Alert type="warning" message={`⚠  ${config.note}`} />
     <div class="flex gap-2">
       <Button variant="secondary" onclick={reset} disabled={!dirty || saving}
         >Annuler</Button>
       <Button onclick={save} disabled={!dirty || saving}>
-        {#if saving}Enregistrement…{:else if saved}âœ“ Enregistré{:else}Enregistrer{/if}
+        {#if saving}Enregistrement…{:else if saved}✓ Enregistré{:else}Enregistrer{/if}
       </Button>
     </div>
   </div>
