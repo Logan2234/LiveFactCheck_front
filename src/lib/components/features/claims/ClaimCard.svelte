@@ -10,7 +10,10 @@
   import { formatTime } from "$lib/utils/format";
   import { fly } from "svelte/transition";
 
-  let { claim }: { claim: Claim } = $props();
+  // `interactive` (default) shows the copy button and the fly-in transition.
+  // Set it false for static/archive views (e.g. a persisted session detail).
+  let { claim, interactive = true }: { claim: Claim; interactive?: boolean } =
+    $props();
 
   let catColor = $derived(
     CATEGORY_COLORS[claim.category] || CATEGORY_COLORS.autre
@@ -51,7 +54,7 @@
   ]}; background: linear-gradient(to right, color-mix(in srgb, {STATUS_COLOR[
     claim.status
   ]} 11%, var(--color-surface)) {fillPct}%, var(--color-surface) {fillPct}%);"
-  in:fly={{ x: 18, duration: 280 }}>
+  in:fly={{ x: interactive ? 18 : 0, duration: interactive ? 280 : 0 }}>
   <div class="mb-2 flex flex-wrap items-center gap-1.5">
     <!-- rec 04: SVG icon replaces emoji -->
     <StatusIcon status={claim.status} size={15} />
@@ -87,13 +90,15 @@
     <span class="ml-auto text-xs whitespace-nowrap tabular-nums text-fg-muted"
       >{formatTime(claim.timestamp)}</span>
 
-    <button
-      class="shrink-0 rounded-sm border border-transparent bg-transparent px-1.5 py-0.5 text-sm leading-none text-fg-faint transition-all duration-150 hover:border-edge-hi hover:text-fg-muted"
-      onclick={copy}
-      title="Copier ce claim"
-      aria-label="Copier">
-      {copied ? "✓" : "⎘"}
-    </button>
+    {#if interactive}
+      <button
+        class="shrink-0 rounded-sm border border-transparent bg-transparent px-1.5 py-0.5 text-sm leading-none text-fg-faint transition-all duration-150 hover:border-edge-hi hover:text-fg-muted"
+        onclick={copy}
+        title="Copier ce claim"
+        aria-label="Copier">
+        {copied ? "✓" : "⎘"}
+      </button>
+    {/if}
   </div>
 
   <p class="my-1 text-sm leading-normal text-fg italic">« {claim.text} »</p>

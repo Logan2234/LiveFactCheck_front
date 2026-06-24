@@ -1,12 +1,13 @@
 ﻿<script lang="ts">
+  import { AdminAuthError, adminJson } from "$lib/admin";
   import Alert from "$lib/components/ui/Alert.svelte";
   import Button from "$lib/components/ui/Button.svelte";
   import Field from "$lib/components/ui/Field.svelte";
   import LoadingSpinner from "$lib/components/ui/LoadingSpinner.svelte";
+  import PageHeader from "$lib/components/ui/PageHeader.svelte";
   import StatCard from "$lib/components/ui/StatCard.svelte";
   import StatusBadge from "$lib/components/ui/StatusBadge.svelte";
-  import { authFetch, clearToken } from "$lib/stores/auth";
-  import { formatTime } from "$lib/utils/format";
+  import { formatTime, formatUptime } from "$lib/utils/format";
   import { onDestroy, onMount } from "svelte";
 
   // Mirror of the backend descriptor contract (app/schemas/admin.py). Any change to
@@ -72,15 +73,6 @@
     "rounded-lg border border-edge-hi bg-surface-term px-3 py-2 text-sm text-fg transition-[border-color] duration-150 focus:border-accent focus:outline-none";
   const selectClass = `cursor-pointer appearance-auto ${controlClass}`;
 
-  function formatUptime(s: number): string {
-    const h = Math.floor(s / 3600);
-    const m = Math.floor((s % 3600) / 60);
-    const sec = s % 60;
-    if (h > 0) return `${h}h ${m}m ${sec}s`;
-    if (m > 0) return `${m}m ${sec}s`;
-    return `${sec}s`;
-  }
-
   function formatValue(f: ConfigFieldValue): string {
     if (Array.isArray(f.value))
       return f.value.length ? f.value.join(", ") : "—";
@@ -127,16 +119,11 @@
   async function refreshHealth() {
     refreshing = true;
     try {
-      const res = await authFetch("/admin/health");
-      if (res.status === 401) {
-        clearToken();
-        return;
-      }
-      if (!res.ok) throw new Error(`Erreur HTTP ${res.status}`);
-      health = await res.json();
+      health = await adminJson<HealthData>("/admin/health");
       lastRefresh = new Date();
       loadError = "";
     } catch (e) {
+      if (e instanceof AdminAuthError) return;
       loadError = e instanceof Error ? e.message : "Erreur réseau";
     } finally {
       refreshing = false;
@@ -146,20 +133,14 @@
   async function loadAll() {
     loadError = "";
     try {
-      const [hRes, cRes] = await Promise.all([
-        authFetch("/admin/health"),
-        authFetch("/admin/config")
+      [health, config] = await Promise.all([
+        adminJson<HealthData>("/admin/health"),
+        adminJson<ConfigData>("/admin/config")
       ]);
-      if (hRes.status === 401 || cRes.status === 401) {
-        clearToken();
-        return;
-      }
-      if (!hRes.ok) throw new Error(`Health: erreur ${hRes.status}`);
-      if (!cRes.ok) throw new Error(`Config: erreur ${cRes.status}`);
-      [health, config] = await Promise.all([hRes.json(), cRes.json()]);
       if (config) initDrafts(config);
       lastRefresh = new Date();
     } catch (e) {
+      if (e instanceof AdminAuthError) return;
       loadError = e instanceof Error ? e.message : "Erreur réseau";
     }
   }
@@ -177,20 +158,14 @@
         }
       }
 
-      const res = await authFetch("/admin/config", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ updates })
-      });
-      if (res.status === 401) {
-        clearToken();
-        return;
-      }
-      if (!res.ok) {
-        const detail = await res.json().catch(() => null);
-        throw new Error(detail?.detail ?? `Erreur ${res.status}`);
-      }
-      const data: { changed: Record<string, unknown> } = await res.json();
+      const data = await adminJson<{ changed: Record<string, unknown> }>(
+        "/admin/config",
+        {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ updates })
+        }
+      );
       // Reflect the server-accepted (coerced) values back into config + drafts.
       for (const block of config.blocks) {
         for (const f of block.fields) {
@@ -203,6 +178,7 @@
       saved = true;
       setTimeout(() => (saved = false), 2000);
     } catch (e) {
+      if (e instanceof AdminAuthError) return;
       saveError = e instanceof Error ? e.message : "Erreur réseau";
     } finally {
       saving = false;
@@ -225,15 +201,10 @@
   <title>Système — Admin</title>
 </svelte:head>
 
-<header class="mb-6 flex flex-wrap items-start justify-between gap-4">
-  <div>
-    <h1 class="mt-0 mb-1 text-2xl">🖥️ Système</h1>
-    <p class="m-0 text-sm text-fg-muted">
-      État du serveur et configuration — rafraîchissement automatique toutes les
-      30 s.
-    </p>
-  </div>
-  <div class="flex shrink-0 items-center gap-3">
+<PageHeader
+  title="🖥️ Système"
+  subtitle="État du serveur et configuration — rafraîchissement automatique toutes les 30 s.">
+  {#snippet actions()}
     {#if lastRefresh}
       <span class="text-xs tabular-nums text-fg-faint"
         >Mis à jour à {formatTime(lastRefresh)}</span>
@@ -245,8 +216,8 @@
       disabled={refreshing}>
       {refreshing ? "…" : "↺ Rafraîchir"}
     </Button>
-  </div>
-</header>
+  {/snippet}
+</PageHeader>
 
 {#if loadError}
   <Alert type="error" message={loadError} />

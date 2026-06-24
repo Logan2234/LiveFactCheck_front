@@ -3,9 +3,10 @@
 // in-browser stores; the admin history export (past, persisted sessions with
 // full stats) is a separate, auth-gated path in `$lib/sessions`.
 
+import { STATUS_LABEL } from "$lib/constants/status";
 import type { TranscriptEntry } from "$lib/stores/audio";
 import type { Claim } from "$lib/stores/claims";
-import { STATUS_LABEL } from "$lib/constants/status";
+import { formatTime } from "./format";
 
 export type ExportFormat = "md" | "json";
 
@@ -46,7 +47,7 @@ function buildMarkdown(claims: Claim[], transcript: TranscriptEntry[]): string {
 
   lines.push("# LiveFactChecker — session en cours");
   lines.push("");
-  lines.push(`- Exporté le : ${new Date().toLocaleString("fr-FR")}`);
+  lines.push(`- Exporté le : ${formatTime(new Date())}`);
   lines.push(`- Transcriptions : ${transcript.length}`);
   const statusSummary = Object.entries(byStatus)
     .map(

@@ -2,6 +2,7 @@
 // API. These types mirror the backend read schemas in
 // `backend/app/schemas/history.py` — keep them in sync.
 
+import { adminJson } from "$lib/admin";
 import { authFetch } from "$lib/stores/auth";
 import type { VerificationStatus } from "$lib/stores/claims";
 import { triggerDownload } from "$lib/utils/export";
@@ -93,18 +94,12 @@ export interface SessionDetail {
 
 export type ExportFormat = "md" | "json";
 
-async function getJson<T>(path: string): Promise<T> {
-  const res = await authFetch(path);
-  if (!res.ok) throw new Error(`Erreur ${res.status}`);
-  return (await res.json()) as T;
-}
-
 export function listSessions(): Promise<SessionSummary[]> {
-  return getJson<SessionSummary[]>("/sessions");
+  return adminJson<SessionSummary[]>("/sessions");
 }
 
 export function getSession(id: string): Promise<SessionDetail> {
-  return getJson<SessionDetail>(`/sessions/${id}`);
+  return adminJson<SessionDetail>(`/sessions/${id}`);
 }
 
 // Fetch an export with the bearer token and save it (the route is auth-gated,

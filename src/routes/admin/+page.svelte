@@ -1,8 +1,12 @@
 ﻿<script lang="ts">
-  import Button from "$lib/components/ui/Button.svelte";
+  import { AdminAuthError, adminJson } from "$lib/admin";
   import ClaimCard from "$lib/components/features/claims/ClaimCard.svelte";
-  import { authFetch, clearToken } from "$lib/stores/auth";
-  import type { Claim } from "$lib/stores/claims";
+  import Alert from "$lib/components/ui/Alert.svelte";
+  import Button from "$lib/components/ui/Button.svelte";
+  import EmptyState from "$lib/components/ui/EmptyState.svelte";
+  import PageHeader from "$lib/components/ui/PageHeader.svelte";
+  import { makeClaim, type Claim } from "$lib/stores/claims";
+  import { formatCost } from "$lib/utils/format";
 
   interface Usage {
     input_tokens: number;
@@ -12,10 +16,9 @@
   }
 
   interface DebugInfo {
-    turns: number;
     usage: Usage;
     model: string;
-    web_search_called: boolean;
+    estimated_cost_usd: number | null;
   }
 
   let text = $state("");
@@ -66,19 +69,11 @@
     menuOpen = false;
   }
 
-  function toClaim(raw: Partial<Claim>, i: number): Claim {
-    return {
-      id: `test-${i}`,
-      text: raw.text ?? "",
-      status: raw.status ?? "uncertain",
-      explanation: raw.explanation ?? "",
-      sources: raw.sources ?? [],
-      timestamp: Date.now(),
-      category: raw.category ?? "",
-      confidence: raw.confidence ?? 0,
-      counter_claim: raw.counter_claim ?? "",
-      web_search_used: raw.web_search_used ?? false
-    };
+  interface ModelTestResponse {
+    claims?: Partial<Claim>[];
+    usage: Usage;
+    model: string;
+    estimated_cost_usd?: number | null;
   }
 
   async function run(e: Event) {
@@ -90,30 +85,19 @@
     loading = true;
     const start = performance.now();
     try {
-      const res = await authFetch("/admin/model-test", {
+      const data = await adminJson<ModelTestResponse>("/admin/model-test", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ text, web_search: webSearch })
       });
-      if (res.status === 401) {
-        clearToken();
-        return;
-      }
-      if (!res.ok) {
-        const detail = await res.json().catch(() => null);
-        throw new Error(detail?.detail ?? `Erreur ${res.status}`);
-      }
-      const data = await res.json();
-      claims = (data.claims ?? []).map(toClaim);
+      claims = (data.claims ?? []).map((r, i) => makeClaim(r, `test-${i}`));
       debug = {
-        turns: data.turns,
         usage: data.usage,
         model: data.model,
-        web_search_called: (data.claims ?? []).some(
-          (c: Partial<Claim>) => c.web_search_used
-        )
+        estimated_cost_usd: data.estimated_cost_usd ?? null
       };
     } catch (err) {
+      if (err instanceof AdminAuthError) return;
       error = err instanceof Error ? err.message : "Erreur inconnue";
     } finally {
       elapsed = Math.round(performance.now() - start);
@@ -132,13 +116,9 @@
   <title>Test pipeline — Admin</title>
 </svelte:head>
 
-<header>
-  <h1 class="mt-0 mb-1.5 text-2xl">🧪 Test de la pipeline</h1>
-  <p class="mt-0 mb-6 text-sm text-fg-muted">
-    Envoie un texte directement à l'extraction + vérification de claims (POST
-    /fact-check).
-  </p>
-</header>
+<PageHeader
+  title="🧪 Test de la pipeline"
+  subtitle="Envoie un texte directement à l'extraction + vérification de claims (POST /fact-check)." />
 
 <form onsubmit={run} class="mb-6">
   <textarea
@@ -177,13 +157,6 @@
         </ul>
       {/if}
     </div>
-    <Button
-      variant="secondary"
-      type="button"
-      onclick={() => (text = "")}
-      disabled={!text}>
-      Vider
-    </Button>
     <label
       class="switch ml-auto"
       title="Activer / désactiver la recherche web pour cette analyse">
@@ -198,11 +171,7 @@
 </form>
 
 {#if error}
-  <p
-    class="rounded-lg border border-red-500/40 bg-red-500/12 px-3.5 py-3 text-sm text-red-300"
-    role="alert">
-    {error}
-  </p>
+  <Alert type="error" message={error} />
 {/if}
 
 {#if loading}
@@ -223,56 +192,46 @@
   </div>
 
   {#if debug}
-    <div
-      class="mb-3.5 flex flex-wrap items-center gap-x-2.5 gap-y-1.5 rounded-lg border border-surface bg-surface-term px-3.5 py-2 text-xs text-fg-faint">
-      <span class="flex items-center gap-1.5">
+    <div class="mb-3.5 flex flex-wrap gap-2 text-xs">
+      <div
+        class="flex items-center gap-1.5 rounded-lg border border-surface bg-surface-term px-3 py-1.5">
         <span class="text-fg-faint">Modèle</span>
         <code class="font-mono text-2xs text-fg-muted">{debug.model}</code>
-      </span>
-      <span class="text-surface-selected">·</span>
-      <span class="flex items-center gap-1.5">
-        <span class="text-fg-faint">Tours</span>
-        <span
-          class="rounded-full border px-2 py-0.5 text-2xs font-medium whitespace-nowrap {debug.turns ===
-          2
-            ? 'border-amber-500/20 bg-amber-500/10 text-amber-400'
-            : 'border-green-500/20 bg-green-500/10 text-green-400'}"
-          >{debug.turns}</span>
-      </span>
-      <span class="text-surface-selected">·</span>
-      <span class="flex items-center gap-1.5">
-        <span class="text-fg-faint">Web search</span>
-        <span
-          class="rounded-full border px-2 py-0.5 text-2xs font-medium whitespace-nowrap {debug.web_search_called
-            ? 'border-blue-400/20 bg-blue-400/10 text-blue-400'
-            : 'border-fg-muted/15 bg-fg-muted/10 text-fg-muted'}">
-          {debug.web_search_called ? "déclenchée" : "non utilisée"}
-        </span>
-      </span>
-      <span class="text-surface-selected">·</span>
-      <span class="flex items-center gap-1.5">
+      </div>
+      <div
+        class="flex items-center gap-1.5 rounded-lg border border-surface bg-surface-term px-3 py-1.5">
         <span class="text-fg-faint">Tokens</span>
-        <span
+        <span class="tabular-nums text-fg-muted"
           >{(
             debug.usage.input_tokens + debug.usage.output_tokens
           ).toLocaleString()}</span>
-      </span>
+        <span class="text-2xs tabular-nums text-fg-faint">
+          ({debug.usage.input_tokens.toLocaleString()} ↑ · {debug.usage.output_tokens.toLocaleString()}
+          ↓)
+        </span>
+      </div>
+      <div
+        class="flex items-center gap-1.5 rounded-lg border border-surface bg-surface-term px-3 py-1.5"
+        title="Coût estimé de cet appel (tarifs indicatifs)">
+        <span class="text-fg-faint">Coût est.</span>
+        <span class="font-medium tabular-nums text-fg-muted"
+          >{formatCost(debug.estimated_cost_usd)}</span>
+      </div>
       {#if debug.usage.cache_read > 0}
-        <span class="text-surface-selected">·</span>
-        <span class="flex items-center gap-1.5">
+        <div
+          class="flex items-center gap-1.5 rounded-lg border border-surface bg-surface-term px-3 py-1.5">
           <span class="text-fg-faint">Cache hit</span>
           <span class="font-medium text-green-400"
             >{cacheRatio(debug.usage)}</span>
-        </span>
+        </div>
       {/if}
     </div>
   {/if}
 
   {#if claims.length === 0}
-    <p
-      class="rounded-xl border border-dashed border-edge bg-surface-alt p-5 text-center text-sm text-fg-muted">
-      Aucun fait vérifiable trouvé dans ce texte.
-    </p>
+    <EmptyState
+      variant="result"
+      message="Aucun fait vérifiable trouvé dans ce texte." />
   {:else}
     <div class="claims">
       {#each claims as claim (claim.id)}

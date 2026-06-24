@@ -4,6 +4,7 @@
   import KeyboardShortcuts from "$lib/components/features/KeyboardShortcuts.svelte";
   import LayoutSelector from "$lib/components/features/LayoutSelector.svelte";
   import SettingsMenu from "$lib/components/features/SettingsMenu.svelte";
+  import WsToast from "$lib/components/ui/WsToast.svelte";
   import LayoutChat from "$lib/layouts/LayoutChat.svelte";
   import LayoutClassic from "$lib/layouts/LayoutClassic.svelte";
   import LayoutDashboard from "$lib/layouts/LayoutDashboard.svelte";
@@ -23,10 +24,9 @@
     onClaim,
     onRemoveClaim,
     onTranscript,
-    sendAudioChunk
+    sendAudioChunk,
+    wsStatus
   } from "$lib/websocket";
-  import WsToast from "$lib/components/ui/WsToast.svelte";
-  import { wsStatus } from "$lib/websocket";
   import { onDestroy, onMount } from "svelte";
   import { fade } from "svelte/transition";
 

@@ -1,10 +1,12 @@
 ﻿<script lang="ts">
+  import { AdminAuthError, adminJson } from "$lib/admin";
   import ClaimCard from "$lib/components/features/claims/ClaimCard.svelte";
   import Alert from "$lib/components/ui/Alert.svelte";
   import Button from "$lib/components/ui/Button.svelte";
+  import EmptyState from "$lib/components/ui/EmptyState.svelte";
   import LoadingSpinner from "$lib/components/ui/LoadingSpinner.svelte";
-  import { authFetch, clearToken } from "$lib/stores/auth";
-  import type { Claim } from "$lib/stores/claims";
+  import PageHeader from "$lib/components/ui/PageHeader.svelte";
+  import { makeClaim, type Claim } from "$lib/stores/claims";
 
   let text = $state("");
   let loading = $state(false);
@@ -19,48 +21,29 @@
   let withWeb = $state<Side>({ claims: null, elapsed: 0, error: "" });
   let withoutWeb = $state<Side>({ claims: null, elapsed: 0, error: "" });
 
-  function toClaim(raw: Partial<Claim>, i: number): Claim {
-    return {
-      id: `bench-${i}`,
-      text: raw.text ?? "",
-      status: raw.status ?? "uncertain",
-      explanation: raw.explanation ?? "",
-      sources: raw.sources ?? [],
-      timestamp: Date.now(),
-      category: raw.category ?? "",
-      confidence: raw.confidence ?? 0,
-      counter_claim: raw.counter_claim ?? "",
-      web_search_used: raw.web_search_used ?? false
-    };
-  }
-
   async function fetchSide(web_search: boolean): Promise<Side> {
     const start = performance.now();
     try {
-      const res = await authFetch("/fact-check", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text, web_search })
-      });
-      const elapsed = Math.round(performance.now() - start);
-      if (res.status === 401) {
-        clearToken();
-        return { claims: null, elapsed, error: "Session expirée" };
-      }
-      if (!res.ok) {
-        const detail = await res.json().catch(() => null);
-        return {
-          claims: null,
-          elapsed,
-          error: detail?.detail ?? `Erreur ${res.status}`
-        };
-      }
-      const data = await res.json();
-      return { claims: (data.claims ?? []).map(toClaim), elapsed, error: "" };
+      const data = await adminJson<{ claims?: Partial<Claim>[] }>(
+        "/fact-check",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ text, web_search })
+        }
+      );
+      return {
+        claims: (data.claims ?? []).map((r, i) => makeClaim(r, `bench-${i}`)),
+        elapsed: Math.round(performance.now() - start),
+        error: ""
+      };
     } catch (e) {
+      const elapsed = Math.round(performance.now() - start);
+      if (e instanceof AdminAuthError)
+        return { claims: null, elapsed, error: "Session expirée" };
       return {
         claims: null,
-        elapsed: Math.round(performance.now() - start),
+        elapsed,
         error: e instanceof Error ? e.message : "Erreur réseau"
       };
     }
@@ -105,12 +88,9 @@
   <title>Benchmark — Admin</title>
 </svelte:head>
 
-<header>
-  <h1 class="mt-0 mb-1 text-2xl">⚡ Benchmark</h1>
-  <p class="mt-0 mb-6 text-sm text-fg-muted">
-    Compare le même texte avec et sans recherche web en parallèle.
-  </p>
-</header>
+<PageHeader
+  title="⚡ Benchmark"
+  subtitle="Compare le même texte avec et sans recherche web en parallèle." />
 
 <form onsubmit={run} class="mb-6">
   <textarea
@@ -120,13 +100,7 @@
     disabled={loading}
     class="box-border w-full resize-y rounded-xl border border-edge bg-surface-alt px-4 py-3.5 font-[inherit] text-base leading-normal text-fg transition-[border-color] duration-150 focus:border-accent focus:outline-none disabled:opacity-50"
   ></textarea>
-  <div class="mt-3 flex items-center gap-2">
-    <Button
-      variant="secondary"
-      onclick={() => (text = "")}
-      disabled={!text || loading}>
-      Vider
-    </Button>
+  <div class="mt-3 flex items-center">
     <Button type="submit" class="ml-auto" disabled={loading || !text.trim()}>
       {loading ? "Analyse en cours…" : "Comparer"}
     </Button>
@@ -135,7 +109,7 @@
 
 {#if loading}
   <div class="grid grid-cols-2 gap-5">
-    - {#each ["🌐 Avec web search", "🧠 Sans web search"] as label (label)}
+    {#each ["🌐 Avec web search", "🧠 Sans web search"] as label (label)}
       <div class="flex min-w-0 flex-col gap-3">
         <div
           class="flex flex-wrap items-center gap-2 border-b border-edge pb-2 text-sm font-semibold text-fg">
@@ -175,10 +149,9 @@
         {#if side.error}
           <Alert type="error" message={side.error} />
         {:else if side.claims !== null && side.claims.length === 0}
-          <p
-            class="m-0 rounded-xl border border-dashed border-edge bg-surface-alt p-5 text-center text-sm text-fg-muted">
-            Aucun fait vérifiable trouvé.
-          </p>
+          <EmptyState
+            variant="result"
+            message="Aucun fait vérifiable trouvé." />
         {:else if side.claims !== null}
           <div class="flex flex-col gap-3">
             {#each side.claims as claim (claim.id)}

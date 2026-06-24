@@ -36,6 +36,7 @@ admin UI) live in CLAUDE.md, not here.
 
 ## Components
 
+- Reuse before recreating: before adding a new component, scan `lib/components/ui/` and `lib/components/features/`. If a close match exists, reuse it or extend it with a prop/variant rather than building (or inlining) a near-duplicate. Only create a new component when nothing fits.
 - Keep components focused: presentation + local UI state. Push shared logic into stores or `lib/`.
 - Don't duplicate a hardcoded value (URL, interval, status map) across files; define it once and import it.
 - Guard browser-only APIs (mic, localStorage, WebSocket) — they need a browser context, and a secure context for some.

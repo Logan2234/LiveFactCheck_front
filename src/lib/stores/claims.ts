@@ -24,6 +24,23 @@ export interface Claim {
 export const claims = writable<Claim[]>([]);
 export const claimFilter = writable<ClaimFilter>("all");
 
+/** Build a complete Claim from a partial API payload, filling defaults.
+ *  Used by the admin test/benchmark pages that POST raw text to /fact-check. */
+export function makeClaim(raw: Partial<Claim>, id: string): Claim {
+  return {
+    id,
+    text: raw.text ?? "",
+    status: raw.status ?? "uncertain",
+    explanation: raw.explanation ?? "",
+    sources: raw.sources ?? [],
+    timestamp: Date.now(),
+    category: raw.category ?? "",
+    confidence: raw.confidence ?? 0,
+    counter_claim: raw.counter_claim ?? "",
+    web_search_used: raw.web_search_used ?? false
+  };
+}
+
 export function removeClaim(id: string) {
   claims.update((current) => current.filter((c) => c.id !== id));
 }

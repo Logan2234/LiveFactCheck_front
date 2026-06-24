@@ -1,9 +1,11 @@
 ﻿<script lang="ts">
+  import { AdminAuthError, adminJson } from "$lib/admin";
   import Alert from "$lib/components/ui/Alert.svelte";
   import Button from "$lib/components/ui/Button.svelte";
-  import { authFetch, clearToken } from "$lib/stores/auth";
+  import PageHeader from "$lib/components/ui/PageHeader.svelte";
   import { formatTime } from "$lib/utils/format";
-  import { onDestroy, onMount, tick } from "svelte";
+  import { usePolling } from "$lib/utils/polling";
+  import { tick } from "svelte";
 
   interface LogEntry {
     id: number;
@@ -20,7 +22,6 @@
   let error = $state("");
   let autoScroll = $state(true);
   let filterLevel = $state("ALL");
-  let interval: ReturnType<typeof setInterval>;
   let logBox: HTMLDivElement;
 
   const LEVELS = ["ALL", "DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"];
@@ -42,13 +43,9 @@
 
   async function poll() {
     try {
-      const res = await authFetch(`/admin/logs?after=${lastId}`);
-      if (res.status === 401) {
-        clearToken();
-        return;
-      }
-      if (!res.ok) return;
-      const data = await res.json();
+      const data = await adminJson<{ entries: LogEntry[] }>(
+        `/admin/logs?after=${lastId}`
+      );
       if (data.entries.length === 0) return;
 
       entries = [...entries, ...data.entries].slice(-MAX_DISPLAY);
@@ -59,37 +56,29 @@
         await tick();
         logBox?.scrollTo({ top: logBox.scrollHeight, behavior: "smooth" });
       }
-    } catch {
+    } catch (e) {
+      if (e instanceof AdminAuthError) return;
       error = "Connexion perdue — nouvelle tentative…";
     }
   }
 
   function clearLogs() {
+    // Keep lastId: the next poll then fetches only NEW logs. Resetting it to 0
+    // would re-pull the whole server buffer 1.5 s later, undoing the clear.
     entries = [];
-    lastId = 0;
   }
 
-  onMount(() => {
-    void poll();
-    interval = setInterval(() => void poll(), 1500);
-  });
-
-  onDestroy(() => clearInterval(interval));
+  usePolling(() => void poll(), 1500);
 </script>
 
 <svelte:head>
   <title>Logs — Admin</title>
 </svelte:head>
 
-<header>
-  <div>
-    <h1 class="mt-0 mb-1 text-2xl">📜 Logs</h1>
-    <p class="mt-0 mb-5 text-sm text-fg-muted">
-      Flux en direct du logger <code class="font-mono text-fg-muted"
-        >app.*</code> — rafraîchissement toutes les 1,5 s.
-    </p>
-  </div>
-</header>
+<PageHeader title="📜 Logs">
+  Flux en direct du logger <code class="font-mono text-fg-muted">app.*</code> — rafraîchissement
+  toutes les 1,5 s.
+</PageHeader>
 
 <div class="mb-3 flex flex-wrap items-center justify-between gap-3">
   <div class="flex items-center gap-2.5">

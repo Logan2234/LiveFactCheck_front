@@ -1,8 +1,9 @@
 ﻿<script lang="ts">
+  import { AdminAuthError, adminJson } from "$lib/admin";
   import Alert from "$lib/components/ui/Alert.svelte";
   import LoadingSpinner from "$lib/components/ui/LoadingSpinner.svelte";
+  import PageHeader from "$lib/components/ui/PageHeader.svelte";
   import StatusBadge from "$lib/components/ui/StatusBadge.svelte";
-  import { authFetch, clearToken } from "$lib/stores/auth";
   import { onMount } from "svelte";
 
   interface PromptData {
@@ -11,6 +12,7 @@
     web_search_tool: unknown;
     valid_statuses: string[];
     min_words: number;
+    max_tokens: number;
     model: string;
   }
 
@@ -28,14 +30,9 @@
 
   async function load() {
     try {
-      const res = await authFetch("/admin/prompt");
-      if (res.status === 401) {
-        clearToken();
-        return;
-      }
-      if (!res.ok) throw new Error(`Erreur ${res.status}`);
-      data = await res.json();
+      data = await adminJson<PromptData>("/admin/prompt");
     } catch (e) {
+      if (e instanceof AdminAuthError) return;
       error = e instanceof Error ? e.message : "Erreur réseau";
     }
   }
@@ -54,24 +51,46 @@
   <title>Prompt & Outil — Admin</title>
 </svelte:head>
 
-<header>
-  <h1 class="mt-0 mb-1 text-2xl">📋 Prompt & Outil Claude</h1>
-  <p class="mt-0 mb-6 text-sm text-fg-muted">
-    Configuration exacte envoyée à l'API Anthropic à chaque appel de
-    fact-checking.
-  </p>
-</header>
+<PageHeader
+  title="📋 Prompt & Outil Claude"
+  subtitle="Configuration exacte envoyée à l'API Anthropic à chaque appel de fact-checking." />
 
 {#if error}
   <Alert type="error" message={error} />
 {:else if !data}
   <LoadingSpinner />
 {:else}
+  <div class="mb-4 flex flex-wrap gap-2 text-sm">
+    <div
+      class="rounded-lg border border-surface-selected bg-surface-alt px-3.5 py-2 text-fg-muted">
+      Modèle : <strong class="text-fg">{data.model}</strong>
+    </div>
+    <div
+      class="rounded-lg border border-surface-selected bg-surface-alt px-3.5 py-2 text-fg-muted">
+      Min. <strong class="text-fg">{data.min_words}</strong> mots / analyse
+    </div>
+    <div
+      class="rounded-lg border border-surface-selected bg-surface-alt px-3.5 py-2 text-fg-muted">
+      Max. <strong class="text-fg">{data.max_tokens.toLocaleString()}</strong> tokens
+      / appel
+    </div>
+  </div>
+
   <div
-    class="mb-6 rounded-lg border border-surface-selected bg-surface-alt px-4 py-2.5 text-sm text-fg-muted">
-    Modèle actif : <strong class="text-fg">{data.model}</strong>
-    &nbsp;·&nbsp; min. <strong class="text-fg">{data.min_words}</strong> mots pour
-    déclencher une analyse
+    class="mb-7 rounded-lg border border-surface bg-surface-term px-4 py-3 text-xs leading-relaxed text-fg-muted">
+    <p
+      class="m-0 mb-1.5 text-2xs font-semibold tracking-wider text-fg-faint uppercase">
+      Stratégie d'appel
+    </p>
+    Sortie structurée imposée via l'outil
+    <code class="font-mono text-accent-light">submit_claims</code>. En mode
+    <strong class="text-fg">rapide</strong>, l'outil est forcé (<code
+      class="font-mono">tool_choice</code
+    >) → un seul appel, sans web. En mode
+    <strong class="text-fg">approfondi</strong>,
+    <code class="font-mono">web_search</code> est disponible et, si le modèle
+    recherche sans structurer, un 2ᵉ appel force
+    <code class="font-mono">submit_claims</code>.
   </div>
 
   {#snippet sectionHeader(key: string, label: string, json?: unknown)}

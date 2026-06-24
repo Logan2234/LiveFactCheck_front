@@ -1,9 +1,11 @@
 ﻿<script lang="ts">
+  import { AdminAuthError, adminJson } from "$lib/admin";
   import Alert from "$lib/components/ui/Alert.svelte";
   import Button from "$lib/components/ui/Button.svelte";
   import LoadingSpinner from "$lib/components/ui/LoadingSpinner.svelte";
+  import Metric from "$lib/components/ui/Metric.svelte";
+  import PageHeader from "$lib/components/ui/PageHeader.svelte";
   import StatusBadge from "$lib/components/ui/StatusBadge.svelte";
-  import { authFetch, clearToken } from "$lib/stores/auth";
 
   interface Segment {
     start: number;
@@ -41,10 +43,9 @@
     if (f) file = f;
   }
 
-  type BadgeColor = "green" | "amber" | "red";
   function formatConfidence(logprob: number): {
     label: string;
-    color: BadgeColor;
+    color: "green" | "amber" | "red";
   } {
     if (logprob > -0.3) return { label: "élevée", color: "green" };
     if (logprob > -0.8) return { label: "moyenne", color: "amber" };
@@ -59,21 +60,13 @@
     try {
       const form = new FormData();
       form.append("file", file);
-      const res = await authFetch("/admin/whisper/transcribe", {
+      result = await adminJson<TranscribeResult>("/admin/whisper/transcribe", {
         method: "POST",
         body: form
       });
-      if (res.status === 401) {
-        clearToken();
-        return;
-      }
-      if (!res.ok) {
-        const detail = await res.json().catch(() => null);
-        throw new Error(detail?.detail ?? `Erreur ${res.status}`);
-      }
-      result = await res.json();
       if (result?.error) error = result.error;
     } catch (e) {
+      if (e instanceof AdminAuthError) return;
       error = e instanceof Error ? e.message : "Erreur réseau";
     } finally {
       loading = false;
@@ -85,13 +78,9 @@
   <title>Test Whisper — Admin</title>
 </svelte:head>
 
-<header>
-  <h1 class="mt-0 mb-1 text-2xl">🎙️ Test Whisper</h1>
-  <p class="mt-0 mb-6 text-sm text-fg-muted">
-    Transcris un fichier audio et inspecte les segments, la langue détectée et
-    les scores de confiance.
-  </p>
-</header>
+<PageHeader
+  title="🎙️ Test Whisper"
+  subtitle="Transcris un fichier audio et inspecte les segments, la langue détectée et les scores de confiance." />
 
 <!-- Drop zone -->
 <div
@@ -161,11 +150,7 @@
   <!-- Métriques globales -->
   <div class="mb-4 flex flex-wrap gap-3">
     {#each [{ label: "Langue", value: `${result.language.toUpperCase()} (${(result.language_probability * 100).toFixed(0)} %)` }, ...(result.duration_s !== null ? [{ label: "Durée audio", value: `${result.duration_s} s` }] : []), { label: "Temps transcription", value: `${result.elapsed_ms} ms` }, { label: "Segments", value: String(result.segments.length) }] as stat (stat.label)}
-      <div
-        class="flex min-w-27.5 flex-col gap-1 rounded-xl border border-edge bg-surface-alt px-4 py-2.5">
-        <span class="text-2xs text-fg-faint">{stat.label}</span>
-        <span class="text-sm font-semibold text-fg">{stat.value}</span>
-      </div>
+      <Metric label={stat.label} value={stat.value} />
     {/each}
   </div>
 

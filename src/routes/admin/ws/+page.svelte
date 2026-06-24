@@ -1,9 +1,12 @@
 ﻿<script lang="ts">
+  import { AdminAuthError, adminJson } from "$lib/admin";
   import Alert from "$lib/components/ui/Alert.svelte";
+  import EmptyState from "$lib/components/ui/EmptyState.svelte";
   import Field from "$lib/components/ui/Field.svelte";
-  import { authFetch, clearToken } from "$lib/stores/auth";
-  import { formatDateTime, formatTime } from "$lib/utils/format";
-  import { onDestroy, onMount } from "svelte";
+  import Metric from "$lib/components/ui/Metric.svelte";
+  import PageHeader from "$lib/components/ui/PageHeader.svelte";
+  import { formatDateTime, formatDuration, formatTime } from "$lib/utils/format";
+  import { usePolling } from "$lib/utils/polling";
 
   interface Session {
     id: string;
@@ -25,59 +28,35 @@
   let data = $state<StatusData | null>(null);
   let error = $state("");
   let lastPoll = $state<Date | null>(null);
-  let interval: ReturnType<typeof setInterval>;
-
-  function formatDuration(since: number): string {
-    const s = Math.round(Date.now() / 1000 - since);
-    if (s < 60) return `${s} s`;
-    const m = Math.floor(s / 60);
-    if (m < 60) return `${m} min ${s % 60} s`;
-    return `${Math.floor(m / 60)} h ${m % 60} min`;
-  }
 
   async function poll() {
     try {
-      const res = await authFetch("/admin/ws/status");
-      if (res.status === 401) {
-        clearToken();
-        return;
-      }
-      if (!res.ok) {
-        error = `Erreur ${res.status}`;
-        return;
-      }
-      data = await res.json();
+      data = await adminJson<StatusData>("/admin/ws/status");
       error = "";
       lastPoll = new Date();
-    } catch {
-      error = "Connexion perdue";
+    } catch (e) {
+      if (e instanceof AdminAuthError) return;
+      error = e instanceof Error ? e.message : "Connexion perdue";
     }
   }
 
-  onMount(() => {
-    void poll();
-    interval = setInterval(() => void poll(), 2000);
-  });
-
-  onDestroy(() => clearInterval(interval));
+  usePolling(() => void poll(), 2000);
 </script>
 
 <svelte:head>
   <title>WebSockets — Admin</title>
 </svelte:head>
 
-<header class="mb-6 flex flex-wrap items-start justify-between gap-4">
-  <div>
-    <h1 class="mt-0 mb-1 text-2xl">🔌 WebSockets</h1>
-    <p class="m-0 text-sm text-fg-muted">
-      Connexions actives — rafraîchissement toutes les 2 s.
-    </p>
-  </div>
-  {#if lastPoll}
-    <span class="shrink-0 self-end text-xs tabular-nums text-fg-faint"
-      >Mis à jour à {formatDateTime(lastPoll, { withSeconds: true })}</span>
-  {/if}
-</header>
+<PageHeader
+  title="🔌 WebSockets"
+  subtitle="Connexions actives — rafraîchissement toutes les 2 s.">
+  {#snippet actions()}
+    {#if lastPoll}
+      <span class="text-xs tabular-nums text-fg-faint"
+        >Mis à jour à {formatDateTime(lastPoll, { withSeconds: true })}</span>
+    {/if}
+  {/snippet}
+</PageHeader>
 
 {#if error}
   <Alert type="error" message={error} />
@@ -86,9 +65,7 @@
 {#if data}
   <!-- Métriques globales -->
   <div class="mb-5 flex flex-wrap gap-3">
-    <div
-      class="flex min-w-32.5 flex-col gap-1 rounded-xl border border-edge bg-surface-alt px-4 py-2.5">
-      <span class="text-2xs text-fg-faint">Connexions actives</span>
+    <Metric label="Connexions actives">
       <span
         class={[
           "flex items-center gap-1.5 text-base font-semibold",
@@ -99,32 +76,20 @@
         {/if}
         {data.active.length}
       </span>
-    </div>
-    <div
-      class="flex min-w-32.5 flex-col gap-1 rounded-xl border border-edge bg-surface-alt px-4 py-2.5">
-      <span class="text-2xs text-fg-faint">Total depuis démarrage</span>
-      <span class="text-base font-semibold text-fg"
-        >{data.total_since_start}</span>
-    </div>
+    </Metric>
+    <Metric label="Total depuis démarrage" value={data.total_since_start} />
     {#if data.active.length > 0}
-      <div
-        class="flex min-w-32.5 flex-col gap-1 rounded-xl border border-edge bg-surface-alt px-4 py-2.5">
-        <span class="text-2xs text-fg-faint">Tasks Claude en cours</span>
-        <span class="text-base font-semibold text-fg">
-          {data.active.reduce((acc, s) => acc + s.active_tasks, 0)}
-        </span>
-      </div>
+      <Metric
+        label="Tasks Claude en cours"
+        value={data.active.reduce((acc, s) => acc + s.active_tasks, 0)} />
     {/if}
   </div>
 
   <!-- Sessions actives -->
   {#if data.active.length === 0}
-    <div
-      class="flex flex-col items-center gap-2.5 rounded-xl border border-dashed border-edge bg-surface-term px-4 py-12 text-center text-sm text-fg-faint">
-      <span class="text-3xl">🔇</span>
-      <span
-        >Aucune connexion active — l'application live n'est pas ouverte.</span>
-    </div>
+    <EmptyState
+      icon="🔇"
+      message="Aucune connexion active — l'application live n'est pas ouverte." />
   {:else}
     <div class="grid grid-cols-[repeat(auto-fill,minmax(340px,1fr))] gap-4">
       {#each data.active as session (session.id)}
@@ -150,7 +115,7 @@
               ><span class="font-mono text-xs"
                 >{formatTime(session.connected_at * 1000)}</span
               ></Field>
-            <Field label="Chunks audio reÃ§us">{session.chunks_received}</Field>
+            <Field label="Chunks audio reçus">{session.chunks_received}</Field>
             <Field label="Transcriptions">{session.transcripts}</Field>
             <Field label="Claims lancés">{session.claims_spawned}</Field>
             <Field label="Tasks Claude actives">

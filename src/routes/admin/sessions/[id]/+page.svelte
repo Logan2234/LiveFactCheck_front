@@ -1,18 +1,18 @@
 <script lang="ts">
   import { resolve } from "$app/paths";
   import { page } from "$app/state";
+  import { AdminAuthError } from "$lib/admin";
+  import ClaimCard from "$lib/components/features/claims/ClaimCard.svelte";
   import Alert from "$lib/components/ui/Alert.svelte";
   import Button from "$lib/components/ui/Button.svelte";
-  import { STATUS_META } from "$lib/constants/status";
+  import Metric from "$lib/components/ui/Metric.svelte";
   import {
     downloadSession,
     getSession,
     type ExportFormat,
     type SessionDetail
   } from "$lib/sessions";
-  import { clearToken } from "$lib/stores/auth";
-  import type { VerificationStatus } from "$lib/stores/claims";
-  import { formatDateTime } from "$lib/utils/format";
+  import { formatCost, formatDateTime } from "$lib/utils/format";
   import { onMount } from "svelte";
 
   const id = page.params.id ?? "";
@@ -27,8 +27,8 @@
       detail = await getSession(id);
       error = "";
     } catch (e) {
-      if (e instanceof Error && e.message.includes("401")) clearToken();
-      else error = e instanceof Error ? e.message : "Erreur inconnue";
+      if (e instanceof AdminAuthError) return; // token cleared → redirect
+      error = e instanceof Error ? e.message : "Erreur inconnue";
     } finally {
       loading = false;
     }
@@ -53,7 +53,7 @@
       { label: "Appels API", value: String(s.api_calls_total) },
       { label: "Fallbacks", value: String(s.fallback_count) },
       { label: "Recherches web", value: String(s.web_search_calls_total) },
-      { label: "Tokens (total)", value: s.tokens.total.toLocaleString("fr-FR") }
+      { label: "Tokens (total)", value: s.tokens.total.toLocaleString() }
     ];
     if (s.duration_s !== null)
       rows.push({ label: "Durée", value: `${s.duration_s} s` });
@@ -71,7 +71,7 @@
     if (s.estimated_cost_usd !== null)
       rows.push({
         label: `Coût est. (${s.pricing_model})`,
-        value: `$${s.estimated_cost_usd.toFixed(6)}`
+        value: formatCost(s.estimated_cost_usd, 6)
       });
     return rows;
   });
@@ -125,11 +125,7 @@
     <h2 class="mt-0 mb-3 text-lg">Statistiques</h2>
     <div class="grid grid-cols-[repeat(auto-fill,minmax(160px,1fr))] gap-3">
       {#each statRows as row (row.label)}
-        <div
-          class="flex flex-col gap-1 rounded-xl border border-edge bg-surface-alt px-4 py-2.5">
-          <span class="text-2xs text-fg-faint">{row.label}</span>
-          <span class="text-base font-semibold text-fg">{row.value}</span>
-        </div>
+        <Metric label={row.label} value={row.value} />
       {/each}
     </div>
   </section>
@@ -142,48 +138,7 @@
     {:else}
       <div class="flex flex-col gap-3">
         {#each detail.claims as claim (claim.id)}
-          {@const meta = STATUS_META[claim.status as VerificationStatus]}
-          <div
-            class="rounded-xl border border-edge bg-surface-alt px-5 py-4"
-            style="border-left: 3px solid {meta.color};">
-            <div class="mb-1.5 flex items-center gap-2">
-              <span aria-hidden="true">{meta.icon}</span>
-              <span class="text-xs font-semibold" style="color: {meta.color};"
-                >{meta.label}</span>
-              {#if claim.category}
-                <span class="text-2xs text-fg-faint">· {claim.category}</span>
-              {/if}
-              <span class="ml-auto text-2xs text-fg-faint"
-                >confiance {claim.confidence}/10</span>
-            </div>
-            <p class="m-0 text-sm text-fg">{claim.text}</p>
-            {#if claim.explanation}
-              <p class="mt-1.5 mb-0 text-xs text-fg-muted">
-                {claim.explanation}
-              </p>
-            {/if}
-            {#if claim.counter_claim}
-              <p class="mt-1.5 mb-0 text-xs text-red-300">
-                <strong>Correction :</strong>
-                {claim.counter_claim}
-              </p>
-            {/if}
-            {#if claim.sources.length > 0}
-              <ul
-                class="mt-2 mb-0 flex flex-col gap-0.5 pl-4 text-2xs text-fg-faint">
-                {#each claim.sources as src (src)}
-                  <li>
-                    <a
-                      href={src}
-                      target="_blank"
-                      rel="noopener noreferrer external"
-                      class="text-accent-light no-underline hover:underline"
-                      >{src}</a>
-                  </li>
-                {/each}
-              </ul>
-            {/if}
-          </div>
+          <ClaimCard {claim} interactive={false} />
         {/each}
       </div>
     {/if}

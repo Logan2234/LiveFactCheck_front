@@ -1,15 +1,17 @@
 <script lang="ts">
   import { resolve } from "$app/paths";
+  import { AdminAuthError } from "$lib/admin";
   import Alert from "$lib/components/ui/Alert.svelte";
   import Button from "$lib/components/ui/Button.svelte";
+  import EmptyState from "$lib/components/ui/EmptyState.svelte";
+  import PageHeader from "$lib/components/ui/PageHeader.svelte";
   import {
     downloadSession,
     listSessions,
     type ExportFormat,
     type SessionSummary
   } from "$lib/sessions";
-  import { clearToken } from "$lib/stores/auth";
-  import { formatDateTime } from "$lib/utils/format";
+  import { formatCost, formatDateTime } from "$lib/utils/format";
   import { onMount } from "svelte";
 
   let sessions = $state<SessionSummary[]>([]);
@@ -22,9 +24,8 @@
       sessions = await listSessions();
       error = "";
     } catch (e) {
-      // listSessions throws "Erreur 401" when the token is missing/expired.
-      if (e instanceof Error && e.message.includes("401")) clearToken();
-      else error = e instanceof Error ? e.message : "Erreur inconnue";
+      if (e instanceof AdminAuthError) return; // token cleared → redirect
+      error = e instanceof Error ? e.message : "Erreur inconnue";
     } finally {
       loading = false;
     }
@@ -38,10 +39,6 @@
     }
   }
 
-  function formatCost(usd: number | null): string {
-    return usd === null ? "—" : `$${usd.toFixed(4)}`;
-  }
-
   onMount(load);
 </script>
 
@@ -49,15 +46,13 @@
   <title>Sessions — Admin</title>
 </svelte:head>
 
-<header class="mb-6 flex flex-wrap items-start justify-between gap-4">
-  <div>
-    <h1 class="mt-0 mb-1 text-2xl">🗂️ Sessions</h1>
-    <p class="m-0 text-sm text-fg-muted">
-      Historique des sessions persistées — transcript, claims et statistiques.
-    </p>
-  </div>
-  <Button onclick={load} variant="secondary" size="sm">↻ Rafraîchir</Button>
-</header>
+<PageHeader
+  title="🗂️ Sessions"
+  subtitle="Historique des sessions persistées — transcript, claims et statistiques.">
+  {#snippet actions()}
+    <Button onclick={load} variant="secondary" size="sm">↻ Rafraîchir</Button>
+  {/snippet}
+</PageHeader>
 
 {#if error}
   <Alert type="error" message={error} />
@@ -66,11 +61,7 @@
 {#if loading}
   <p class="text-sm text-fg-faint">Chargement…</p>
 {:else if sessions.length === 0}
-  <div
-    class="flex flex-col items-center gap-2.5 rounded-xl border border-dashed border-edge bg-surface-term px-4 py-12 text-center text-sm text-fg-faint">
-    <span class="text-3xl">📭</span>
-    <span>Aucune session enregistrée pour le moment.</span>
-  </div>
+  <EmptyState icon="📭" message="Aucune session enregistrée pour le moment." />
 {:else}
   <div class="overflow-x-auto rounded-xl border border-edge">
     <table class="w-full border-collapse text-sm">
