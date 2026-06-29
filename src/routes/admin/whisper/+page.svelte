@@ -6,6 +6,7 @@
   import Metric from "$lib/components/ui/Metric.svelte";
   import PageHeader from "$lib/components/ui/PageHeader.svelte";
   import StatusBadge from "$lib/components/ui/StatusBadge.svelte";
+  import { formatPercent } from "$lib/utils/format";
 
   interface Segment {
     start: number;
@@ -149,7 +150,7 @@
 {#if result && !error}
   <!-- Métriques globales -->
   <div class="mb-4 flex flex-wrap gap-3">
-    {#each [{ label: "Langue", value: `${result.language.toUpperCase()} (${(result.language_probability * 100).toFixed(0)} %)` }, ...(result.duration_s !== null ? [{ label: "Durée audio", value: `${result.duration_s} s` }] : []), { label: "Temps transcription", value: `${result.elapsed_ms} ms` }, { label: "Segments", value: String(result.segments.length) }] as stat (stat.label)}
+    {#each [{ label: "Langue", value: `${result.language.toUpperCase()} (${formatPercent(result.language_probability)})` }, ...(result.duration_s !== null ? [{ label: "Durée audio", value: `${result.duration_s} s` }] : []), { label: "Temps transcription", value: `${result.elapsed_ms} ms` }, { label: "Segments", value: String(result.segments.length) }] as stat (stat.label)}
       <Metric label={stat.label} value={stat.value} />
     {/each}
   </div>
@@ -212,7 +213,7 @@
                   "border-b border-surface-alt px-2 py-1.5 align-top font-mono text-xs",
                   seg.no_speech_prob > 0.5 ? "text-amber-500" : "text-fg-faint"
                 ]}>
-                {(seg.no_speech_prob * 100).toFixed(0)} %
+                {formatPercent(seg.no_speech_prob)}
               </td>
             </tr>
           {/each}

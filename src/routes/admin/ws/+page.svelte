@@ -5,7 +5,11 @@
   import Field from "$lib/components/ui/Field.svelte";
   import Metric from "$lib/components/ui/Metric.svelte";
   import PageHeader from "$lib/components/ui/PageHeader.svelte";
-  import { formatDateTime, formatDuration, formatTime } from "$lib/utils/format";
+  import {
+    formatDateTime,
+    formatDuration,
+    formatTime
+  } from "$lib/utils/format";
   import { usePolling } from "$lib/utils/polling";
 
   interface Session {

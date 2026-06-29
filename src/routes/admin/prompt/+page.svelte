@@ -4,6 +4,7 @@
   import LoadingSpinner from "$lib/components/ui/LoadingSpinner.svelte";
   import PageHeader from "$lib/components/ui/PageHeader.svelte";
   import StatusBadge from "$lib/components/ui/StatusBadge.svelte";
+  import { copyText } from "$lib/utils/clipboard";
   import { onMount } from "svelte";
 
   interface PromptData {
@@ -38,10 +39,10 @@
   }
 
   async function copyToClipboard(key: string, value: string) {
-    void navigator.clipboard.writeText(value).then(() => {
+    if (await copyText(value)) {
       copied = key;
       setTimeout(() => (copied = null), 1800);
-    });
+    }
   }
 
   onMount(load);

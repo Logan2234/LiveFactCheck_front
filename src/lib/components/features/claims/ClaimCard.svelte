@@ -7,6 +7,7 @@
     STATUS_LABEL
   } from "$lib/constants/status";
   import type { Claim } from "$lib/stores/claims";
+  import { copyText } from "$lib/utils/clipboard";
   import { formatTime } from "$lib/utils/format";
   import { fly } from "svelte/transition";
 
@@ -26,7 +27,7 @@
     claim.status === "pending" ? 0 : claim.confidence * 10
   );
 
-  function copy() {
+  async function copy() {
     const lines = [
       `${STATUS_ICON[claim.status]} ${STATUS_LABEL[claim.status]} — ${claim.text}`,
       claim.explanation ? `→ ${claim.explanation}` : "",
@@ -36,10 +37,10 @@
       .filter(Boolean)
       .join("\n");
 
-    void navigator.clipboard.writeText(lines).then(() => {
+    if (await copyText(lines)) {
       copied = true;
       setTimeout(() => (copied = false), 1500);
-    });
+    }
   }
 </script>
 

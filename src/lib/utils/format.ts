@@ -61,3 +61,6 @@ export const formatUptime = (s: number): string => {
 
 export const formatCost = (usd: number | null, digits = 4): string =>
   usd === null ? "—" : `$${usd.toFixed(digits)}`;
+
+export const formatPercent = (ratio: number, digits = 0): string =>
+  `${(ratio * 100).toFixed(digits)} %`;

@@ -6,7 +6,7 @@
   import EmptyState from "$lib/components/ui/EmptyState.svelte";
   import PageHeader from "$lib/components/ui/PageHeader.svelte";
   import { makeClaim, type Claim } from "$lib/stores/claims";
-  import { formatCost } from "$lib/utils/format";
+  import { formatCost, formatPercent } from "$lib/utils/format";
 
   interface Usage {
     input_tokens: number;
@@ -108,7 +108,7 @@
   function cacheRatio(u: Usage): string {
     const total = u.input_tokens + u.cache_read;
     if (!total) return "—";
-    return ((u.cache_read / total) * 100).toFixed(0) + " %";
+    return formatPercent(u.cache_read / total);
   }
 </script>
 

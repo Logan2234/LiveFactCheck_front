@@ -24,8 +24,8 @@ export interface Claim {
 export const claims = writable<Claim[]>([]);
 export const claimFilter = writable<ClaimFilter>("all");
 
-/** Build a complete Claim from a partial API payload, filling defaults.
- *  Used by the admin test/benchmark pages that POST raw text to /fact-check. */
+// Build a complete Claim from a partial API payload, filling defaults.
+//  Used by the admin test/benchmark pages that POST raw text to /fact-check.
 export function makeClaim(raw: Partial<Claim>, id: string): Claim {
   return {
     id,
