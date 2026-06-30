@@ -75,7 +75,7 @@
   <title>Logs — Admin</title>
 </svelte:head>
 
-<PageHeader title="📜 Logs">
+<PageHeader title="Logs">
   Flux en direct du logger <code class="font-mono text-fg-muted">app.*</code> — rafraîchissement
   toutes les 1,5 s.
 </PageHeader>

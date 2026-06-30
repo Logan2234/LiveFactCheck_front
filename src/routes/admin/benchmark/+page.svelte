@@ -89,7 +89,7 @@
 </svelte:head>
 
 <PageHeader
-  title="⚡ Benchmark"
+  title="Benchmark"
   subtitle="Compare le même texte avec et sans recherche web en parallèle." />
 
 <form onsubmit={run} class="mb-6">

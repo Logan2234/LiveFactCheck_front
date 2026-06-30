@@ -52,7 +52,7 @@
 </svelte:head>
 
 <PageHeader
-  title="🔌 WebSockets"
+  title="WebSockets"
   subtitle="Connexions actives — rafraîchissement toutes les 2 s.">
   {#snippet actions()}
     {#if lastPoll}

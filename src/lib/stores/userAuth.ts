@@ -113,3 +113,54 @@ export function logout() {
   setToken(null);
   currentUser.set(null);
 }
+
+/** Change the account email. Re-confirms identity with the current password. */
+export async function updateEmail(
+  newEmail: string,
+  password: string
+): Promise<void> {
+  const res = await userFetch("/users/me/email", {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ new_email: newEmail, password })
+  });
+  if (!res.ok)
+    throw new Error(
+      await errorMessage(res, "Échec de la mise à jour de l'email")
+    );
+  currentUser.set(await res.json());
+}
+
+/** Change the account password, verifying the current one server-side. */
+export async function updatePassword(
+  currentPassword: string,
+  newPassword: string
+): Promise<void> {
+  const res = await userFetch("/users/me/password", {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      current_password: currentPassword,
+      new_password: newPassword
+    })
+  });
+  if (!res.ok)
+    throw new Error(
+      await errorMessage(res, "Échec du changement de mot de passe")
+    );
+}
+
+/** Permanently delete the account (and its webhooks), then sign out locally. */
+export async function deleteAccount(password: string): Promise<void> {
+  const res = await userFetch("/users/me", {
+    method: "DELETE",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ password })
+  });
+  if (!res.ok)
+    throw new Error(
+      await errorMessage(res, "Échec de la suppression du compte")
+    );
+  setToken(null);
+  currentUser.set(null);
+}

@@ -53,7 +53,7 @@
 </svelte:head>
 
 <PageHeader
-  title="📋 Prompt & Outil Claude"
+  title="Prompt & Outil Claude"
   subtitle="Configuration exacte envoyée à l'API Anthropic à chaque appel de fact-checking." />
 
 {#if error}

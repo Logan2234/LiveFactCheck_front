@@ -5,7 +5,6 @@
   import KeyboardShortcuts from "$lib/components/features/KeyboardShortcuts.svelte";
   import LayoutSelector from "$lib/components/features/LayoutSelector.svelte";
   import SettingsMenu from "$lib/components/features/SettingsMenu.svelte";
-  import WsToast from "$lib/components/ui/WsToast.svelte";
   import LayoutChat from "$lib/layouts/LayoutChat.svelte";
   import LayoutClassic from "$lib/layouts/LayoutClassic.svelte";
   import LayoutDashboard from "$lib/layouts/LayoutDashboard.svelte";
@@ -16,7 +15,11 @@
   import LayoutTimeline from "$lib/layouts/LayoutTimeline.svelte";
   import LayoutTrustMeter from "$lib/layouts/LayoutTrustMeter.svelte";
   import { notifyClaim } from "$lib/stores/alerts";
-  import { appendTranscript, onAudioChunk } from "$lib/stores/audio";
+  import {
+    appendTranscript,
+    onAudioChunk,
+    recordingState
+  } from "$lib/stores/audio";
   import { addOrUpdateClaim, removeClaim } from "$lib/stores/claims";
   import { activeLayout } from "$lib/stores/layout";
   import {
@@ -25,27 +28,12 @@
     onClaim,
     onRemoveClaim,
     onTranscript,
-    sendAudioChunk,
-    wsStatus
+    sendAudioChunk
   } from "$lib/websocket";
   import { onDestroy, onMount } from "svelte";
   import { fade } from "svelte/transition";
 
-  const WS_DOT: Record<
-    string,
-    { color: string; label: string; pulse: boolean }
-  > = {
-    connected: { color: "#10b981", label: "Backend connecté", pulse: false },
-    connecting: { color: "#f59e0b", label: "Connexion en cours…", pulse: true },
-    error: { color: "#ef4444", label: "Backend injoignable", pulse: false },
-    disconnected: {
-      color: "var(--color-fg-faint)",
-      label: "Déconnecté",
-      pulse: false
-    }
-  };
-
-  let dot = $derived(WS_DOT[$wsStatus] ?? WS_DOT.disconnected);
+  let recording = $derived($recordingState === "recording");
 
   onMount(() => {
     connect();
@@ -67,37 +55,45 @@
 
 <KeyboardShortcuts />
 <FalseClaimAlert />
-<WsToast />
 
-<!-- WS status dot — fixed top-right, title as tooltip -->
-<span
-  class="ws-dot fixed top-3 right-3 z-9500 h-2.5 w-2.5 rounded-full"
-  class:ws-dot--pulse={dot.pulse}
-  style="background: {dot.color};"
-  title={dot.label}
-  aria-hidden="true"></span>
-
-<main class="mx-auto max-w-300 p-8">
-  <header class="mb-6 flex flex-wrap items-center justify-between gap-4">
-    <!-- rec 02: structured logotype with pulsing live dot -->
-    <div class="flex items-center gap-3">
-      <span class="live-dot" aria-hidden="true"></span>
-      <div>
-        <h1
-          class="m-0 font-display text-[2.2rem] font-extrabold leading-none tracking-tight uppercase">
-          LFC
-        </h1>
-        <p class="m-0 text-[0.62rem] tracking-[0.22em] text-fg-faint uppercase">
-          Live Fact Checker
-        </p>
+<main class="mx-auto max-w-300 px-8 pb-8">
+  <!-- Sticky console strip: identity on the left, controls on the right. When
+       recording, the strip's edge goes accent-red — an on-air cue without a
+       separate banner. -->
+  <header
+    class={[
+      "sticky top-0 z-40 -mx-8 mb-6 flex flex-wrap items-center justify-between gap-x-4 gap-y-3 border-b px-8 py-4 backdrop-blur transition-colors duration-300",
+      recording ? "border-accent/60" : "border-edge"
+    ]}
+    style="background: color-mix(in srgb, var(--color-background) 88%, transparent);">
+    <div class="flex items-center gap-3.5">
+      <div class="flex items-center gap-3">
+        <span class="live-dot" aria-hidden="true"></span>
+        <div>
+          <h1
+            class="m-0 font-display text-[2.2rem] font-extrabold leading-none tracking-tight uppercase">
+            LFC
+          </h1>
+          <p
+            class="m-0 text-[0.62rem] tracking-[0.22em] text-fg-faint uppercase">
+            Live Fact Checker
+          </p>
+        </div>
       </div>
     </div>
     <div class="flex flex-wrap items-center justify-end gap-x-3 gap-y-2">
       <AudioControls />
-      <div class="hidden h-6 w-px bg-edge md:block" aria-hidden="true"></div>
-      <div class="flex items-center gap-2">
+      <!-- View / settings / account collapse into one segmented control with
+           hairline dividers, so the secondary chrome reads as a single quiet
+           cluster instead of three competing pills. -->
+      <div
+        class="flex items-center rounded-full border border-edge bg-surface"
+        role="group"
+        aria-label="Affichage, réglages et compte">
         <LayoutSelector />
+        <span class="h-5 w-px bg-edge" aria-hidden="true"></span>
         <SettingsMenu />
+        <span class="h-5 w-px bg-edge" aria-hidden="true"></span>
         <AccountButton />
       </div>
     </div>
@@ -148,9 +144,5 @@
       opacity: 0.45;
       transform: scale(0.72);
     }
-  }
-
-  .ws-dot--pulse {
-    animation: dot-pulse 1s ease-in-out infinite;
   }
 </style>

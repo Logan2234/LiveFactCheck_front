@@ -202,7 +202,7 @@
 </svelte:head>
 
 <PageHeader
-  title="🖥️ Système"
+  title="Système"
   subtitle="État du serveur et configuration — rafraîchissement automatique toutes les 30 s.">
   {#snippet actions()}
     {#if lastRefresh}

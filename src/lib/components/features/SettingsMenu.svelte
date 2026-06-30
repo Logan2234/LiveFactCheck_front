@@ -3,6 +3,7 @@
   import ThemeToggle from "$lib/components/features/ThemeToggle.svelte";
   import VerificationSelector from "$lib/components/features/VerificationSelector.svelte";
   import Button from "$lib/components/ui/Button.svelte";
+  import Icon from "$lib/components/ui/Icon.svelte";
   import Popover from "$lib/components/ui/Popover.svelte";
   import { falseAlertSound } from "$lib/stores/alerts";
   import { transcriptEntries } from "$lib/stores/audio";
@@ -27,14 +28,13 @@
   {#snippet trigger({ toggle, open })}
     <button
       type="button"
-      class="flex h-8 cursor-pointer items-center gap-1.5 rounded-full border border-edge bg-surface px-3 text-xs text-fg-muted transition-colors hover:border-edge-hi hover:text-fg"
+      class="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full text-fg-muted transition-colors hover:bg-surface-raised hover:text-fg"
       aria-haspopup="dialog"
       aria-expanded={open}
+      aria-label="Réglages"
       title="Réglages"
       onclick={toggle}>
-      <span aria-hidden="true">⚙</span>
-      <span class="font-medium text-fg">Réglages</span>
-      <span class="text-fg-faint" aria-hidden="true">▾</span>
+      <Icon name="settings" />
     </button>
   {/snippet}
 

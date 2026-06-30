@@ -117,7 +117,7 @@
 </svelte:head>
 
 <PageHeader
-  title="🧪 Test de la pipeline"
+  title="Test de la pipeline"
   subtitle="Envoie un texte directement à l'extraction + vérification de claims (POST /fact-check)." />
 
 <form onsubmit={run} class="mb-6">

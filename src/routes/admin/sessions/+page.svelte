@@ -47,7 +47,7 @@
 </svelte:head>
 
 <PageHeader
-  title="🗂️ Sessions"
+  title="Sessions"
   subtitle="Historique des sessions persistées — transcript, claims et statistiques.">
   {#snippet actions()}
     <Button onclick={load} variant="secondary" size="sm">↻ Rafraîchir</Button>

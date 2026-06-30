@@ -80,7 +80,7 @@
 </svelte:head>
 
 <PageHeader
-  title="🎙️ Test Whisper"
+  title="Test Whisper"
   subtitle="Transcris un fichier audio et inspecte les segments, la langue détectée et les scores de confiance." />
 
 <!-- Drop zone -->

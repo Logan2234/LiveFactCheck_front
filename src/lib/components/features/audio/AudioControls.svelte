@@ -1,4 +1,5 @@
 <script lang="ts">
+  import Icon from "$lib/components/ui/Icon.svelte";
   import { languageName } from "$lib/languages";
   import {
     audioError,
@@ -32,7 +33,7 @@
 <div class="flex flex-wrap items-center gap-2">
   <button
     class={[
-      "flex cursor-pointer items-center gap-2 rounded-full px-5 py-2.5 text-base transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-50",
+      "flex h-9 cursor-pointer items-center gap-2 rounded-full px-4 text-sm font-medium transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-50",
       isRecording
         ? "bg-red-600 text-white"
         : "bg-surface-raised text-fg enabled:hover:bg-surface-selected"
@@ -55,11 +56,6 @@
     {isRecording ? "Arrêter" : "Enregistrer"}
   </button>
 
-  <!-- rec 05: LIVE badge appears while recording -->
-  {#if isRecording}
-    <span class="live-label" aria-live="polite">● LIVE</span>
-  {/if}
-
   {#if isRecording}
     <button
       class={[
@@ -71,7 +67,7 @@
       onclick={toggleMute}
       title={$isMuted ? "Réactiver le micro" : "Couper le micro"}
       aria-label={$isMuted ? "Réactiver le micro" : "Couper le micro"}>
-      {$isMuted ? "🔇" : "🎙"}
+      <Icon name={$isMuted ? "mic-off" : "mic"} size={17} />
     </button>
   {/if}
 
@@ -79,7 +75,6 @@
     <span
       class="flex items-center gap-1 rounded-full border border-edge bg-surface px-2.5 py-1 text-2xs text-fg-muted"
       title="Langue détectée automatiquement">
-      <span aria-hidden="true">🌐</span>
       <span class="font-medium text-fg"
         >{languageName($detectedLanguage.code)}</span>
       <span class="text-fg-faint"
@@ -119,12 +114,5 @@
     to {
       transform: scaleY(1);
     }
-  }
-
-  .live-label {
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    color: var(--color-accent);
   }
 </style>
