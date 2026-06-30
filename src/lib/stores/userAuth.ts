@@ -32,6 +32,7 @@ function setToken(token: string | null) {
     if (token) localStorage.setItem(STORAGE_KEY, token);
     else localStorage.removeItem(STORAGE_KEY);
   }
+
   userToken.set(token);
   setUserToken(token); // the live WS session follows the auth state
 }
@@ -68,12 +69,15 @@ export async function refreshMe(): Promise<void> {
     currentUser.set(null);
     return;
   }
+
   const res = await userFetch("/users/me");
+
   if (res.status === 401) {
     setToken(null);
     currentUser.set(null);
     return;
   }
+
   if (res.ok) currentUser.set(await res.json());
 }
 

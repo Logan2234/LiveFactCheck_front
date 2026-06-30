@@ -43,6 +43,7 @@ async function unwrap<T>(res: Response): Promise<T> {
       typeof detail === "string" ? detail : `Erreur ${res.status}`;
     throw new Error(message);
   }
+
   return (await res.json()) as T;
 }
 
@@ -62,6 +63,7 @@ export async function createWebhook(input: WebhookInput): Promise<Webhook> {
 
 export async function deleteWebhook(id: string): Promise<void> {
   const res = await userFetch(`/webhooks/${id}`, { method: "DELETE" });
+
   // 204 No Content on success; only a real failure has a body to surface.
   if (!res.ok) {
     const body = await res.json().catch(() => null);

@@ -96,7 +96,7 @@
   }
 
   function copy(text: string) {
-    navigator.clipboard?.writeText(text);
+    void navigator.clipboard?.writeText(text);
   }
 
   function kindLabel(k: WebhookKind): string {

@@ -56,6 +56,17 @@ export default defineConfig(
     }
   },
   {
+    files: ["static/**/*.js"],
+    languageOptions: {
+      parserOptions: { projectService: false }
+    },
+    rules: {
+      "@typescript-eslint/no-floating-promises": "off",
+      "@typescript-eslint/no-misused-promises": "off",
+      "@typescript-eslint/await-thenable": "off"
+    }
+  },
+  {
     files: ["**/*.{js,ts,mjs,cjs}"],
     plugins: { "@stylistic": stylistic },
     rules: {

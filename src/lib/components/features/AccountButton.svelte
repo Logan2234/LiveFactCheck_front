@@ -14,7 +14,7 @@
   // login card. Signed in, it opens a menu so the account pages — and crucially
   // "Se déconnecter" — are reachable from anywhere, not only from inside /account.
   onMount(() => {
-    if ($userToken) refreshMe();
+    if ($userToken) void refreshMe();
   });
 
   // Icon-only trigger to match the segmented header control group. Signed in we

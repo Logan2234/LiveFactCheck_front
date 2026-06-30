@@ -31,12 +31,14 @@ class PCMDownsampler extends AudioWorkletProcessor {
     for (; this._pos < channel.length; this._pos += this._ratio) {
       const s = Math.max(-1, Math.min(1, channel[Math.floor(this._pos)]));
       this._batch[this._count++] = s < 0 ? s * 0x8000 : s * 0x7fff;
+
       if (this._count === BATCH_SAMPLES) {
         const out = this._batch.slice(0, BATCH_SAMPLES);
         this.port.postMessage(out.buffer, [out.buffer]);
         this._count = 0;
       }
     }
+
     this._pos -= channel.length;
 
     return true;
