@@ -2,7 +2,7 @@
 
 Liste des features, métier comme tech, à implémenter. La source de vérité reste le code, pas ce fichier.
 
-## Features métier (nouvelles capacités)
+## Features métier
 
 - [ ] **Recherche / filtre texte** dans les claims (en plus du filtre par statut existant),
       utile dès qu'une session devient longue.
