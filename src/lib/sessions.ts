@@ -7,7 +7,7 @@ import { authFetch } from "$lib/stores/auth";
 import type { VerificationStatus } from "$lib/stores/claims";
 import { triggerDownload } from "$lib/utils/export";
 
-export interface TokenTotals {
+interface TokenTotals {
   input: number;
   output: number;
   cache_read: number;
@@ -15,7 +15,7 @@ export interface TokenTotals {
   total: number;
 }
 
-export interface SessionStats {
+interface SessionStats {
   duration_s: number | null;
   transcripts_count: number;
   claims_count: number;
@@ -48,7 +48,7 @@ export interface SessionSummary {
   estimated_cost_usd: number | null;
 }
 
-export interface SessionSegment {
+interface SessionSegment {
   id: string;
   seq: number;
   text: string;
@@ -65,7 +65,7 @@ export interface SessionSegment {
   web_search_calls: number | null;
 }
 
-export interface SessionClaim {
+interface SessionClaim {
   id: string;
   segment_id: string | null;
   text: string;

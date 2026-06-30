@@ -1,0 +1,21 @@
+# Codecov configuration. Requires the Codecov GitHub App installed on the repo
+# and a CODECOV_TOKEN secret (used by the upload step in ci.yml).
+coverage:
+  status:
+    # Informational to start: report coverage on PRs without blocking merges.
+    # Flip `informational: false` and set a `target` once coverage is meaningful.
+    project:
+      default:
+        informational: true
+    patch:
+      default:
+        informational: true
+
+comment:
+  layout: "reach, diff, files"
+  require_changes: true
+
+ignore:
+  - "e2e/**"
+  - "**/*.config.*"
+  - "**/*.test.ts"

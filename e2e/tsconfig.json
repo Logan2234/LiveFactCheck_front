@@ -1,0 +1,7 @@
+{
+  // Dedicated project for the Playwright e2e specs so type-aware ESLint
+  // (projectService) can resolve them — the SvelteKit-generated tsconfig only
+  // covers src/. Inherits strict + compiler options from the app config.
+  "extends": "../tsconfig.json",
+  "include": ["**/*.ts"]
+}

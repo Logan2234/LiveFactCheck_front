@@ -1,0 +1,4 @@
+{
+  "$schema": "https://unpkg.com/knip@5/schema.json",
+  "ignore": ["static/pcm-worklet.js", "src/lib/index.ts"]
+}

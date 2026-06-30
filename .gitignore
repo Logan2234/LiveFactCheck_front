@@ -255,3 +255,8 @@ nohup.out
 
 # Built Visual Studio Code Extensions
 *.vsix
+
+# Playwright
+test-results/
+playwright-report/
+.playwright/

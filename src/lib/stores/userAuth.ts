@@ -1,7 +1,7 @@
-import { writable } from "svelte/store";
 import { browser } from "$app/environment";
 import { API_BASE_URL } from "$lib/config";
 import { setUserToken } from "$lib/websocket";
+import { writable } from "svelte/store";
 
 // User accounts (distinct from the admin panel in stores/auth.ts). The token is kept in
 // localStorage and mirrored onto the live WebSocket via setUserToken, so the session is
@@ -37,16 +37,12 @@ function setToken(token: string | null) {
   setUserToken(token); // the live WS session follows the auth state
 }
 
-export function getUserToken(): string | null {
-  return storedToken();
-}
-
 /** fetch wrapper that targets the API and attaches the user bearer token. */
 export async function userFetch(
   path: string,
   init: RequestInit = {}
 ): Promise<Response> {
-  const t = getUserToken();
+  const t = storedToken();
   return fetch(`${API_BASE_URL}${path}`, {
     ...init,
     headers: {
@@ -65,7 +61,7 @@ async function errorMessage(res: Response, fallback: string): Promise<string> {
 
 /** Load the signed-in user into `currentUser`; clears it (and the token) on 401. */
 export async function refreshMe(): Promise<void> {
-  if (!getUserToken()) {
+  if (!storedToken()) {
     currentUser.set(null);
     return;
   }

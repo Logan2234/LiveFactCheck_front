@@ -1,11 +1,7 @@
 import { derived, writable } from "svelte/store";
 
 export type VerificationStatus =
-  | "pending"
-  | "verified"
-  | "false"
-  | "uncertain"
-  | "unverifiable";
+  "pending" | "verified" | "false" | "uncertain" | "unverifiable";
 export type ClaimFilter = "all" | VerificationStatus;
 
 export interface Claim {

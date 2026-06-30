@@ -6,8 +6,8 @@ paths:
 
 # Svelte 5 & TypeScript conventions
 
-Generic conventions for the SvelteKit frontend. Project-specific facts (commands, gotchas,
-admin UI) live in CLAUDE.md, not here.
+Generic conventions for the SvelteKit frontend.
+Project-specific facts (commands, gotchas, pages) live in CLAUDE.md, not here.
 
 ## Svelte 5 (runes)
 
@@ -24,9 +24,16 @@ admin UI) live in CLAUDE.md, not here.
 
 ## TypeScript
 
-- `strict` is on. Type props, function params, and return values; don't lean on `any`.
+- `strict` is on. Type props, function params, and return values; don't lean on `any` — use `unknown` and narrow with type guards.
 - Model message/union shapes as discriminated unions (e.g. a `type` field) and narrow on it.
+- Prefer `interface` for object shapes, `type` for unions and primitives.
 - Keep a single source of truth for a shared shape; import the type rather than redeclaring it.
+
+## Tailwind CSS
+
+- Tailwind utility classes — no custom CSS unless absolutely necessary.
+- Use design tokens from the Tailwind config, not hard-coded values.
+- Extract repeated class combinations into components, not `@apply`.
 
 ## Networking & WebSocket
 
@@ -43,5 +50,5 @@ admin UI) live in CLAUDE.md, not here.
 
 ## Tooling
 
-- Format with Prettier (incl. prettier-plugin-svelte); type-check with `svelte-check`. Both are CI gates — keep them green.
+- Format with Prettier; type-check with `svelte-check`. Both are CI gates — keep them green.
 - Don't fight the formatter; let it own whitespace and quote style.

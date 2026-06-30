@@ -67,6 +67,9 @@
     return false;
   });
 
+  // Frontend build version, injected by Vite's define (see vite.config.ts).
+  const appVersion = __APP_VERSION__;
+
   let interval: ReturnType<typeof setInterval>;
 
   const controlClass =
@@ -238,6 +241,7 @@
         <Field label="Uptime" strong
           >{formatUptime(health.uptime_seconds)}</Field>
         <Field label="Python">{health.python_version}</Field>
+        <Field label="Frontend">v{appVersion}</Field>
       </dl>
     </StatCard>
 

@@ -4,9 +4,10 @@ import { env } from "$env/dynamic/public";
 // client and the admin API client. Override with the PUBLIC_BACKEND_URL env
 // var (see .env.example) for anything other than local dev; the default keeps
 // the app working out of the box on localhost.
-export const BACKEND_URL = (
-  env.PUBLIC_BACKEND_URL ?? "http://localhost:8000"
-).replace(/\/+$/, "");
+const BACKEND_URL = (env.PUBLIC_BACKEND_URL ?? "http://localhost:8000").replace(
+  /\/+$/,
+  ""
+);
 
 // All HTTP API routes are versioned under /v1 (see backend app/main.py). This is the
 // single place the prefix is applied — callers pass paths like "/admin/..." unchanged.

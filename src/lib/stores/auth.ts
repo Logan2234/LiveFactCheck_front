@@ -10,7 +10,7 @@ function initialToken(): string | null {
 
 export const token = writable<string | null>(initialToken());
 
-export function setToken(value: string) {
+function setToken(value: string) {
   if (browser) localStorage.setItem(STORAGE_KEY, value);
   token.set(value);
 }

@@ -1,0 +1,36 @@
+version: 2
+
+updates:
+  - package-ecosystem: npm
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+      timezone: Europe/Paris # PR groupées le lundi matin, pas au fil de l'eau
+    open-pull-requests-limit: 5
+    versioning-strategy: increase # bump aussi les ranges dans package.json
+    labels: ["dependencies"]
+    commit-message:
+      prefix: "⚡" # colle à ton emoji "tooling"
+      include: scope
+    cooldown:
+      default-days: 5 # attend 5 j après une release (évite les .0 cassés)
+    groups:
+      # Tout le non-major dans UNE PR ; les majors restent séparés pour relecture.
+      minor-and-patch:
+        update-types: ["minor", "patch"]
+    # ignore:                        # ex. si tu pinnes volontairement une lib
+    #   - dependency-name: "svelte"
+    #     update-types: ["version-update:semver-major"]
+
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
+    labels: ["dependencies", "github-actions"]
+    commit-message:
+      prefix: "⚡"
+    groups:
+      actions:
+        update-types: ["minor", "patch"]

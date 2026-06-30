@@ -16,10 +16,6 @@ Liste des features, métier comme tech, à implémenter. La source de vérité r
 
 ## Tests (priorité haute)
 
-Aucun test aujourd'hui (pas de script de test dans `package.json`, cf. CLAUDE.md).
-
-- [ ] Mettre en place un runner (Vitest s'intègre nativement à Vite/SvelteKit) +
-      un script `test` + l'ajouter aux gates CI.
 - [ ] `stores/claims.ts` : `addOrUpdateClaim` (insertion vs remplacement par `id`),
       `removeClaim`, `sortedClaims`, `filteredClaims`, `claimStats`. Logique pure, facile à couvrir.
 - [ ] `websocket.ts` : routage des messages par `type`, backoff exponentiel
@@ -28,3 +24,16 @@ Aucun test aujourd'hui (pas de script de test dans `package.json`, cf. CLAUDE.md
 ## UI
 
 - [ ] Améliorer le light mode qui est hideux aujourd'hui sur toutes les pages.
+
+## Tooling / CI
+
+- [ ] **Mergify** (`.mergify.yml`) : merge queue + règles d'auto-merge des PR vertes.
+
+### Options à étudier (outils activables par un fichier)
+
+- [ ] **Renovate** (`renovate.json`) : alternative à Dependabot — grouping plus fin, auto-merge des patchs verts, dashboard. Nécessite la GitHub App.
+- [ ] **Snyk** (`.snyk`) : analyse de sécurité des dépendances. Nécessite la GitHub App.
+- [ ] **Lighthouse CI** (`lighthouserc.json`) : budgets perf / a11y / SEO sur chaque PR. Config + workflow CI.
+- [ ] **commitlint** (`commitlint.config.js`) : impose les Conventional Commits (utile avec release-please). Config + hook/CI.
+- [ ] **husky + lint-staged** (ou `pre-commit` / `lefthook`) : lance Prettier/ESLint avant le commit, en amont de la CI.
+- [ ] **CodeQL** : analyse de sécurité statique GitHub (activable en _default setup_ sans fichier, ou via workflow).
