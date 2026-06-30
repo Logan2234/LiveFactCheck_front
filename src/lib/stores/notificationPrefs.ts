@@ -21,6 +21,7 @@ const FALLBACK: VerificationStatus[] = ["false"];
 
 function stored(): VerificationStatus[] {
   if (!browser) return FALLBACK;
+
   try {
     const raw = localStorage.getItem(KEY);
     if (!raw) return FALLBACK;

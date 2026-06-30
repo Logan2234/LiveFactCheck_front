@@ -94,7 +94,7 @@
       </div>
     </div>
   </header>
-  <!-- rec H: fade on layout switch so 9 very different layouts don't swap brutally -->
+
   {#key $activeLayout}
     <div in:fade={{ duration: 150 }}>
       {#if $activeLayout === "classic"}

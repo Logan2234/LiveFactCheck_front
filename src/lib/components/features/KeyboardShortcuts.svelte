@@ -6,11 +6,8 @@
     stopRecording
   } from "$lib/stores/audio";
   import { claims } from "$lib/stores/claims";
-  import { falseFlash } from "$lib/stores/ui";
   import { onDestroy, onMount } from "svelte";
 
-  let falseCount = $derived($claims.filter((c) => c.status === "false").length);
-  let prevFalseCount = $state(0);
   let helpOpen = $state(false);
 
   const shortcuts = [
@@ -18,14 +15,6 @@
     { keys: ["Échap"], label: "Vider tous les claims" },
     { keys: ["?"], label: "Afficher / masquer cette aide" }
   ];
-
-  $effect(() => {
-    if (falseCount > prevFalseCount) {
-      falseFlash.set(true);
-      setTimeout(() => falseFlash.set(false), 600);
-    }
-    prevFalseCount = falseCount;
-  });
 
   function handleKeydown(e: KeyboardEvent) {
     const tag = (e.target as HTMLElement).tagName;
@@ -53,13 +42,6 @@
   onDestroy(() => window.removeEventListener("keydown", handleKeydown));
 </script>
 
-{#if $falseFlash}
-  <div
-    class="false-flash pointer-events-none fixed inset-0 z-9999 bg-red-500/18"
-    aria-hidden="true">
-  </div>
-{/if}
-
 <button
   class="fixed right-5 bottom-5 z-9000 flex h-9.5 w-9.5 cursor-pointer items-center justify-center rounded-full border border-edge-hi bg-surface text-base font-semibold text-fg-muted shadow-[0_4px_14px_rgba(0,0,0,0.4)] transition-all duration-150 hover:-translate-y-px hover:border-accent-dim hover:bg-surface-selected hover:text-fg"
   onclick={() => (helpOpen = true)}
@@ -84,19 +66,3 @@
     {/each}
   </ul>
 </Modal>
-
-<style>
-  /* Flash overlay animation — keyframes can't be expressed as utilities. */
-  .false-flash {
-    animation: flash-fade 0.6s ease-out forwards;
-  }
-
-  @keyframes flash-fade {
-    0% {
-      opacity: 1;
-    }
-    100% {
-      opacity: 0;
-    }
-  }
-</style>
