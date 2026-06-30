@@ -1,4 +1,5 @@
 ﻿<script lang="ts">
+  import AccountButton from "$lib/components/features/AccountButton.svelte";
   import AudioControls from "$lib/components/features/audio/AudioControls.svelte";
   import FalseClaimAlert from "$lib/components/features/claims/FalseClaimAlert.svelte";
   import KeyboardShortcuts from "$lib/components/features/KeyboardShortcuts.svelte";
@@ -97,6 +98,7 @@
       <div class="flex items-center gap-2">
         <LayoutSelector />
         <SettingsMenu />
+        <AccountButton />
       </div>
     </div>
   </header>

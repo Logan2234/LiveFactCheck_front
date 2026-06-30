@@ -99,6 +99,15 @@ export const detectedLanguage = writable<{
   probability: number;
 } | null>(null);
 
+// Optional user JWT sent on the config frame so the backend binds the live session to
+// the user and fires their webhooks. Null = anonymous. Set by the login flow (Phase 5).
+let userToken: string | null = null;
+
+export function setUserToken(value: string | null) {
+  userToken = value;
+  sendConfig(); // push the change to the live session if connected
+}
+
 let ws: WebSocket | null = null;
 let onClaimCallback: ((claim: Claim) => void) | null = null;
 let onRemoveClaimCallback: ((id: string) => void) | null = null;
@@ -230,13 +239,13 @@ export function sendConfig() {
   if (language !== "auto") detectedLanguage.set(null);
 
   if (ws?.readyState === WebSocket.OPEN) {
-    ws.send(
-      JSON.stringify({
-        type: "config",
-        language,
-        verification_level: get(verificationLevel)
-      })
-    );
+    const payload: Record<string, unknown> = {
+      type: "config",
+      language,
+      verification_level: get(verificationLevel)
+    };
+    if (userToken) payload.token = userToken;
+    ws.send(JSON.stringify(payload));
   }
 }
 
