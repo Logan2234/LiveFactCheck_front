@@ -1,19 +1,28 @@
 # Codecov configuration. Requires the Codecov GitHub App installed on the repo
 # and a CODECOV_TOKEN secret (used by the upload step in ci.yml).
 coverage:
+  precision: 1
+  round: down
+  range: "70...100"
   status:
-    # Informational to start: report coverage on PRs without blocking merges.
-    # Flip `informational: false` and set a `target` once coverage is meaningful.
     project:
       default:
-        informational: true
+        # Block a coverage DROP vs the base branch (1% tolerance), without
+        # imposing an absolute target — safe while overall coverage is low.
+        target: auto
+        threshold: 1%
     patch:
       default:
+        # New code stays non-blocking until the test suite grows; tighten later.
         informational: true
+    changes: false
 
 comment:
-  layout: "reach, diff, files"
+  layout: "reach, diff, flags, files"
   require_changes: true
+
+github_checks:
+  annotations: true
 
 ignore:
   - "e2e/**"
