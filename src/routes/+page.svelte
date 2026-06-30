@@ -5,14 +5,10 @@
   import KeyboardShortcuts from "$lib/components/features/KeyboardShortcuts.svelte";
   import LayoutSelector from "$lib/components/features/LayoutSelector.svelte";
   import SettingsMenu from "$lib/components/features/SettingsMenu.svelte";
-  import LayoutChat from "$lib/layouts/LayoutChat.svelte";
   import LayoutClassic from "$lib/layouts/LayoutClassic.svelte";
   import LayoutDashboard from "$lib/layouts/LayoutDashboard.svelte";
   import LayoutSpotlight from "$lib/layouts/LayoutSpotlight.svelte";
-  import LayoutTable from "$lib/layouts/LayoutTable.svelte";
-  import LayoutTerminal from "$lib/layouts/LayoutTerminal.svelte";
   import LayoutTicker from "$lib/layouts/LayoutTicker.svelte";
-  import LayoutTimeline from "$lib/layouts/LayoutTimeline.svelte";
   import LayoutTrustMeter from "$lib/layouts/LayoutTrustMeter.svelte";
   import { notifyClaim } from "$lib/stores/alerts";
   import {
@@ -105,20 +101,12 @@
         <LayoutClassic />
       {:else if $activeLayout === "dashboard"}
         <LayoutDashboard />
-      {:else if $activeLayout === "terminal"}
-        <LayoutTerminal />
       {:else if $activeLayout === "spotlight"}
         <LayoutSpotlight />
       {:else if $activeLayout === "trustmeter"}
         <LayoutTrustMeter />
       {:else if $activeLayout === "ticker"}
         <LayoutTicker />
-      {:else if $activeLayout === "timeline"}
-        <LayoutTimeline />
-      {:else if $activeLayout === "chat"}
-        <LayoutChat />
-      {:else}
-        <LayoutTable />
       {/if}
     </div>
   {/key}

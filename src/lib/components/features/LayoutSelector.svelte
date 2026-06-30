@@ -24,19 +24,9 @@
       icon: '<rect x="3" y="3" width="7" height="9" rx="1" /><rect x="14" y="3" width="7" height="5" rx="1" /><rect x="14" y="12" width="7" height="9" rx="1" /><rect x="3" y="16" width="7" height="5" rx="1" />'
     },
     {
-      key: "terminal",
-      label: "Terminal",
-      icon: '<rect x="3" y="4" width="18" height="16" rx="2" /><path d="M7 9l3 3-3 3M13 15h4" />'
-    },
-    {
       key: "spotlight",
       label: "Spotlight",
       icon: '<circle cx="12" cy="12" r="3.5" /><path d="M12 3v2.5M12 18.5V21M3 12h2.5M18.5 12H21" />'
-    },
-    {
-      key: "table",
-      label: "Table",
-      icon: '<rect x="3" y="5" width="18" height="14" rx="1.5" /><path d="M3 10h18M3 14.5h18M11 5v14" />'
     },
     {
       key: "trustmeter",
@@ -47,16 +37,6 @@
       key: "ticker",
       label: "Ticker",
       icon: '<rect x="2.5" y="8.5" width="19" height="7" rx="1.5" /><path d="M6 12h7" />'
-    },
-    {
-      key: "timeline",
-      label: "Timeline",
-      icon: '<path d="M6 3.5v17" /><circle cx="6" cy="8" r="1.8" /><circle cx="6" cy="15" r="1.8" /><path d="M10 8h9M10 15h6" />'
-    },
-    {
-      key: "chat",
-      label: "Chat",
-      icon: '<path d="M20 11.5a7.5 7.5 0 0 1-10.9 6.7L4 20l1.3-4.1A7.5 7.5 0 1 1 20 11.5z" />'
     }
   ];
 
