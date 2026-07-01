@@ -9,3 +9,7 @@ export const CATEGORY_COLORS: Record<string, string> = {
   technologie: "#6366f1",
   autre: "#6b7280"
 };
+
+// Fixed display order for category filter pills — the full set, regardless
+// of which categories the current claims actually use.
+export const CATEGORIES = Object.keys(CATEGORY_COLORS);

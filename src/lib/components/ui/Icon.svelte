@@ -22,7 +22,8 @@
     | "log-out"
     | "arrow-left"
     | "menu"
-    | "x";
+    | "x"
+    | "filter";
 
   const PATHS: Record<IconName, string> = {
     activity: '<path d="M22 12h-4l-3 9L9 3l-3 9H2" />',
@@ -52,7 +53,8 @@
       '<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9" />',
     "arrow-left": '<path d="M19 12H5M12 19l-7-7 7-7" />',
     menu: '<path d="M3 6h18M3 12h18M3 18h18" />',
-    x: '<path d="M18 6 6 18M6 6l12 12" />'
+    x: '<path d="M18 6 6 18M6 6l12 12" />',
+    filter: '<polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />'
   };
 </script>
 

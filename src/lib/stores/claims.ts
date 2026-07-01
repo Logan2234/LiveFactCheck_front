@@ -2,7 +2,6 @@ import { derived, writable } from "svelte/store";
 
 export type VerificationStatus =
   "pending" | "verified" | "false" | "uncertain" | "unverifiable";
-export type ClaimFilter = "all" | VerificationStatus;
 
 export interface Claim {
   id: string;
@@ -18,7 +17,25 @@ export interface Claim {
 }
 
 export const claims = writable<Claim[]>([]);
-export const claimFilter = writable<ClaimFilter>("all");
+// Empty set = no filter applied (show every status/category).
+export const claimFilter = writable<Set<VerificationStatus>>(new Set());
+export const categoryFilter = writable<Set<string>>(new Set());
+export const minConfidence = writable<number>(0);
+
+function toggleInSet<T>(set: Set<T>, value: T): Set<T> {
+  const next = new Set(set);
+  if (next.has(value)) next.delete(value);
+  else next.add(value);
+  return next;
+}
+
+export function toggleStatusFilter(status: VerificationStatus) {
+  claimFilter.update((set) => toggleInSet(set, status));
+}
+
+export function toggleCategoryFilter(category: string) {
+  categoryFilter.update((set) => toggleInSet(set, category));
+}
 
 // Build a complete Claim from a partial API payload, filling defaults.
 //  Used by the admin test/benchmark pages that POST raw text to /fact-check.
@@ -60,11 +77,14 @@ export const sortedClaims = derived(claims, ($claims) =>
 );
 
 export const filteredClaims = derived(
-  [sortedClaims, claimFilter],
-  ([$sortedClaims, $filter]) => {
-    if ($filter === "all") return $sortedClaims;
-    return $sortedClaims.filter((c) => c.status === $filter);
-  }
+  [sortedClaims, claimFilter, categoryFilter, minConfidence],
+  ([$sortedClaims, $statusFilter, $categoryFilter, $minConfidence]) =>
+    $sortedClaims.filter(
+      (c) =>
+        ($statusFilter.size === 0 || $statusFilter.has(c.status)) &&
+        ($categoryFilter.size === 0 || $categoryFilter.has(c.category)) &&
+        c.confidence >= $minConfidence
+    )
 );
 
 export const claimStats = derived(claims, ($claims) => ({
