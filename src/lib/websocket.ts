@@ -167,7 +167,12 @@ export function connect(resetRetries = true) {
     const message = parseWSMessage(raw);
 
     if (message === null) {
-      console.warn("Discarding malformed WS message:", raw);
+      const rawForLog =
+        (typeof raw === "string" ? raw : JSON.stringify(raw) ?? String(raw)).replace(
+          /[\r\n]/g,
+          ""
+        );
+      console.warn("Discarding malformed WS message:", rawForLog);
       return;
     }
 
