@@ -27,7 +27,7 @@
             {/if}
           </div>
           <button
-            class="shrink-0 cursor-pointer rounded-md px-1.5 text-red-200/70 transition-colors hover:bg-red-950/60 hover:text-white"
+            class="shrink-0 cursor-pointer rounded-md px-1.5 text-red-200/70 transition-colors hover:bg-red-900/70 dark:hover:bg-red-950/60 hover:text-white"
             onclick={() => dismissFalseAlert(alert.id)}
             aria-label="Fermer l'alerte">
             ✕

@@ -228,6 +228,6 @@
     border-bottom: none;
   }
   tr:hover td {
-    background: rgba(255, 255, 255, 0.02);
+    background: color-mix(in srgb, var(--color-fg) 5%, transparent);
   }
 </style>

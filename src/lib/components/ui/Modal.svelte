@@ -37,13 +37,13 @@
 
 {#if open}
   <div
-    class="anim-fade fixed inset-0 z-9500 flex items-center justify-center bg-[rgba(10,10,18,0.6)] backdrop-blur-[3px]">
+    class="anim-fade fixed inset-0 z-9500 flex items-center justify-center bg-scrim backdrop-blur-[3px]">
     <button
       class="absolute inset-0 m-0 h-full w-full cursor-default bg-transparent p-0"
       aria-label="Fermer"
       onclick={closeOnBackdrop ? close : undefined}></button>
     <div
-      class="anim-pop relative m-6 w-full rounded-[14px] border border-edge bg-surface-alt p-6 shadow-[0_24px_60px_rgba(0,0,0,0.55)]"
+      class="anim-pop relative m-6 w-full rounded-[14px] border border-edge bg-surface-alt p-6 shadow-elevated"
       role="dialog"
       aria-modal="true"
       aria-label={title || "Fenêtre modale"}

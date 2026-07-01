@@ -56,6 +56,17 @@
   /* Terminal accent — dark green on warm-light bg   rec 09 */
   --color-term-accent: #1a6b2a;
 
+  /* Overlay scrim for modals / mobile nav — theme-aware */
+  --color-scrim: rgba(20, 20, 30, 0.4);
+
+  /* Radial glow behind login / account cards */
+  --auth-glow: rgba(193, 18, 31, 0.07);
+
+  /* Elevation shadows — soft on warm paper (dark theme overrides below) */
+  --shadow-soft: 0 4px 14px rgba(60, 50, 35, 0.1);
+  --shadow-panel: 0 12px 32px rgba(60, 50, 35, 0.14);
+  --shadow-elevated: 0 20px 50px rgba(60, 50, 35, 0.18);
+
   /* ── Extra text size step (below xs) ── */
   --text-2xs: 0.72rem;
 }
@@ -87,6 +98,12 @@
     --color-fg-faint: #6a6a88;
 
     --color-term-accent: #00e676; /* phosphor green   rec 09 */
+
+    --color-scrim: rgba(8, 8, 14, 0.62);
+    --auth-glow: rgba(85, 85, 170, 0.25);
+    --shadow-soft: 0 4px 14px rgba(0, 0, 0, 0.4);
+    --shadow-panel: 0 16px 40px rgba(0, 0, 0, 0.5);
+    --shadow-elevated: 0 24px 60px rgba(0, 0, 0, 0.55);
   }
 
   /* Explicit light override wins over :root dark when the user picks light. */
@@ -111,6 +128,12 @@
     --color-fg-faint: #8a8aa2;
 
     --color-term-accent: #1a6b2a;
+
+    --color-scrim: rgba(20, 20, 30, 0.4);
+    --auth-glow: rgba(193, 18, 31, 0.07);
+    --shadow-soft: 0 4px 14px rgba(60, 50, 35, 0.1);
+    --shadow-panel: 0 12px 32px rgba(60, 50, 35, 0.14);
+    --shadow-elevated: 0 20px 50px rgba(60, 50, 35, 0.18);
   }
 }
 
@@ -123,6 +146,16 @@
     margin: 0;
     background: var(--color-background);
     color: var(--color-fg);
+  }
+
+  .auth-bg {
+    background:
+      radial-gradient(
+        1200px 600px at 50% -10%,
+        var(--auth-glow),
+        transparent 60%
+      ),
+      var(--color-background);
   }
 
   .spinner {

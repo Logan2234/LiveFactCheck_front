@@ -141,7 +141,7 @@
           aria-label="Fermer"
           onclick={() => (menuOpen = false)}></button>
         <ul
-          class="absolute top-[calc(100%+0.4rem)] left-0 z-50 m-0 flex min-w-65 list-none flex-col gap-0.5 rounded-xl border border-edge bg-surface-alt p-1.5 shadow-[0_16px_40px_rgba(0,0,0,0.5)]">
+          class="absolute top-[calc(100%+0.4rem)] left-0 z-50 m-0 flex min-w-65 list-none flex-col gap-0.5 rounded-xl border border-edge bg-surface-alt p-1.5 shadow-panel">
           {#each examples as ex (ex.text)}
             <li>
               <button
@@ -266,7 +266,7 @@
     height: 22px;
     border-radius: 999px;
     background: var(--color-edge);
-    border: 1px solid #3a3a4e;
+    border: 1px solid var(--color-edge-hi);
     transition:
       background 0.15s,
       border-color 0.15s;
@@ -280,29 +280,30 @@
     width: 16px;
     height: 16px;
     border-radius: 50%;
-    background: #b0b0c8;
+    background: var(--color-fg-muted);
     transition:
       transform 0.15s,
       background 0.15s;
   }
 
   .switch input:checked + .track {
-    background: #3a3a7a;
+    background: var(--color-accent);
     border-color: var(--color-accent);
   }
 
   .switch input:checked + .track .thumb {
     transform: translateX(16px);
-    background: #c8c8ff;
+    background: #ffffff;
   }
 
   .switch input:focus-visible + .track {
-    box-shadow: 0 0 0 2px rgba(106, 106, 204, 0.5);
+    box-shadow: 0 0 0 2px
+      color-mix(in srgb, var(--color-accent) 45%, transparent);
   }
 
   .switch-label {
     font-size: 0.82rem;
-    color: #9a9ab0;
+    color: var(--color-fg-muted);
     min-width: 76px;
   }
 </style>

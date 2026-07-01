@@ -35,7 +35,7 @@
   class="flex min-h-screen items-center justify-center p-6"
   style="background: radial-gradient(900px 480px at 50% -10%, color-mix(in srgb, {view.color} 16%, transparent), transparent 60%), var(--color-background);">
   <div
-    class="flex w-full max-w-md flex-col items-center gap-6 rounded-2xl border border-edge bg-surface-alt px-8 py-12 text-center shadow-[0_24px_70px_rgba(0,0,0,0.45)]">
+    class="flex w-full max-w-md flex-col items-center gap-6 rounded-2xl border border-edge bg-surface-alt px-8 py-12 text-center shadow-elevated">
     <span
       class="inline-flex items-center gap-2 rounded-full border px-3 py-1 text-2xs font-semibold tracking-[0.18em] uppercase"
       style="color: {view.color}; border-color: color-mix(in srgb, {view.color} 40%, transparent); background: color-mix(in srgb, {view.color} 10%, transparent);">

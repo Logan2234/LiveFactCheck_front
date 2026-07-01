@@ -124,7 +124,7 @@
           href={source}
           target="_blank"
           rel="noopener noreferrer external"
-          class="overflow-hidden text-ellipsis text-blue-400 no-underline hover:underline"
+          class="overflow-hidden text-ellipsis text-blue-700 dark:text-blue-400 no-underline hover:underline"
           >{source}</a>
       {/each}
     </div>
