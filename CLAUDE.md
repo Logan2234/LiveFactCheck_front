@@ -8,16 +8,12 @@ Ce projet est LiveFactChecker Frontend. Cross-component context (WebSocket contr
 
 This file is loaded automatically by Claude Code at the start of every session. Treat it as the source of truth for how to work in this repo.
 
-## Tracking files (TODO.md)
+## Backlog
 
-- Read `TODO.md` at the start of a task for **direction and intent** — where the project
-  is headed and the why behind choices.
-- Treat its **progress/done state as a hint, not the truth**: a task marked done may not
-  be, or may have drifted. Verify against the code before relying on it. When they
-  disagree, **the code wins** — flag the gap, don't edit code to match the doc.
-- Update `TODO.md` **only when I ask** (or at the end of a task I've validated). No
-  speculative updates. Exception: when I point to a specific TODO item and ask you to
-  handle it, check it off / amend that line as part of completing the task.
+The backlog lives in **GitHub Issues**, not in a tracked file — there is no `TODO.md`.
+Features, tech tasks and tests are tracked as issues (labels: `enhancement`, `tests`,
+`tooling`, `ui`, …). When they disagree with the code, **the code wins** — flag the gap,
+don't edit code to match an issue.
 
 ## Build & Test
 
