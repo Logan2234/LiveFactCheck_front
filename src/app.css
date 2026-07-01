@@ -189,6 +189,38 @@
       transparent;
   }
 
+  /* Themed reskin of the native range input (claim confidence filter):
+     browser default chrome doesn't track the accent/edge tokens otherwise. */
+  input[type="range"].theme-range {
+    appearance: none;
+    width: 7rem;
+    height: 4px;
+    border-radius: 2px;
+    background: linear-gradient(
+      to right,
+      var(--color-accent) var(--fill, 0%),
+      var(--color-edge) var(--fill, 0%)
+    );
+    cursor: pointer;
+  }
+  input[type="range"].theme-range::-webkit-slider-thumb {
+    appearance: none;
+    width: 13px;
+    height: 13px;
+    border-radius: 50%;
+    background: var(--color-accent);
+    border: 2px solid var(--color-surface);
+    box-shadow: 0 0 0 1px var(--color-accent);
+  }
+  input[type="range"].theme-range::-moz-range-thumb {
+    width: 13px;
+    height: 13px;
+    border-radius: 50%;
+    background: var(--color-accent);
+    border: 2px solid var(--color-surface);
+    box-shadow: 0 0 0 1px var(--color-accent);
+  }
+
   @media (prefers-reduced-motion: reduce) {
     *,
     *::before,

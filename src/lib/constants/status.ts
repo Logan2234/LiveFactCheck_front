@@ -1,4 +1,4 @@
-import type { ClaimFilter, VerificationStatus } from "$lib/stores/claims";
+import type { VerificationStatus } from "$lib/stores/claims";
 
 // Single source of truth for the visual identity of a verification status:
 // its colour, emoji icon, the long label shown on cards/badges, and the short
@@ -48,19 +48,16 @@ export const STATUS_ORDER: VerificationStatus[] = [
   "unverifiable"
 ];
 
-// Filter-bar entries: the "Tous" pseudo-filter followed by one per status, in order.
+// Filter-bar entries: one per status, in order — used by the status multiselect filter.
 export const CLAIM_FILTERS: {
-  key: ClaimFilter;
+  key: VerificationStatus;
   label: string;
   icon: string;
-}[] = [
-  { key: "all", label: "Tous", icon: "📋" },
-  ...STATUS_ORDER.map((s) => ({
-    key: s,
-    label: STATUS_META[s].filterLabel,
-    icon: STATUS_META[s].icon
-  }))
-];
+}[] = STATUS_ORDER.map((s) => ({
+  key: s,
+  label: STATUS_META[s].filterLabel,
+  icon: STATUS_META[s].icon
+}));
 
 // Flat lookups derived from STATUS_META for ergonomic use in templates. Typed by
 // VerificationStatus so indexing with a claim's status is exhaustive — no fallback needed.

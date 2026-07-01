@@ -1,13 +1,10 @@
 <script lang="ts">
   import ClaimCard from "$lib/components/features/claims/ClaimCard.svelte";
+  import ClaimFiltersPopover from "$lib/components/features/claims/ClaimFiltersPopover.svelte";
   import StatusIcon from "$lib/components/ui/StatusIcon.svelte";
-  import {
-    CLAIM_FILTERS,
-    STATUS_META,
-    STATUS_ORDER
-  } from "$lib/constants/status";
+  import { STATUS_META, STATUS_ORDER } from "$lib/constants/status";
   import { reversedTranscript } from "$lib/stores/audio";
-  import { claimFilter, claimStats, filteredClaims } from "$lib/stores/claims";
+  import { claimStats, filteredClaims } from "$lib/stores/claims";
   import { formatTime } from "$lib/utils/format";
 </script>
 
@@ -35,38 +32,24 @@
   </section>
 
   <section>
-    <div class="mb-2">
+    <div class="mb-2 flex items-start justify-between gap-2">
       <h2 class="mt-0 mb-3 text-lg">
         Claims ({$claimStats.total})
       </h2>
-      <!-- rec 04: StatusIcon replaces emoji in stats row -->
-      <div class="mt-1.5 flex flex-wrap gap-3 text-sm">
-        {#each STATUS_ORDER as s (s)}
-          <span
-            class="flex items-center gap-1"
-            style="color: {STATUS_META[s].color}">
-            <StatusIcon status={s} size={13} />
-            {$claimStats[s]}
-          </span>
-        {/each}
-      </div>
+      <ClaimFiltersPopover />
     </div>
-    <!-- rec 04: icon removed from filter pills — label text is sufficient -->
-    <div class="mb-3 flex flex-wrap gap-1.5">
-      {#each CLAIM_FILTERS as { key, label } (key)}
-        <button
-          class={[
-            "cursor-pointer rounded-[20px] border px-3 py-1.5 text-sm transition-all duration-150",
-            $claimFilter === key
-              ? "border-accent-dim bg-surface-selected text-fg"
-              : "border-edge bg-surface text-fg-muted hover:border-edge-hi hover:text-fg"
-          ]}
-          onclick={() => claimFilter.set(key)}>
-          {label}
-        </button>
+    <!-- rec 04: StatusIcon replaces emoji in stats row -->
+    <div class="mt-1.5 flex flex-wrap gap-3 text-sm">
+      {#each STATUS_ORDER as s (s)}
+        <span
+          class="flex items-center gap-1"
+          style="color: {STATUS_META[s].color}">
+          <StatusIcon status={s} size={13} />
+          {$claimStats[s]}
+        </span>
       {/each}
     </div>
-    <div class="flex max-h-115 flex-col gap-2 overflow-y-auto">
+    <div class="mt-3 flex max-h-115 flex-col gap-2 overflow-y-auto">
       {#each $filteredClaims as claim (claim.id)}
         <ClaimCard {claim} />
       {/each}

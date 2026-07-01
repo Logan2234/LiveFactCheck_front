@@ -1,5 +1,6 @@
 ﻿<script lang="ts">
   import ClaimCard from "$lib/components/features/claims/ClaimCard.svelte";
+  import ClaimFiltersPopover from "$lib/components/features/claims/ClaimFiltersPopover.svelte";
   import StatusIcon from "$lib/components/ui/StatusIcon.svelte";
   import { STATUS_META, STATUS_ORDER } from "$lib/constants/status";
   import { reversedTranscript } from "$lib/stores/audio";
@@ -19,12 +20,15 @@
       <button
         class={[
           "stat-tile relative flex cursor-pointer flex-col items-center gap-1 overflow-hidden rounded-xl border bg-surface px-3 py-4 transition-all duration-150",
-          $claimFilter === s.key
+          $claimFilter.has(s.key)
             ? "active border-(--c) bg-surface-selected"
             : "border-edge"
         ]}
         style="--c: {s.color}"
-        onclick={() => claimFilter.set($claimFilter === s.key ? "all" : s.key)}
+        onclick={() =>
+          claimFilter.set(
+            $claimFilter.has(s.key) ? new Set() : new Set([s.key])
+          )}
         title="Filtrer : {s.label}">
         <!-- rec 04: SVG icon replaces emoji in stat tiles -->
         <StatusIcon status={s.key} size={22} />
@@ -63,15 +67,22 @@
     </div>
 
     <div>
-      <h3
-        class="mt-0 mb-3 flex items-center gap-2 text-sm tracking-wider text-fg-muted uppercase">
-        Faits
-        {#if $claimFilter !== "all"}<span
-            class="rounded-sm border border-accent-dim bg-surface-selected px-1.5 py-0.5 text-3 text-fg-muted normal-case"
-            >{$claimFilter}</span
-          >{/if}
-        <span class="text-sm text-fg-faint">({$filteredClaims.length})</span>
-      </h3>
+      <div class="mb-3 flex items-center gap-2">
+        <h3
+          class="m-0 flex items-center gap-2 text-sm tracking-wider text-fg-muted uppercase">
+          Faits
+          {#if $claimFilter.size > 0}<span
+              class="rounded-sm border border-accent-dim bg-surface-selected px-1.5 py-0.5 text-3 text-fg-muted normal-case"
+              >{[...$claimFilter]
+                .map((s) => STATUS_META[s].filterLabel)
+                .join(", ")}</span
+            >{/if}
+          <span class="text-sm text-fg-faint">({$filteredClaims.length})</span>
+        </h3>
+        <span class="ml-auto">
+          <ClaimFiltersPopover showStatus={false} />
+        </span>
+      </div>
       <div class="flex max-h-120 flex-col gap-2 overflow-y-auto">
         {#each $filteredClaims as claim (claim.id)}
           <ClaimCard {claim} />
