@@ -28,11 +28,9 @@
   <title>Connexion — LiveFactChecker</title>
 </svelte:head>
 
-<main
-  class="flex min-h-screen items-center justify-center p-6"
-  style="background: radial-gradient(1200px 600px at 50% -10%, rgba(85, 85, 170, 0.25), transparent 60%), var(--color-background);">
+<main class="auth-bg flex min-h-screen items-center justify-center p-6">
   <form
-    class="flex w-full max-w-90 flex-col gap-4 rounded-2xl border border-edge bg-surface-alt p-8 shadow-[0_20px_60px_rgba(0,0,0,0.45)]"
+    class="flex w-full max-w-90 flex-col gap-4 rounded-2xl border border-edge bg-surface-alt p-8 shadow-elevated"
     onsubmit={submit}>
     <div class="mb-1 text-center">
       <div class="mb-2 flex items-center justify-center gap-2">

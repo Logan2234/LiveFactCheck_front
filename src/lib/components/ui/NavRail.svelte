@@ -67,7 +67,7 @@
     type="button"
     onclick={() => (open = false)}
     aria-label="Fermer le menu"
-    class="fixed inset-0 z-40 bg-black/50 md:hidden"></button>
+    class="fixed inset-0 z-40 bg-scrim md:hidden"></button>
 {/if}
 
 <aside
